@@ -1,0 +1,722 @@
+/* ===================================================
+   HASIL PREDIKSI — hasil-prediksi.css
+   Semua class sinkron dengan hasil-prediksi.blade.php
+   =================================================== */
+
+/* ---------- CSS VARIABLES (lokal halaman ini) ---------- */
+:root {
+    --blue-50:   #E6F1FB;
+    --blue-600:  #185FA5;
+    --blue-800:  #0C447C;
+    --teal-600:  #0F6E56;
+    --green-50:  #EAF3DE;
+    --green-600: #3B6D11;
+    --green-800: #27500A;
+    --amber-50:  #FAEEDA;
+    --amber-600: #854F0B;
+    --amber-800: #633806;
+    --purple-600:#534AB7;
+    --gray-50:   #F1EFE8;
+    --gray-800:  #444441;
+}
+
+/* ---------- PAGE HEADER ---------- */
+.page-header {
+    margin-bottom: 18px;
+}
+
+.page-header h2 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #111827;
+    margin: 0;
+}
+
+.page-header p {
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 3px;
+    margin-bottom: 0;
+}
+
+/* ---------- CARD BASE ---------- */
+.card {
+    background: #ffffff;
+    border: 0.5px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 14px;
+}
+
+.card-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111827;
+    margin-bottom: 12px;
+}
+
+.card-sub {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 12px;
+}
+
+/* ---------- PLACEHOLDER STATE ---------- */
+.card-placeholder {
+    text-align: center;
+    padding: 36px;
+    margin-top: 20px;
+}
+
+.placeholder-icon {
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.placeholder-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111827;
+    margin-bottom: 6px;
+}
+
+.placeholder-desc {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 14px;
+}
+
+/* ---------- GRID ---------- */
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+/* ---------- BUTTONS ---------- */
+.btn {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 0.5px solid #d1d5db;
+    background: #ffffff;
+    color: #111827;
+    transition: all 0.15s;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background: #f3f4f6;
+}
+
+.btn-primary {
+    background: var(--blue-600);
+    color: #ffffff;
+    border-color: var(--blue-600);
+}
+
+.btn-primary:hover {
+    background: var(--blue-800);
+    border-color: var(--blue-800);
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+/* ---------- RESULT BOX ---------- */
+.result-box {
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: 0.5px solid #e5e7eb;
+}
+
+.result-kuliah {
+    background: var(--green-50);
+    border-color: #97C459;
+}
+
+.result-tidak {
+    background: var(--amber-50);
+    border-color: #FAC775;
+}
+
+.result-title {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.result-title.kuliah {
+    color: var(--green-800);
+}
+
+.result-title.tidak {
+    color: var(--amber-800);
+}
+
+.result-desc {
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.result-desc.kuliah {
+    color: var(--teal-600);
+}
+
+.result-desc.tidak {
+    color: var(--amber-600);
+}
+
+/* ---------- METRIC ROW ---------- */
+.metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 0.5px solid #e5e7eb;
+    font-size: 13px;
+}
+
+.metric-row:last-child {
+    border-bottom: none;
+}
+
+.metric-row .label {
+    color: #6b7280;
+}
+
+.metric-row .value {
+    font-weight: 500;
+    color: #111827;
+}
+
+/* ---------- SCORE BAR ---------- */
+.score-bar-wrap {
+    margin-bottom: 8px;
+}
+
+.score-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 3px;
+}
+
+.score-bar-bg {
+    height: 6px;
+    background: #f3f4f6;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.score-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s;
+}
+
+.fill-blue   { background: var(--blue-600); }
+.fill-green  { background: var(--green-600); }
+.fill-amber  { background: #EF9F27; }
+.fill-purple { background: var(--purple-600); }
+
+/* ---------- FORMULA BOX ---------- */
+.formula-box {
+    background: #f3f4f6;
+    border: 0.5px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: #111827;
+    font-family: monospace;
+    margin: 10px 0;
+}
+
+/* ---------- REKOMENDASI CARDS ---------- */
+.rec-card {
+    border: 0.5px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    background: #ffffff;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.rec-rank {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.rank-1 { background: #EF9F27; color: #ffffff; }
+.rank-2 { background: var(--gray-50); color: var(--gray-800); }
+.rank-3 { background: var(--gray-50); color: var(--gray-800); }
+.rank-4 { background: var(--gray-50); color: var(--gray-800); }
+.rank-5 { background: var(--gray-50); color: var(--gray-800); }
+
+.rec-info {
+    flex: 1;
+}
+
+.rec-jurusan {
+    font-size: 13px;
+    font-weight: 500;
+    color: #111827;
+}
+
+.rec-univ {
+    font-size: 12px;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+.rec-scores {
+    margin-top: 6px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.score-pill {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 20px;
+}
+
+/* ---------- BADGE / PILL COLORS ---------- */
+.badge-blue   { background: var(--blue-50);   color: var(--blue-800); }
+.badge-purple { background: #EEEDFE;        color: #3C3489; }
+.badge-green  { background: var(--green-50);  color: var(--green-600); }
+.badge-amber  { background: var(--amber-50);  color: var(--amber-600); }
+
+.stat-badge{ display: inline-block;
+    padding: 2px 7px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;}
+
+.interpretasi-text {
+    font-size: 13px;
+    color: #111827;
+    line-height: 1.7;
+}
+
+body.dark .page-header h2 {
+    color: #f9fafb;
+}
+
+body.dark .page-header p {
+    color: #9ca3af;
+}
+
+body.dark .card {
+    background: #1f2937;
+    border-color: #374151;
+}
+
+body.dark .card-title {
+    color: #f9fafb;
+}
+
+body.dark .card-sub,
+body.dark .metric-row .label,
+body.dark .score-bar-label,
+body.dark .rec-univ,
+body.dark .placeholder-desc {
+    color: #9ca3af;
+}
+
+body.dark .metric-row .value,
+body.dark .rec-jurusan,
+body.dark .placeholder-title,
+body.dark .interpretasi-text {
+    color: #f9fafb;
+}
+
+body.dark .metric-row {
+    border-color: #374151;
+}
+
+body.dark .score-bar-bg {
+    background: #374151;
+}
+
+body.dark .formula-box {
+    background: #111827;
+    border-color: #374151;
+    color: #f9fafb;
+}
+
+body.dark .rec-card {
+    background: #1f2937;
+    border-color: #374151;
+}
+
+body.dark .result-kuliah {
+    background: #14532d;
+    border-color: #166534;
+}
+
+body.dark .result-tidak {
+    background: #451a03;
+    border-color: #92400e;
+}
+
+body.dark .result-title.kuliah {
+    color: #86efac;
+}
+
+body.dark .result-title.tidak {
+    color: #fcd34d;
+}
+
+body.dark .result-desc.kuliah {
+    color: #6ee7b7;
+}
+
+body.dark .result-desc.tidak {
+    color: #fbbf24;
+}
+
+body.dark .rank-2,
+body.dark .rank-3,
+body.dark .rank-4,
+body.dark .rank-5 {
+    background: #374151;
+    color: #d1d5db;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .two-col {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ── Result Header ── */
+.result-header { border-radius:12px; padding:24px 28px; margin-bottom:24px; }
+.result-header.result-kuliah { background:linear-gradient(135deg,#ecfdf5 0%,#d1fae5 100%); border:1px solid #a7f3d0; }
+.result-header.result-tidak  { background:linear-gradient(135deg,#fff7ed 0%,#fed7aa 100%); border:1px solid #fdba74; }
+.result-header-inner { display:flex; flex-direction:column; gap:5px; }
+.result-status-badge { display:inline-block; font-size:1rem; font-weight:700; border-radius:999px; width:fit-content; letter-spacing:.01em; }
+.result-meta-row { display:flex; flex-wrap:wrap; gap:8px 4px; align-items:center; font-size:0.12px; }
+.result-meta-sep { color:#000000; font-size: 15px; font-weight: bold;}
+.result-meta-item { display:flex; align-items:center; gap:6px; }
+.result-meta-label { color: #000000; font-size: 12px; }
+.result-meta-val { color:#000000; font-weight:500; display:flex; align-items:center; font-size:13px; gap:6px; }
+
+/* ── Rekomendasi Block ── */
+.rek-univ-block {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+}
+.rek-univ-block:last-child { margin-bottom: 0; }
+
+.rek-univ-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 14px 14px;
+    background: #f9fafb;
+}
+
+/* ── Shared ── */
+.rek-rank { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; min-width:26px; background:#e0e7ff; color:#3b82f6; border-radius:50%; font-size:0.75rem; font-weight:700; margin:auto; font-size: 14px; flex-shrink:0; }
+.rank-top { background:#3b82f6; color:#fff; margin:auto; font-size: 14px;}
+.rek-name { font-weight:600; color:#111827; font-size:14px; line-height:1.35; }
+.rek-sub,.rek-jurusan  { font-size:13px; color:#9ca3af; margin-top:2px; }
+.rek-score-chip { font-size:0.72rem; font-weight:600; padding:2px 8px; border-radius:5px; }
+.chip-cbf    { background:#dbeafe; color:#1d4ed8; }
+.chip-hybrid { background:#ede9fe; color:#6d28d9; }
+/* ================= CLEANED VIEW HELPERS ================= */
+.alert {
+    margin-bottom: 16px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 0.875rem;
+}
+
+.alert-success {
+    background: #d1fae5;
+    border-left: 4px solid #10b981;
+    color: #065f46;
+}
+
+.jurusan-fullname {
+    margin-left: 4px;
+    color: #6b7280;
+    font-size: 0.78rem;
+}
+
+.probability-category {
+    margin-left: 4px;
+    font-size: 0.72rem;
+}
+
+.action-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.action-link {
+    flex: 1;
+    text-align: center;
+}
+
+.btn-secondary:hover {
+    background: #e5e7eb;
+    border-color: #e5e7eb;
+}
+
+
+.rekomendasi-sub {
+    margin-bottom: 16px;
+    padding:12px 14px;background:#f0f9ff;border-left:3px solid #3b82f6;border-radius:0 8px 8px 0;font-size:0.84rem;color:#374151;line-height:1.6
+}
+
+.rek-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.rek-old-data-note {
+    margin-top: 4px;
+    color: #9ca3af;
+    font-size: 0.75rem;
+    font-style: italic;
+}
+
+.rek-score-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    align-items: flex-end;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.empty-recommendation {
+    padding: 32px 0;
+    text-align: center;
+}
+
+.empty-recommendation.muted {
+    color: #9ca3af;
+    font-size: 0.875rem;
+}
+
+.empty-recommendation-title {
+    margin-bottom: 4px;
+    color: #374151;
+    font-weight: 600;
+}
+
+.empty-recommendation-desc {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.filter-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.filter-select {
+    width: auto;
+    height: 35px;
+}
+
+.reset-link {
+    color: #6b7280;
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.reset-link:hover {
+    color: var(--blue-600);
+}
+
+.prediksi-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.prediksi-table th,
+.prediksi-table td {
+    padding: 8px 4px;
+    text-align: left;
+}
+
+.prediksi-table th {
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.table-head-row {
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.table-body-row {
+    border-bottom: 1px solid #f9fafb;
+}
+
+.table-index,
+.table-date,
+.table-category {
+    color: #9ca3af;
+    font-size: 0.8rem;
+}
+
+.table-name {
+    font-weight: 500;
+}
+
+.pagination-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+}
+
+.pagination-info {
+    color: #9ca3af;
+    font-size: 0.8rem;
+}
+
+.pagination-controls {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.pagination-btn {
+    padding: 6px 14px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    background: #ffffff;
+    color: #374151;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.pagination-btn:disabled {
+    cursor: not-allowed;
+}
+
+.page-indicator {
+    min-width: 80px;
+    color: #374151;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+/* ================= DARK MODE REFINEMENTS ================= */
+body.dark .alert-success {
+    background: #064e3b;
+    border-left-color: #34d399;
+    color: #d1fae5;
+}
+
+body.dark .jurusan-fullname,
+body.dark .empty-recommendation.muted,
+body.dark .empty-recommendation-desc,
+body.dark .table-index,
+body.dark .table-date,
+body.dark .table-category,
+body.dark .pagination-info,
+body.dark .reset-link {
+    color: #9ca3af;
+}
+
+body.dark .btn-secondary,
+body.dark .pagination-btn {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f9fafb;
+}
+
+body.dark .btn-secondary:hover,
+body.dark .pagination-btn:hover:not(:disabled) {
+    background: #4b5563;
+    border-color: #6b7280;
+}
+
+body.dark .empty-recommendation-title,
+body.dark .page-indicator,
+body.dark .table-name,
+body.dark .stat-badge,
+body.dark .result-meta-label,
+body.dark .prediksi-table td {
+    color: #f9fafb;
+}
+
+body.dark .table-head-row,
+body.dark .table-body-row {
+    border-color: #374151;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+body.dark .prediksi-table th {
+    color: #d1d5db;
+}
+
+
+body.dark .result-header.result-kuliah {
+    background: linear-gradient(135deg, #052e16 0%, #14532d 100%);
+    border-color: #166534;
+}
+
+body.dark .result-header.result-tidak {
+    background: linear-gradient(135deg, #431407 0%, #78350f 100%);
+    border-color: #92400e;
+}
+
+body.dark .result-meta-val {
+    color: #f9fafb;
+}
+
+body.dark .rek-univ-block {
+    border-color: #374151;
+}
+
+body.dark .rek-univ-header {
+    background: #111827;
+}
+body.dark .rek-name {color:#e0e7ff;}
+
+body.dark .badge-green {
+    background: #14532d;
+    color: #dcfce7;
+}
+
+body.dark .badge-amber {
+    background: #78350f;
+    color: #fef3c7;
+}

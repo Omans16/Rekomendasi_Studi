@@ -1,0 +1,375 @@
+/* ================= INFO MODEL ================= */
+
+.page p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* STATS */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    text-align: center;
+}
+
+.stat-card h2 {
+    font-size: 22px;
+    margin-bottom: 5px;
+}
+
+/* GRID */
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+/* CARD */
+.card {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+/* CONFIG */
+.config {
+    list-style: none;
+    margin-top: 10px;
+    padding: 0;
+}
+
+.config li {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.config span {
+    color: #555;
+}
+
+/* BAR GROUP */
+.bar-group {
+    margin-top: 15px;
+}
+
+.bar-item {
+    display: grid;
+    grid-template-columns: 100px 1fr 40px;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    margin-left: 50px;
+}
+
+/* BAR */
+.bar {
+    background: #eee;
+    height: 20px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.bar div {
+    height: 100%;
+    background: linear-gradient(90deg, #4f46e5, #3b82f6);
+}
+
+
+
+
+/* ===================================================
+   INFO MODEL — info-model.css
+   Semua class sinkron dengan info-model.blade.php
+   =================================================== */
+
+/* ---------- CSS VARIABLES ---------- */
+:root {
+    --blue-50:    #E6F1FB;
+    --blue-600:   #185FA5;
+    --blue-800:   #0C447C;
+    --purple-50:  #EEEDFE;
+    --purple-600: #534AB7;
+    --purple-800: #3C3489;
+    --gray-50:    #F1EFE8;
+    --gray-600:   #5F5E5A;
+}
+
+/* ---------- PAGE HEADER ---------- */
+.page-header {
+    margin-bottom: 18px;
+}
+
+.page-header h2 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #111827;
+    margin: 0;
+}
+
+.page-header p {
+    font-size: 13px;
+    color: #6b7280;
+    margin-top: 3px;
+    margin-bottom: 0;
+}
+
+/* ---------- THREE-COL GRID (stat cards) ---------- */
+.three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+/* ---------- TWO-COL GRID (konfigurasi) ---------- */
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+/* ---------- STAT CARD ---------- */
+.stat-card {
+    background: #ffffff;
+    border: 0.5px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+
+.model-metric {
+    text-align: center;
+    padding: 12px;
+}
+
+.model-metric-val {
+    font-size: 22px;
+    font-weight: 500;
+    color: #111827;
+}
+
+.model-metric-lab {
+    font-size: 11px;
+    color: #6b7280;
+    margin-top: 3px;
+}
+
+/* ---------- CARD ---------- */
+.card {
+    background: #ffffff;
+    border: 0.5px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 14px;
+}
+
+.card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 5px;
+}
+
+.section-desc,
+.table-note{
+    font-size: 12px;
+    color: #000000;
+    margin-bottom: 14px;
+    line-height: 1.5;
+}
+
+/* ---------- METRIC ROW (konfigurasi) ---------- */
+.metric-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 0.5px solid #e5e7eb;
+    font-size: 13px;
+}
+
+.metric-row:last-child {
+    border-bottom: none;
+}
+
+.metric-row .label {
+    color: #6b7280;
+}
+
+.metric-row .value {
+    font-weight: 500;
+    color: #111827;
+}
+
+/* ---------- CHART BAR (feature importance) ---------- */
+.chart-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 7px;
+}
+
+.chart-bar-label {
+    font-size: 11px;
+    color: #6b7280;
+    width: 70px;
+    flex-shrink: 0;
+    text-align: right;
+}
+
+.chart-bar-bg2 {
+    flex: 1;
+    height: 18px;
+    background: #f3f4f6;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.chart-bar-inner {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 6px;
+    font-size: 10px;
+    color: #ffffff;
+    font-weight: 500;
+    transition: width 0.5s ease;
+}
+
+/* Warna bar — 4 teratas purple, 4 berikutnya blue */
+.fi-purple { background: var(--purple-600); }
+.fi-blue   { background: var(--blue-600); }
+
+/* ---------- FOOTER NOTE feature importance ---------- */
+.fi-note {
+    font-size: 11px;
+    color: #6b7280;
+    margin-top: 8px;
+}
+
+/* ---------- DARK MODE ---------- */
+body.dark .page-header h2,
+body.dark .page-header p,
+body.dark .config-key,
+body.dark .config-val,
+body.dark .fitur-code{
+    color: #ffffff;
+}
+
+body.dark .section-desc,
+body.dark .table-note{
+    font-size: 12px;
+    color: #e5e7eb;
+    margin-bottom: 14px;
+    line-height: 1.5;
+}
+body.dark .stat-card {
+    background: #1f2937;
+    border-color: #374151;
+}
+
+body.dark .model-metric-val {
+    color: #f9fafb;
+}
+
+body.dark .model-metric-lab {
+    color: #9ca3af;
+}
+
+body.dark .card {
+    background: #1f2937;
+    border-color: #374151;
+}
+
+body.dark .card-title {
+    color: #f9fafb;
+}
+
+body.dark .metric-row {
+    border-color: #374151;
+}
+
+body.dark .metric-row .label {
+    color: #9ca3af;
+}
+
+body.dark .metric-row .value {
+    color: #f9fafb;
+}
+
+body.dark .chart-bar-bg2 {
+    background: #374151;
+}
+
+body.dark .chart-bar-label,
+body.dark .fi-note {
+    color: #9ca3af;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 900px) {
+    .three-col {
+        grid-template-columns: 1fr;
+    }
+
+    .two-col {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ── Status List (kolom kanan) ── */
+.status-list { display:flex; flex-direction:column; gap:8px; }
+.status-item {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:10px 14px; border-radius:8px; border:1px solid transparent;
+    font-size:16px; font-weight:600;
+}
+.status-item-online  { background:#f0fdf4; border-color:#bbf7d0; }
+.status-item-offline { background:#fef2f2; border-color:#fecaca; }
+.status-item-left { display:flex; align-items:center; gap:8px; }
+.status-dot { width:8px; height:8px; border-radius:50%; display:inline-block; flex-shrink:0; }
+.dot-online  { background:#10b981; box-shadow:0 0 0 2px #d1fae5; }
+.dot-offline { background:#ef4444; box-shadow:0 0 0 2px #fee2e2; }
+.status-item-label { font-size:0.83rem; color:#374151; font-weight:500; }
+.status-item-val { font-size:0.82rem; font-weight:600; }
+.val-online  { color:#065f46; }
+.val-offline { color:#991b1b; }
+
+/* ── Config Card ── */
+.config-card { padding:0; overflow:hidden; }
+.config-card-header { display:flex; align-items:center; gap:12px; padding:16px 20px; border-bottom:1px solid #f3f4f6; }
+.config-header-blue   { background:#eff6ff; }
+.config-header-purple { background:#f5f3ff; }
+.config-card-icon { width:36px; height:36px; border-radius:8px; background:#3b82f6; color:#fff; display:flex; align-items:center; justify-content:center; font-size:0.7rem; font-weight:800; letter-spacing:.03em; }
+.config-icon-purple { background:#7c3aed; }
+.config-grid { padding:16px 20px; display:grid; grid-template-columns:1fr; gap:0; }
+.config-item { display:flex; justify-content:space-between; align-items:flex-start; padding:7px 0; border-bottom:1px solid #f9fafb; gap:12px; }
+.config-item:last-child { border-bottom:none; }
+.config-key { font-size:0.8rem; color:#9ca3af; min-width:130px; flex-shrink:0; font-weight:600; }
+.config-val { font-size:0.82rem; color:#111827; font-weight:500; text-align:right; }
+
+/* ── Fitur Table ── */
+.fitur-table { width:100%; border-collapse:collapse; font-size:0.83rem; }
+.fitur-table th { text-align:left; padding:9px 12px; background:#f9fafb; color:#6b7280; font-weight:500; border-bottom:1px solid #e5e7eb; }
+.fitur-table td { padding:8px 12px; border-bottom:1px solid #f3f4f6; vertical-align:middle; }
+.fitur-table tr:last-child td { border-bottom:none; }
+.fitur-code { color:#000000; padding:2px 6px; border-radius:4px; font: size 13px;font-weight: 600;}
+.feature-chart {
+    width: 100%;
+    min-height: 400px;
+}
