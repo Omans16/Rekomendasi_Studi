@@ -6,16 +6,26 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Menjalankan migration.
-     */
     public function up(): void
     {
         Schema::create('hasil_prediksis', function (Blueprint $table) {
             $table->id();
 
-            // Input siswa
+            // Relasi ke user login
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
+
+            // Identitas siswa
+            $table->string('nisn')->nullable();
+            $table->string('nama_siswa')->nullable();
+
+            // Data jurusan
             $table->string('jurusan_smk');
+            $table->string('jurusan_smk_lengkap')->nullable();
+
+            // Nilai input
             $table->decimal('rata_pai', 5, 2);
             $table->decimal('rata_ppkn', 5, 2);
             $table->decimal('rata_ind', 5, 2);
@@ -23,19 +33,28 @@ return new class extends Migration
             $table->decimal('rata_ing', 5, 2);
             $table->decimal('ukk', 5, 2);
 
-            // Hasil utama Random Forest
-            $table->unsignedTinyInteger('prediksi_rf')->nullable();
+            // Fitur turunan
+            $table->decimal('nilai_max', 5, 2)->nullable();
+            $table->decimal('nilai_min', 5, 2)->nullable();
+            $table->decimal('nilai_std', 5, 2)->nullable();
+
+            // Output Random Forest
+            $table->tinyInteger('prediksi_rf')->nullable();
             $table->string('status_rf')->nullable();
             $table->decimal('probabilitas_studi_lanjut', 8, 4)->nullable();
             $table->decimal('threshold_rf', 8, 4)->nullable();
+
+            // Status KNN
             $table->boolean('knn_dijalankan')->default(false);
 
-            // Hasil KNN dan response lengkap dari Flask
+            // Output Flask/KNN
             $table->json('profil_siswa')->nullable();
             $table->json('alumni_terdekat')->nullable();
             $table->text('narasi_rekomendasi')->nullable();
             $table->json('kualitas_rekomendasi')->nullable();
             $table->json('rekomendasi_final')->nullable();
+
+            // Pesan dan response mentah Flask
             $table->text('pesan')->nullable();
             $table->json('response_flask')->nullable();
 
@@ -43,9 +62,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Membatalkan migration.
-     */
     public function down(): void
     {
         Schema::dropIfExists('hasil_prediksis');

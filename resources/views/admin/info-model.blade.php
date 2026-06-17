@@ -464,8 +464,8 @@
 
 </div>
 
-{{-- ── TABEL MAPPING JURUSAN SMK ─────────────────────────────────── --}}
-<div class="card">
+{{-- ── TABEL MAPPING JURUSAN SMK}}
+{{-- <div class="card">
     <div class="card-title">Daftar Jurusan SMK & Singkatan</div>
     <div class="table-responsive">
         <table class="fitur-table">
@@ -504,7 +504,7 @@
             </tbody>
         </table>
     </div>
-</div>
+</div> --}}
 
 {{-- ── FEATURE IMPORTANCE (ApexCharts, data dari Flask /feature-importance) ── --}}
 <div class="card">
@@ -575,16 +575,45 @@ function buildFeatureImportanceChart() {
 
     const theme = getChartTheme();
 
+    const rows = fiLabels.map((label, index) => {
+        const value = parseFloat(fiValues[index]) || 0;
+
+        let tipe = 'Fitur Numerik';
+        let color = '#2563eb';
+
+        if (label.startsWith('Jurusan_Smk_')) {
+            tipe = 'Fitur OHE Jurusan';
+            color = '#7c3aed';
+        } else if (['nilai_max', 'nilai_min', 'std_nilai'].includes(label)) {
+            tipe = 'Fitur Turunan Agregat';
+            color = '#10b981';
+        }
+
+        return {
+            label: label,
+            value: value,
+            tipe: tipe,
+            color: color
+        };
+    })
+    .sort((a, b) => b.value - a.value)
+    .slice(0, 15);
+
+    const labels = rows.map(item => item.label);
+    const values = rows.map(item => item.value);
+    const colors = rows.map(item => item.color);
+    const dynamicHeight = Math.max(420, rows.length * 36);
+
     chartFi = new ApexCharts(el, {
         series: [
             {
                 name: 'Importance',
-                data: fiValues.map(v => parseFloat(parseFloat(v).toFixed(6)))
+                data: values.map(v => parseFloat(v.toFixed(6)))
             }
         ],
         chart: {
             type: 'bar',
-            height: 400,
+            height: dynamicHeight,
             toolbar: { show: false },
             fontFamily: 'inherit',
             foreColor: theme.text,
@@ -596,47 +625,51 @@ function buildFeatureImportanceChart() {
         plotOptions: {
             bar: {
                 horizontal: true,
-                borderRadius: 4,
+                borderRadius: 6,
                 distributed: true,
-                barHeight: '75%',
+                barHeight: '68%',
                 dataLabels: {
                     position: 'right'
                 }
             }
         },
-        colors: fiColors,
+        colors: colors,
         dataLabels: {
             enabled: true,
             formatter: val => parseFloat(val).toFixed(4),
+            offsetX: 6,
             style: {
                 fontSize: '12px',
+                fontWeight: 700,
                 colors: [theme.text]
-            },
-            offsetX: 4
+            }
         },
         xaxis: {
-            categories: fiLabels,
+            categories: labels,
             labels: {
+                formatter: val => parseFloat(val).toFixed(3),
                 style: {
                     fontSize: '12px',
                     colors: theme.muted
-                },
-                formatter: val => parseFloat(val).toFixed(3)
+                }
             }
         },
         yaxis: {
             labels: {
                 style: {
                     fontSize: '12px',
+                    fontWeight: 700,
                     colors: theme.text
                 },
-                maxWidth: 220
+                maxWidth: 230
             }
         },
         grid: {
             borderColor: theme.grid,
+            strokeDashArray: 4,
             padding: {
-                right: 24,
+                right: 38,
+                left: 8,
                 bottom: 10
             }
         },
@@ -645,8 +678,22 @@ function buildFeatureImportanceChart() {
         },
         tooltip: {
             theme: theme.mode,
-            y: {
-                formatter: val => 'Importance: ' + parseFloat(val).toFixed(6)
+            custom: function({ dataPointIndex }) {
+                const item = rows[dataPointIndex];
+
+                return `
+                    <div style="padding:10px 12px;">
+                        <div style="font-weight:800;margin-bottom:4px;">
+                            ${item.label}
+                        </div>
+                        <div style="font-size:12px;margin-bottom:4px;">
+                            ${item.tipe}
+                        </div>
+                        <div style="font-size:12px;font-weight:700;">
+                            Importance: ${parseFloat(item.value).toFixed(6)}
+                        </div>
+                    </div>
+                `;
             }
         }
     });

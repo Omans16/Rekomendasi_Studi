@@ -11,6 +11,16 @@
     @stack('styles')
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('app-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+        })();
+    </script>
 </head>
 <body>
 
@@ -37,57 +47,45 @@
 {{-- JS --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeText = document.getElementById('themeToggleText');
 
-    /* HITUNG */
-    const inputs = document.querySelectorAll('input[type=number]');
-    if(inputs.length){
-        inputs.forEach(i => i.addEventListener('input', hitung));
-    }
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        document.body.classList.toggle('dark', theme === 'dark');
+        localStorage.setItem('app-theme', theme);
 
-    function hitung(){
-        let nilai = [];
-        inputs.forEach(i => { if(i.value) nilai.push(parseFloat(i.value)); });
-
-        if(!nilai.length) return;
-
-        let avg = nilai.reduce((a,b)=>a+b,0)/nilai.length;
-        let max = Math.max(...nilai);
-        let min = Math.min(...nilai);
-        let std = Math.sqrt(
-            nilai.map(x => Math.pow(x - avg, 2)).reduce((a,b)=>a+b)/nilai.length
-        );
-
-        const stat = document.querySelectorAll('.stat b');
-        if(stat.length >= 4){
-            stat[0].innerText = avg.toFixed(2);
-            stat[1].innerText = max;
-            stat[2].innerText = min;
-            stat[3].innerText = std.toFixed(2);
+        if (themeText) {
+            themeText.textContent = theme === 'dark' ? 'Dark' : 'Light';
         }
     }
 
-    /* DARK MODE */
-    const toggle = document.getElementById('theme-toggle');
+    const savedTheme = localStorage.getItem('app-theme') || 'light';
+    applyTheme(savedTheme);
 
-    if(toggle){
-        toggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark');
-
-            if(document.body.classList.contains('dark')){
-                toggle.innerText = '☀️';
-                localStorage.setItem('theme','dark');
-            } else {
-                toggle.innerText = '🌙';
-                localStorage.setItem('theme','light');
-            }
+    if (themeToggle) {
+        themeToggle.addEventListener('click', function () {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            applyTheme(nextTheme);
         });
-
-        if(localStorage.getItem('theme') === 'dark'){
-            document.body.classList.add('dark');
-            toggle.innerText = '☀️';
-        }
     }
 
+    if (sidebarToggle) {
+        if (localStorage.getItem('sidebar') === 'collapsed') {
+            document.body.classList.add('sidebar-collapsed');
+        }
+
+        sidebarToggle.addEventListener('click', function () {
+            document.body.classList.toggle('sidebar-collapsed');
+
+            localStorage.setItem(
+                'sidebar',
+                document.body.classList.contains('sidebar-collapsed') ? 'collapsed' : 'open'
+            );
+        });
+    }
 });
 </script>
 

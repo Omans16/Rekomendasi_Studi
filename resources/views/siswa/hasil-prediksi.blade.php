@@ -1,22 +1,20 @@
 @extends('layouts.app')
 
 @push('styles')
-<link rel="stylesheet" href="{{ asset('css/admin/hasil-prediksi.css') }}">
+<link rel="stylesheet" href="{{ asset('css/siswa/hasil-prediksi.css') }}">
 @endpush
 
 @section('content')
 
 <div class="page-header">
-    <h2>Hasil Prediksi dan Rekomendasi Siswa</h2>
+    <h2>Hasil Rekomendasi Studi Lanjut</h2>
     <p>
-        Halaman ini digunakan Admin/Guru BK untuk memantau hasil prediksi potensi studi lanjut,
-        melihat probabilitas model, alumni terdekat, dan rekomendasi universitas/program studi siswa.
+        Halaman ini menampilkan hasil analisis data akademikmu, status potensi studi lanjut,
+        serta rekomendasi universitas dan program studi yang paling sesuai berdasarkan kemiripan dengan data alumni.
     </p>
 </div>
 
-{{-- ================================================================
-     STATE A: DETAIL SATU PREDIKSI  →  /hasil-prediksi/{id}
-     ================================================================ --}}
+
 @isset($detail)
 
 @if(session('success'))
@@ -52,32 +50,50 @@
 
     $avgSim  = $rekUniv->isNotEmpty() ? round($rekUniv->avg('similarity_score') * 100, 1) : 0;
     $avgFinal = $rekUniv->isNotEmpty() ? round($rekUniv->avg('final_score') * 100, 1) : 0;
+        $statusTitle = $isKuliah
+        ? 'Kamu Teridentifikasi Memiliki Potensi Studi Lanjut'
+        : 'Kamu Belum Teridentifikasi untuk Studi Lanjut';
+
+    $statusDesc = $isKuliah
+        ? 'Berdasarkan pola nilai dan data alumni, sistem menilai bahwa profil akademikmu memiliki kecenderungan untuk melanjutkan ke perguruan tinggi.'
+        : 'Berdasarkan data yang dimasukkan, sistem belum menemukan pola yang cukup kuat untuk merekomendasikan studi lanjut. Hasil ini bukan keputusan akhir, tetapi bahan pertimbangan awal.';
+
+    $nextStepText = $isKuliah
+        ? 'Gunakan rekomendasi di bawah ini sebagai bahan diskusi dengan guru BK, orang tua, dan pertimbangkan juga minat, biaya, lokasi kampus, serta peluang jurusan.'
+        : 'Kamu tetap bisa berdiskusi dengan guru BK, memperbaiki data nilai jika ada kesalahan, atau mencoba kembali setelah data akademik diperbarui.';
+
+    $similarityText = $avgSim > 0
+        ? 'Semakin tinggi nilai kemiripan, semakin mirip profilmu dengan alumni yang pernah melanjutkan kuliah.'
+        : 'Kemiripan alumni belum tersedia karena sistem tidak menampilkan rekomendasi pada hasil ini.';
 @endphp
 
-{{-- ── HEADER STATUS ── --}}
+{{-- ── HEADER STATUS SISWA ── --}}
 <div class="result-header {{ $isKuliah ? 'result-kuliah' : 'result-tidak' }}">
     <div class="result-header-inner">
         <div class="result-status-badge {{ $isKuliah ? 'badge-kuliah' : 'badge-tidak' }}">
-            {{ $isKuliah ? 'Teridentifikasi Studi Lanjut' : 'Tidak Teridentifikasi Studi Lanjut' }}
+            {{ $isKuliah ? 'Potensi Studi Lanjut Terdeteksi' : 'Belum Terdeteksi Studi Lanjut' }}
         </div>
+
+        <h3>{{ $statusTitle }}</h3>
+        <p>{{ $statusDesc }}</p>
+
         <div class="result-meta-row">
             <span class="result-meta-item">
                 <span class="result-meta-label">Nama</span>
                 <span class="result-meta-val">{{ $detail->nama_siswa ?? 'Siswa' }}</span>
             </span>
-            <span class="result-meta-sep">·</span>
+
             <span class="result-meta-item">
-                <span class="result-meta-label">Jurusan</span>
+                <span class="result-meta-label">Jurusan SMK</span>
                 <span class="result-meta-val">
-                    <span class="stat-badge" title="{{ $detail->jurusan_smk_lengkap ?? $detail->jurusan_smk }}">{{ $detail->jurusan_smk }}</span>
-                    @if(!empty($detail->jurusan_smk_lengkap) && $detail->jurusan_smk_lengkap !== $detail->jurusan_smk)
-                        <span class="jurusan-fullname">{{ $detail->jurusan_smk_lengkap }}</span>
-                    @endif
+                    <span class="stat-badge badge-blue" title="{{ $detail->jurusan_smk_lengkap ?? $detail->jurusan_smk }}">
+                        {{ $detail->jurusan_smk }}
+                    </span>
                 </span>
             </span>
-            <span class="result-meta-sep">·</span>
+
             <span class="result-meta-item">
-                <span class="result-meta-label">Probabilitas RF</span>
+                <span class="result-meta-label">Peluang Studi Lanjut</span>
                 <span class="result-meta-val">
                     {{ $probRF }}%
                     @if(!empty($detail->kategori_probabilitas))
@@ -85,9 +101,9 @@
                     @endif
                 </span>
             </span>
-            <span class="result-meta-sep">·</span>
+
             <span class="result-meta-item">
-                <span class="result-meta-label">UKK</span>
+                <span class="result-meta-label">Nilai UKK</span>
                 <span class="result-meta-val">{{ $detail->ukk }}</span>
             </span>
         </div>
@@ -125,50 +141,61 @@
 
         {{-- Skor Probabilitas --}}
         <div class="card">
-            <div class="card-title">Skor Probabilitas Model</div>
+            <div class="card-title">Ringkasan Hasil</div>
 
             <div class="score-bar-wrap">
                 <div class="score-bar-label">
-                    <span>P(Kuliah) — Random Forest</span>
+                    <span>Peluang untuk Studi Lanjut</span>
                     <span>{{ $probRF }}%</span>
                 </div>
                 <div class="score-bar-bg">
                     <div class="score-bar-fill fill-blue" style="width:{{ $probRF }}%"></div>
                 </div>
+                <div class="score-note">
+                    Angka ini menunjukkan seberapa besar sistem melihat kecenderungan kamu untuk melanjutkan kuliah berdasarkan data akademik.
+                </div>
             </div>
 
             @if($rekUniv->isNotEmpty())
-            <div class="score-bar-wrap">
-                <div class="score-bar-label">
-                    <span>Avg Similarity — KNN</span>
-                    <span>{{ $avgSim }}%</span>
+                <div class="score-bar-wrap">
+                    <div class="score-bar-label">
+                        <span>Kemiripan dengan Alumni</span>
+                        <span>{{ $avgSim }}%</span>
+                    </div>
+                    <div class="score-bar-bg">
+                        <div class="score-bar-fill fill-green" style="width:{{ $avgSim }}%"></div>
+                    </div>
+                    <div class="score-note">
+                        {{ $similarityText }}
+                    </div>
                 </div>
-                <div class="score-bar-bg">
-                    <div class="score-bar-fill fill-green" style="width:{{ $avgSim }}%"></div>
-                </div>
-            </div>
-            @endif
 
-            <div class="formula-box">Final Score = (0.7 × similarity_score) + (0.3 × frequency_score)</div>
-
-            @if($rekUniv->isNotEmpty())
-            <div class="score-bar-wrap">
-                <div class="score-bar-label">
-                    <span>Avg Final Score</span>
-                    <span>{{ $avgFinal }}%</span>
+                <div class="score-bar-wrap">
+                    <div class="score-bar-label">
+                        <span>Kekuatan Rekomendasi</span>
+                        <span>{{ $avgFinal }}%</span>
+                    </div>
+                    <div class="score-bar-bg">
+                        <div class="score-bar-fill fill-purple" style="width:{{ $avgFinal }}%"></div>
+                    </div>
+                    <div class="score-note">
+                        Skor ini membantu mengurutkan rekomendasi kampus dan program studi dari yang paling relevan.
+                    </div>
                 </div>
-                <div class="score-bar-bg">
-                    <div class="score-bar-fill fill-purple" style="width:{{ $avgFinal }}%"></div>
-                </div>
-            </div>
             @endif
         </div>
 
         {{-- Interpretasi --}}
         <div class="card">
-            <div class="card-title">Interpretasi Hasil</div>
+            <div class="card-title">Apa Arti Hasil Ini?</div>
+
             <div class="interpretasi-text">
-                {{ $detail->narasi_rekomendasi ?? $detail->pesan ?? 'Tidak ada interpretasi.' }}
+                {{ $detail->narasi_rekomendasi ?? $detail->pesan ?? $statusDesc }}
+            </div>
+
+            <div class="student-advice-box">
+                <strong>Langkah berikutnya:</strong>
+                <span>{{ $nextStepText }}</span>
             </div>
         </div>
 
@@ -204,12 +231,12 @@
         @endif
 
         <div class="action-row">
-            <a href="{{ route('admin.hasil.prediksi') }}"
-            class="btn btn-primary btn-sm action-link">
+            <a href="{{ route('siswa.hasil.prediksi') }}"
+               class="btn btn-primary btn-sm action-link">
                 Riwayat
             </a>
-            <a href="{{ route('admin.input.siswa') }}"
-            class="btn btn-primary btn-sm action-link">
+            <a href="{{ route('siswa.input.siswa') }}"
+               class="btn btn-primary btn-sm action-link">
                 Prediksi Baru
             </a>
         </div>
@@ -221,20 +248,19 @@
         <div class="card">
             <div class="card-title">Rekomendasi Universitas & Jurusan Kuliah</div>
             <div class="card-sub rekomendasi-sub">
-                Berdasarkan data yang Anda masukkan, sistem menemukan kemiripan dengan data alumni jurusan <strong>{{ $detail->jurusan_smk }}</strong> yang melanjutkan kuliah
+                Rekomendasi ini disusun dari data alumni yang memiliki profil akademik mirip denganmu.
+                Urutan pertama berarti pilihan tersebut paling sesuai berdasarkan pola data yang tersedia.
             </div>
 
-            {{-- @if($isKuliah && $kualitas)
-                <div class="formula-box">
-                    Kualitas Rekomendasi: {{ $kualitas['status'] ?? '-' }}
-                    @if(isset($kualitas['rata_rata_similarity']))
-                        | Rata-rata Similarity: {{ number_format((float) $kualitas['rata_rata_similarity'], 3) }}
-                    @endif
-                    @if(isset($kualitas['threshold']))
-                        | Threshold: {{ $kualitas['threshold'] ?? '-' }}
-                    @endif
+            @if($isKuliah && $kualitas)
+                <div class="quality-box">
+                    <div class="quality-label">Kualitas Rekomendasi</div>
+                    <div class="quality-value">{{ $kualitas['status'] ?? '-' }}</div>
+                    <div class="quality-desc">
+                        Status ini menunjukkan apakah rekomendasi cukup relevan berdasarkan kemiripan profilmu dengan data alumni.
+                    </div>
                 </div>
-            @endif --}}
+            @endif
 
             @if($isKuliah && $rekUniv->isNotEmpty())
                 @php
@@ -272,8 +298,11 @@
                 </div>
             @else
                 <div class="empty-recommendation">
-                    <div class="empty-recommendation-title">Tidak Teridentifikasi Studi Lanjut</div>
-                    <div class="empty-recommendation-desc">Rekomendasi hanya tersedia untuk siswa yang teridentifikasi studi lanjut.</div>
+                    <div class="empty-recommendation-title">Rekomendasi Belum Ditampilkan</div>
+                    <div class="empty-recommendation-desc">
+                        Sistem belum menampilkan rekomendasi kampus karena hasil saat ini belum teridentifikasi sebagai potensi studi lanjut.
+                        Kamu tetap bisa berkonsultasi dengan guru BK untuk mempertimbangkan pilihan kuliah sesuai minat dan kondisi pribadi.
+                    </div>
                 </div>
             @endif
         </div>
@@ -283,12 +312,10 @@
 
 @endisset
 
-{{-- ================================================================
-     STATE B: DAFTAR RIWAYAT  →  /hasil-prediksi
-     ================================================================ --}}
+{{-- STATE B: DAFTAR RIWAYAT  →  /hasil-prediksi --}}
 @isset($data)
 
-<form method="GET" action="{{ route('admin.hasil.prediksi') }}" class="filter-form">
+<form method="GET" action="{{ route('siswa.hasil.prediksi') }}" class="filter-form">
     <select name="jurusan" class="form-select filter-select" onchange="this.form.submit()">
         <option value="">Semua Jurusan</option>
         @foreach($jurusanList as $j)
@@ -307,15 +334,15 @@
         </option>
     </select>
     @if(request()->hasAny(['jurusan','status']))
-        <a href="{{ route('admin.hasil.prediksi') }}"
-        class="reset-link">Reset</a>
+        <a href="{{ route('siswa.hasil.prediksi') }}"
+           class="reset-link">Reset</a>
     @endif
 </form>
 
 @if($data->count())
 
 @php
-    $allRowsData = $data->map(function ($item) {
+    $allRowsData = $data->map(function($item) {
         return [
             'id'                  => $item->id,
             'nama_siswa'          => $item->nama_siswa ?? 'Siswa',
@@ -327,10 +354,8 @@
                                         ? round((float) $item->probabilitas_studi_lanjut * 100, 1)
                                         : 0,
             'kategori'            => $item->kategori_probabilitas ?? '',
-            'tanggal'             => $item->created_at
-                                        ? $item->created_at->format('d/m/Y H:i')
-                                        : '-',
-            'detail_url'          => route('admin.hasil.prediksi.detail', $item->id),
+            'tanggal'             => $item->created_at->format('d/m/Y H:i'),
+            'detail_url'          => route('siswa.hasil.prediksi.detail', $item->id),
         ];
     })->values();
 @endphp
@@ -426,7 +451,7 @@ renderTable();
     <div class="placeholder-icon">—</div>
     <div class="placeholder-title">Belum ada prediksi</div>
     <div class="placeholder-desc">Silakan input data siswa terlebih dahulu</div>
-    <a href="{{ route('admin.input.siswa') }}" class="btn btn-primary btn-sm">Input Data Siswa</a>
+    <a href="{{ route('siswa.input.siswa') }}" class="btn btn-primary btn-sm">Input Data Siswa</a>
 </div>
 @endif
 
@@ -437,7 +462,7 @@ renderTable();
     <div class="placeholder-icon">—</div>
     <div class="placeholder-title">Belum ada prediksi</div>
     <div class="placeholder-desc">Silakan input data siswa terlebih dahulu</div>
-    <a href="{{ route('admin.input.siswa') }}" class="btn btn-primary btn-sm">Input Data Siswa</a>
+    <a href="{{ route('siswa.input.siswa') }}" class="btn btn-primary btn-sm">Input Data Siswa</a>
 </div>
 @endif
 

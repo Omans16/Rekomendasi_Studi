@@ -1,26 +1,25 @@
 @extends('layouts.app')
 
 @push('styles')
-    <link rel="stylesheet" href="{{ asset('css/admin/input-siswa.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/siswa/input-siswa.css') }}">
 @endpush
 
 @section('content')
 
 <div class="page-header">
-    <h2>Input Data Akademik Siswa</h2>
+    <h2>Isi Data Akademik untuk Rekomendasi Studi Lanjut</h2>
     <p>
-        Gunakan halaman ini untuk memasukkan atau memvalidasi data akademik siswa sebelum sistem menjalankan prediksi potensi studi lanjut dan rekomendasi universitas/program studi.
+        Masukkan nama, jurusan SMK, nilai rapor, dan nilai UKK. 
+        Setelah dikirim, sistem akan membantu menampilkan potensi studi lanjut serta rekomendasi kampus dan program studi yang sesuai.
     </p>
 </div>
 
-{{-- Alert error dari session --}}
 @if(session('error'))
 <div class="alert alert-danger">
     {{ session('error') }}
 </div>
 @endif
 
-{{-- Alert validasi dari Laravel --}}
 @if($errors->any())
 <div class="alert alert-danger">
     <b>Terdapat kesalahan input:</b>
@@ -32,23 +31,21 @@
 </div>
 @endif
 
-{{-- Alert Flask offline --}}
 @if(!$flaskOnline)
 <div class="alert alert-warning">
     Layanan ML sedang tidak tersedia. Prediksi tidak dapat dijalankan saat ini.
 </div>
 @endif
 
-<form action="{{ route('admin.input.siswa.proses') }}" method="POST" id="formPrediksi">
+<form action="{{ route('siswa.input.siswa.proses') }}" method="POST" id="formPrediksi">
 @csrf
 
 <div class="two-col">
 
-    {{-- KOLOM KIRI --}}
     <div>
 
         <div class="card">
-            <div class="card-title">Identitas Siswa</div>
+            <div class="card-title">Data Diri Siswa</div>
 
             <div class="form-group">
                 <label class="form-label">Nama Lengkap <span class="required">*</span></label>
@@ -56,7 +53,7 @@
                        type="text"
                        name="nama_siswa"
                        placeholder="Nama siswa"
-                       value="{{ old('nama_siswa') }}"
+                       value="{{ old('nama_siswa', auth()->user()->name ?? '') }}"
                        required>
                 @error('nama_siswa')
                     <div class="form-error">{{ $message }}</div>
@@ -129,7 +126,7 @@
         </div>
 
         <div class="card">
-            <div class="card-title">Nilai Mata Pelajaran</div>
+            <div class="card-title">Nilai Rapor dan UKK</div>
 
             <div class="two-col">
 
@@ -210,11 +207,10 @@
 
     </div>
 
-    {{-- KOLOM KANAN --}}
     <div>
 
         <div class="card">
-            <div class="card-title">Fitur Agregat Otomatis</div>
+            <div class="card-title">Ringkasan Nilai Otomatis</div>
 
             <div class="score-bar-wrap">
                 <div class="score-bar-label">
@@ -258,13 +254,13 @@
 
             <hr class="section-divider">
 
-            <div class="card-sub">
-                Fitur agregat ini digunakan sebagai input tambahan model Random Forest untuk menangkap konsistensi akademik siswa. Dihitung otomatis dari 6 nilai (rata_pai, rata_ppkn, rata_ind, rata_mtk, rata_ing, UKK).
-            </div>
+        <div class="card-sub">
+            Bagian ini dihitung otomatis dari nilai yang kamu masukkan. Rata-rata, nilai tertinggi, nilai terendah, dan konsistensi nilai akan membantu sistem membaca pola akademikmu.
+        </div>
         </div>
 
         <div class="card">
-            <div class="card-title">Fitur yang Digunakan Model</div>
+            <div class="card-title">Data yang Dibaca Oleh Sistem</div>
 
             <div class="tag-list">
                 <span class="tag tag-blue">rata_pai</span>

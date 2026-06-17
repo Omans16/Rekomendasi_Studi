@@ -53,10 +53,10 @@
         <div class="card">
             <div class="card-title">Upload File Excel (.xlsx / .csv)</div>
 
-            <form action="{{ route('upload.alumni.proses') }}"
-                  method="POST"
-                  enctype="multipart/form-data"
-                  id="formUpload">
+        <form action="{{ route('admin.upload.alumni.proses') }}"
+            method="POST"
+            enctype="multipart/form-data"
+            id="formUpload">
                 @csrf
 
                 <div class="upload-zone" id="dropArea" onclick="document.getElementById('fileInput').click()">

@@ -12,13 +12,23 @@ class HasilPrediksi extends Model
     protected $table = 'hasil_prediksis';
 
     protected $fillable = [
+        'user_id',
+        'nisn',
+        'nama_siswa',
+
         'jurusan_smk',
+        'jurusan_smk_lengkap',
+
         'rata_pai',
         'rata_ppkn',
         'rata_ind',
         'rata_mtk',
         'rata_ing',
         'ukk',
+
+        'nilai_max',
+        'nilai_min',
+        'nilai_std',
 
         'prediksi_rf',
         'status_rf',
@@ -43,6 +53,10 @@ class HasilPrediksi extends Model
         'rata_ing' => 'decimal:2',
         'ukk' => 'decimal:2',
 
+        'nilai_max' => 'decimal:2',
+        'nilai_min' => 'decimal:2',
+        'nilai_std' => 'decimal:2',
+
         'probabilitas_studi_lanjut' => 'decimal:4',
         'threshold_rf' => 'decimal:4',
         'knn_dijalankan' => 'boolean',
@@ -53,4 +67,9 @@ class HasilPrediksi extends Model
         'rekomendasi_final' => 'array',
         'response_flask' => 'array',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

@@ -5,14 +5,86 @@ namespace App\Http\Controllers;
 use App\Models\HasilPrediksi;
 use App\Services\FlaskRecommendationService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-class AdminController extends Controller{
+class AdminController extends Controller
+{
     protected FlaskRecommendationService $flaskService;
 
     public function __construct(FlaskRecommendationService $flaskService)
     {
         $this->flaskService = $flaskService;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Helper: cek apakah user login adalah siswa
+    |--------------------------------------------------------------------------
+    */
+    private function isSiswa(): bool
+    {
+        return Auth::check() && Auth::user()->role === 'siswa';
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Helper: cek apakah request sedang berada di route siswa
+    |--------------------------------------------------------------------------
+    */
+    private function isSiswaRoute(): bool
+    {
+        return request()->routeIs('siswa.*') || request()->is('siswa/*');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Helper: path view otomatis
+    |--------------------------------------------------------------------------
+    | /admin/...  => resources/views/admin/...
+    | /siswa/...  => resources/views/siswa/...
+    */
+    private function viewPath(string $view): string
+    {
+        if ($this->isSiswaRoute()) {
+            return 'siswa.' . $view;
+        }
+
+        return 'admin.' . $view;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Helper: nama route otomatis
+    |--------------------------------------------------------------------------
+    | admin.hasil.prediksi.detail
+    | siswa.hasil.prediksi.detail
+    */
+    private function routeName(string $name): string
+    {
+        if ($this->isSiswaRoute()) {
+            return 'siswa.' . $name;
+        }
+
+        return 'admin.' . $name;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Helper: query hasil prediksi sesuai hak akses
+    |--------------------------------------------------------------------------
+    | - siswa      : hanya data miliknya sendiri
+    | - admin/BK   : semua data
+    */
+    private function hasilPrediksiQuery()
+    {
+        $query = HasilPrediksi::query();
+
+        if ($this->isSiswa()) {
+            $query->where('user_id', Auth::id());
+        }
+
+        return $query;
     }
 
     public function dashboard()
@@ -30,7 +102,9 @@ class AdminController extends Controller{
             - top_universitas
             - top_program_studi
         */
-        $dashboardStatsResponse = $this->flaskService->ambilDashboardStats();
+        $dashboardStatsResponse = method_exists($this->flaskService, 'ambilDashboardStats')
+            ? $this->flaskService->ambilDashboardStats()
+            : ['data' => []];
 
         $flaskStats = $dashboardStatsResponse['data'] ?? [];
 
@@ -66,21 +140,27 @@ class AdminController extends Controller{
             'top_program_studi' => [],
         ], $flaskStats);
 
+        /*
+            Statistik database:
+            - siswa hanya melihat statistik prediksi miliknya sendiri
+            - admin/guru BK melihat semua statistik
+        */
+        $baseQuery = $this->hasilPrediksiQuery();
+
         $dbStats = [
-            'total_prediksi' => HasilPrediksi::count(),
-            'total_kuliah' => HasilPrediksi::where('prediksi_rf', 1)->count(),
-            'total_tidak' => HasilPrediksi::where('prediksi_rf', 0)->count(),
-            'total_knn_dijalankan' => HasilPrediksi::where('knn_dijalankan', true)->count(),
-            'prediksi_terakhir' => HasilPrediksi::latest()->limit(5)->get(),
+            'total_prediksi' => (clone $baseQuery)->count(),
+            'total_kuliah' => (clone $baseQuery)->where('prediksi_rf', 1)->count(),
+            'total_tidak' => (clone $baseQuery)->where('prediksi_rf', 0)->count(),
+            'total_knn_dijalankan' => (clone $baseQuery)->where('knn_dijalankan', true)->count(),
+            'prediksi_terakhir' => (clone $baseQuery)->latest()->limit(5)->get(),
         ];
 
-        return view('admin.dashboard', compact(
+        return view($this->viewPath('dashboard'), compact(
             'flaskOnline',
             'flaskStats',
             'dbStats'
         ));
     }
-
 
     public function inputSiswa()
     {
@@ -89,7 +169,7 @@ class AdminController extends Controller{
 
         $jurusanList = $this->flaskService->ambilDaftarJurusan();
 
-        return view('admin.input-siswa', compact(
+        return view($this->viewPath('input-siswa'), compact(
             'flaskOnline',
             'jurusanList'
         ));
@@ -119,10 +199,22 @@ class AdminController extends Controller{
             '*.max' => 'Nilai maksimal adalah 100.',
         ]);
 
+        $user = Auth::user();
+
+        /*
+            Jika role siswa, nama siswa otomatis diambil dari akun login.
+            Ini mencegah siswa menginput hasil atas nama orang lain.
+        */
+        if ($user && $user->role === 'siswa') {
+            $validated['nama_siswa'] = $user->name;
+        }
+
         $hasilFlask = $this->flaskService->prediksiRekomendasi($validated);
 
         if (!($hasilFlask['success'] ?? false)) {
             Log::warning('Prediksi Flask gagal.', [
+                'user_id' => $user?->id,
+                'nisn' => $user?->nisn,
                 'input' => $validated,
                 'response' => $hasilFlask,
             ]);
@@ -133,6 +225,7 @@ class AdminController extends Controller{
         }
 
         $prediksiRf = $hasilFlask['prediksi_rf'] ?? [];
+
         $profilMap = collect($hasilFlask['profil_siswa'] ?? [])
             ->mapWithKeys(function ($item) {
                 return [
@@ -141,7 +234,13 @@ class AdminController extends Controller{
             });
 
         $hasilPrediksi = HasilPrediksi::create([
-            'nama_siswa' => $validated['nama_siswa'] ?? null,
+            /*
+                Data pemilik hasil prediksi.
+                Wajib ada kolom user_id dan nisn di tabel hasil_prediksis.
+            */
+            'user_id' => $user?->id,
+            'nisn' => $user?->nisn,
+            'nama_siswa' => $validated['nama_siswa'] ?? $user?->name,
 
             'jurusan_smk' => $validated['jurusan_smk'],
             'jurusan_smk_lengkap' => $validated['jurusan_smk'],
@@ -173,13 +272,17 @@ class AdminController extends Controller{
         ]);
 
         return redirect()
-            ->route('hasil.prediksi.detail', $hasilPrediksi->id)
+            ->route($this->routeName('hasil.prediksi.detail'), $hasilPrediksi->id)
             ->with('success', 'Prediksi berhasil diproses.');
     }
 
     public function hasilPrediksi(Request $request)
     {
-        $query = HasilPrediksi::query();
+        /*
+            siswa hanya mengambil hasil miliknya sendiri.
+            admin/guru BK mengambil semua hasil.
+        */
+        $query = $this->hasilPrediksiQuery();
 
         if ($request->filled('jurusan')) {
             $query->where('jurusan_smk', $request->jurusan);
@@ -191,14 +294,18 @@ class AdminController extends Controller{
 
         $data = $query->latest()->get();
 
-        $jurusanList = HasilPrediksi::query()
+        /*
+            Filter jurusan juga mengikuti hak akses.
+            Jadi siswa hanya melihat daftar jurusan dari riwayat miliknya.
+        */
+        $jurusanList = $this->hasilPrediksiQuery()
             ->select('jurusan_smk')
             ->whereNotNull('jurusan_smk')
             ->distinct()
             ->orderBy('jurusan_smk')
             ->pluck('jurusan_smk');
 
-        return view('admin.hasil-prediksi', compact(
+        return view($this->viewPath('hasil-prediksi'), compact(
             'data',
             'jurusanList'
         ));
@@ -206,13 +313,21 @@ class AdminController extends Controller{
 
     public function hasilDetail($id)
     {
-        $detail = HasilPrediksi::findOrFail($id);
+        /*
+            findOrFail tetap aman karena query sudah dibatasi.
+            Jika siswa mencoba membuka id milik siswa lain, hasilnya 404.
+        */
+        $detail = $this->hasilPrediksiQuery()->findOrFail($id);
 
-        return view('admin.hasil-prediksi', compact('detail'));
+        return view($this->viewPath('hasil-prediksi'), compact('detail'));
     }
 
     public function infoModel()
     {
+        /*
+            Route info-model hanya untuk admin/guru BK.
+        */
+
         $health = $this->flaskService->healthCheck();
         $flaskOnline = $health['success'] ?? false;
 
@@ -232,6 +347,7 @@ class AdminController extends Controller{
         ];
 
         $jurusanMapping = [];
+
         foreach ($this->flaskService->ambilDaftarJurusan() as $jurusan) {
             if (is_array($jurusan)) {
                 $nama = $jurusan['nama_lengkap'] ?? $jurusan['singkatan'] ?? null;
@@ -267,6 +383,10 @@ class AdminController extends Controller{
 
     public function prosesUploadAlumni(Request $request)
     {
+        /*
+            Route upload alumni hanya untuk admin/guru BK.
+        */
+
         return back()->with(
             'info',
             'Fitur upload alumni belum dihubungkan karena API Flask saat ini belum menyediakan endpoint upload alumni.'

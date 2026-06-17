@@ -1,51 +1,55 @@
 /* ============================================================
-   INPUT SISWA — ADMIN / GURU BK
-   Path: public/css/admin/input-siswa.css
-   Untuk input data akademik siswa oleh Admin/Guru BK
+   INPUT SISWA — Student Friendly UI
+   Path: public/css/siswa/input-siswa.css
+   Mengikuti font global Plus Jakarta Sans dari layout utama
 ============================================================ */
 
 :root {
-    --admin-blue-50: #eff6ff;
-    --admin-blue-100: #dbeafe;
-    --admin-blue-200: #bfdbfe;
-    --admin-blue-600: #2563eb;
-    --admin-blue-700: #1d4ed8;
-    --admin-blue-800: #1e40af;
+    --siswa-blue-50: #eff6ff;
+    --siswa-blue-100: #dbeafe;
+    --siswa-blue-200: #bfdbfe;
+    --siswa-blue-600: #2563eb;
+    --siswa-blue-700: #1d4ed8;
+    --siswa-blue-800: #1e40af;
 
-    --admin-purple-50: #f5f3ff;
-    --admin-purple-100: #ede9fe;
-    --admin-purple-600: #7c3aed;
-    --admin-purple-800: #5b21b6;
+    --siswa-green-50: #ecfdf5;
+    --siswa-green-100: #dcfce7;
+    --siswa-green-700: #15803d;
+    --siswa-green-800: #166534;
 
-    --admin-green-50: #ecfdf5;
-    --admin-green-100: #dcfce7;
-    --admin-green-600: #16a34a;
-    --admin-green-800: #166534;
+    --siswa-amber-50: #fffbeb;
+    --siswa-amber-100: #fef3c7;
+    --siswa-amber-500: #f59e0b;
+    --siswa-amber-700: #b45309;
+    --siswa-amber-800: #92400e;
 
-    --admin-amber-50: #fffbeb;
-    --admin-amber-100: #fef3c7;
-    --admin-amber-500: #f59e0b;
-    --admin-amber-800: #92400e;
+    --siswa-purple-50: #f5f3ff;
+    --siswa-purple-100: #ede9fe;
+    --siswa-purple-700: #6d28d9;
+    --siswa-purple-800: #5b21b6;
 
-    --admin-red-50: #fef2f2;
-    --admin-red-100: #fee2e2;
-    --admin-red-500: #ef4444;
-    --admin-red-700: #b91c1c;
-    --admin-red-800: #991b1b;
+    --siswa-red-50: #fef2f2;
+    --siswa-red-100: #fee2e2;
+    --siswa-red-500: #ef4444;
+    --siswa-red-700: #b91c1c;
+    --siswa-red-800: #991b1b;
 
+    --page-bg: #f8fafc;
     --page-card: #ffffff;
-    --page-soft: #f8fafc;
+    --page-card-soft: #f8fafc;
     --page-border: #e5e7eb;
     --page-border-soft: #eef2f7;
     --page-text: #0f172a;
     --page-muted: #64748b;
-    --page-muted-soft: #94a3b8;
+    --page-muted-2: #94a3b8;
 
-    --page-shadow: 0 12px 30px rgba(15, 23, 42, 0.055);
+    --page-shadow: 0 14px 34px rgba(15, 23, 42, 0.06);
     --page-shadow-soft: 0 8px 22px rgba(15, 23, 42, 0.045);
+
+    --font-body: var(--font-body, 'Plus Jakarta Sans', sans-serif);
 }
 
-/* ================= FONT GLOBAL ================= */
+/* ================= GLOBAL PAGE ================= */
 .page-header,
 .page-header *,
 .card,
@@ -58,13 +62,12 @@
     font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
 }
 
-/* ================= PAGE HEADER ================= */
 .page-header {
     position: relative;
     overflow: hidden;
     margin-bottom: 20px;
     padding: 26px 28px;
-    border: 1px solid var(--admin-blue-100);
+    border: 1px solid #dbeafe;
     border-radius: 20px;
     background:
         radial-gradient(circle at top right, rgba(37, 99, 235, 0.16), transparent 34%),
@@ -73,14 +76,14 @@
 }
 
 .page-header::before {
-    content: "Admin / Guru BK";
+    content: "Form Rekomendasi";
     display: inline-flex;
     align-items: center;
     margin-bottom: 10px;
     padding: 6px 11px;
     border-radius: 999px;
-    background: var(--admin-blue-100);
-    color: var(--admin-blue-700);
+    background: var(--siswa-blue-100);
+    color: var(--siswa-blue-700);
     font-size: 0.74rem;
     font-weight: 800;
     letter-spacing: 0.01em;
@@ -89,17 +92,17 @@
 .page-header h2 {
     margin: 0 0 8px;
     color: var(--page-text);
-    font-size: 1.5rem;
-    font-weight: 800;
+    font-size: 1.55rem;
+    font-weight: 900;
     letter-spacing: -0.035em;
     line-height: 1.25;
 }
 
 .page-header p {
-    max-width: 780px;
+    max-width: 760px;
     margin: 0;
     color: #475569;
-    font-size: 0.92rem;
+    font-size: 0.93rem;
     font-weight: 500;
     line-height: 1.7;
 }
@@ -127,9 +130,9 @@
 }
 
 .alert-danger {
-    background: var(--admin-red-50);
-    border-color: var(--admin-red-500);
-    color: var(--admin-red-800);
+    background: var(--siswa-red-50);
+    border-color: var(--siswa-red-500);
+    color: var(--siswa-red-800);
 }
 
 .alert-danger::before {
@@ -137,9 +140,9 @@
 }
 
 .alert-warning {
-    background: var(--admin-amber-50);
-    border-color: var(--admin-amber-500);
-    color: var(--admin-amber-800);
+    background: var(--siswa-amber-50);
+    border-color: var(--siswa-amber-500);
+    color: var(--siswa-amber-800);
 }
 
 .alert-warning::before {
@@ -163,12 +166,12 @@
     align-items: start;
 }
 
+/* Form nilai di dalam card tetap 2 kolom */
 .card .two-col {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
 }
 
-/* ================= CARD ================= */
 .card {
     position: relative;
     overflow: hidden;
@@ -185,7 +188,7 @@
     position: absolute;
     inset: 0 0 auto 0;
     height: 4px;
-    background: linear-gradient(90deg, var(--admin-blue-600), #60a5fa);
+    background: linear-gradient(90deg, var(--siswa-blue-600), #60a5fa);
 }
 
 .card-title {
@@ -195,7 +198,7 @@
     margin-bottom: 14px;
     color: var(--page-text);
     font-size: 1rem;
-    font-weight: 800;
+    font-weight: 900;
     letter-spacing: -0.02em;
 }
 
@@ -203,8 +206,8 @@
     width: 28px;
     height: 28px;
     border-radius: 10px;
-    background: var(--admin-blue-50);
-    color: var(--admin-blue-700);
+    background: var(--siswa-blue-50);
+    color: var(--siswa-blue-700);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -251,11 +254,11 @@ form > .two-col > div:last-child .card:nth-of-type(2) .card-title::before {
     margin-bottom: 7px;
     color: var(--page-text);
     font-size: 0.82rem;
-    font-weight: 700;
+    font-weight: 800;
 }
 
 .required {
-    color: var(--admin-red-500);
+    color: var(--siswa-red-500);
     font-weight: 900;
 }
 
@@ -270,50 +273,52 @@ form > .two-col > div:last-child .card:nth-of-type(2) .card-title::before {
     background: #ffffff;
     color: var(--page-text);
     font-size: 0.88rem;
-    font-weight: 500;
+    font-weight: 600;
     outline: none;
     transition:
         border-color 0.2s ease,
         box-shadow 0.2s ease,
-        background-color 0.2s ease;
+        background-color 0.2s ease,
+        transform 0.15s ease;
 }
 
 .form-input::placeholder {
     color: #a1a1aa;
-    font-weight: 400;
+    font-weight: 500;
 }
 
 .form-input:focus,
 .form-select:focus {
-    border-color: var(--admin-blue-600);
+    border-color: var(--siswa-blue-600);
     box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.11);
     background: #ffffff;
 }
 
 .form-input:hover,
 .form-select:hover {
-    border-color: var(--admin-blue-200);
+    border-color: #bfdbfe;
 }
 
 .score-input {
     text-align: center;
     font-size: 1rem;
-    font-weight: 700;
+    font-weight: 900;
 }
 
 .form-error {
     margin-top: 6px;
-    color: var(--admin-red-700);
+    color: var(--siswa-red-700);
     font-size: 0.78rem;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 1.45;
 }
 
+/* Bantuan kecil agar siswa paham skala nilai */
 .form-group:has(.score-input)::after {
-    content: "Rentang nilai 0–100";
+    content: "Isi nilai 0 sampai 100";
     display: block;
     margin-top: 5px;
-    color: var(--page-muted-soft);
+    color: var(--page-muted-2);
     font-size: 0.72rem;
     font-weight: 600;
 }
@@ -324,7 +329,7 @@ form > .two-col > div:last-child .card:nth-of-type(2) .card-title::before {
     padding: 12px;
     border: 1px solid var(--page-border-soft);
     border-radius: 14px;
-    background: var(--page-soft);
+    background: var(--page-card-soft);
 }
 
 .score-bar-label {
@@ -334,7 +339,7 @@ form > .two-col > div:last-child .card:nth-of-type(2) .card-title::before {
     margin-bottom: 8px;
     color: var(--page-muted);
     font-size: 0.8rem;
-    font-weight: 700;
+    font-weight: 800;
 }
 
 .score-bar-label span:first-child {
@@ -346,10 +351,10 @@ form > .two-col > div:last-child .card:nth-of-type(2) .card-title::before {
     padding: 3px 8px;
     border-radius: 999px;
     background: #ffffff;
-    color: var(--admin-blue-700);
+    color: var(--siswa-blue-700);
     text-align: center;
     font-size: 0.78rem;
-    font-weight: 800;
+    font-weight: 900;
 }
 
 .score-bar-bg {
@@ -366,19 +371,19 @@ form > .two-col > div:last-child .card:nth-of-type(2) .card-title::before {
 }
 
 .fill-blue {
-    background: linear-gradient(90deg, var(--admin-blue-600), #60a5fa);
+    background: linear-gradient(90deg, var(--siswa-blue-600), #60a5fa);
 }
 
 .fill-green {
-    background: linear-gradient(90deg, var(--admin-green-600), #4ade80);
+    background: linear-gradient(90deg, var(--siswa-green-700), #4ade80);
 }
 
 .fill-amber {
-    background: linear-gradient(90deg, var(--admin-amber-500), #fbbf24);
+    background: linear-gradient(90deg, var(--siswa-amber-500), #fbbf24);
 }
 
 .fill-purple {
-    background: linear-gradient(90deg, var(--admin-purple-600), #a78bfa);
+    background: linear-gradient(90deg, var(--siswa-purple-700), #a78bfa);
 }
 
 .section-divider {
@@ -401,28 +406,28 @@ form > .two-col > div:last-child .card:nth-of-type(2) .card-title::before {
     padding: 6px 10px;
     border-radius: 999px;
     font-size: 0.76rem;
-    font-weight: 800;
+    font-weight: 900;
     line-height: 1;
 }
 
 .tag-blue {
-    background: var(--admin-blue-50);
-    color: var(--admin-blue-800);
+    background: var(--siswa-blue-50);
+    color: var(--siswa-blue-800);
 }
 
 .tag-purple {
-    background: var(--admin-purple-50);
-    color: var(--admin-purple-800);
+    background: var(--siswa-purple-50);
+    color: var(--siswa-purple-800);
 }
 
 .tag-green {
-    background: var(--admin-green-50);
-    color: var(--admin-green-800);
+    background: var(--siswa-green-50);
+    color: var(--siswa-green-800);
 }
 
 .tag-amber {
-    background: var(--admin-amber-50);
-    color: var(--admin-amber-800);
+    background: var(--siswa-amber-50);
+    color: var(--siswa-amber-800);
 }
 
 /* ================= BUTTON ================= */
@@ -442,7 +447,7 @@ form > .two-col > div:last-child .card:nth-of-type(2) .card-title::before {
     background: #ffffff;
     color: var(--page-text);
     font-size: 0.86rem;
-    font-weight: 700;
+    font-weight: 800;
     cursor: pointer;
     text-decoration: none;
     transition:
@@ -459,15 +464,15 @@ form > .two-col > div:last-child .card:nth-of-type(2) .card-title::before {
 }
 
 .btn-primary {
-    border-color: var(--admin-blue-600);
-    background: linear-gradient(135deg, var(--admin-blue-600) 0%, #3b82f6 100%);
+    border-color: var(--siswa-blue-600);
+    background: linear-gradient(135deg, var(--siswa-blue-600) 0%, #3b82f6 100%);
     color: #ffffff;
     box-shadow: 0 12px 24px rgba(37, 99, 235, 0.24);
 }
 
 .btn-primary:hover {
-    border-color: var(--admin-blue-700);
-    background: linear-gradient(135deg, var(--admin-blue-700) 0%, var(--admin-blue-600) 100%);
+    border-color: var(--siswa-blue-700);
+    background: linear-gradient(135deg, var(--siswa-blue-700) 0%, var(--siswa-blue-600) 100%);
     color: #ffffff;
     box-shadow: 0 14px 28px rgba(37, 99, 235, 0.30);
 }
@@ -489,10 +494,11 @@ form > .two-col > div:last-child .card:nth-of-type(2) .card-title::before {
     font-size: 0.78rem;
 }
 
+/* Tombol submit diberi teks lebih terasa CTA */
 .submit-wrap .btn-primary {
     min-height: 46px;
     font-size: 0.9rem;
-    font-weight: 800;
+    font-weight: 900;
 }
 
 /* ================= DARK MODE ================= */
