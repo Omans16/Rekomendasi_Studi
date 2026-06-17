@@ -41,16 +41,15 @@ class AdminController extends Controller
     |--------------------------------------------------------------------------
     | Helper: path view otomatis
     |--------------------------------------------------------------------------
-    | /admin/...  => resources/views/admin/...
-    | /siswa/...  => resources/views/siswa/...
+    | /admin/... => resources/views/admin/...
+    | /siswa/... => resources/views/siswa/...
+    |--------------------------------------------------------------------------
     */
     private function viewPath(string $view): string
     {
-        if ($this->isSiswaRoute()) {
-            return 'siswa.' . $view;
-        }
-
-        return 'admin.' . $view;
+        return $this->isSiswaRoute()
+            ? 'siswa.' . $view
+            : 'admin.' . $view;
     }
 
     /*
@@ -59,59 +58,58 @@ class AdminController extends Controller
     |--------------------------------------------------------------------------
     | admin.hasil.prediksi.detail
     | siswa.hasil.prediksi.detail
+    |--------------------------------------------------------------------------
     */
     private function routeName(string $name): string
     {
-        if ($this->isSiswaRoute()) {
-            return 'siswa.' . $name;
-        }
-
-        return 'admin.' . $name;
+        return $this->isSiswaRoute()
+            ? 'siswa.' . $name
+            : 'admin.' . $name;
     }
 
     /*
     |--------------------------------------------------------------------------
     | Helper: query hasil prediksi sesuai hak akses
     |--------------------------------------------------------------------------
-    | - siswa      : hanya data miliknya sendiri
+    | - siswa      : hanya data miliknya sendiri berdasarkan user_id atau NISN
     | - admin/BK   : semua data
+    |--------------------------------------------------------------------------
     */
     private function hasilPrediksiQuery()
     {
         $query = HasilPrediksi::query();
 
         if ($this->isSiswa()) {
-            $query->where('user_id', Auth::id());
+            $user = Auth::user();
+
+            $query->where(function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+
+                if (!empty($user->nisn)) {
+                    $q->orWhere('nisn', $user->nisn);
+                }
+            });
         }
 
         return $query;
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard
+    |--------------------------------------------------------------------------
+    */
     public function dashboard()
     {
         $health = $this->flaskService->healthCheck();
         $flaskOnline = $health['success'] ?? false;
 
-        /*
-            Ambil statistik dashboard dari Flask endpoint /dashboard-stats.
-            Endpoint ini harus mengembalikan:
-            - total_alumni
-            - total_universitas
-            - total_program_studi
-            - alumni_per_jurusan
-            - top_universitas
-            - top_program_studi
-        */
         $dashboardStatsResponse = method_exists($this->flaskService, 'ambilDashboardStats')
             ? $this->flaskService->ambilDashboardStats()
             : ['data' => []];
 
         $flaskStats = $dashboardStatsResponse['data'] ?? [];
 
-        /*
-            Fallback jika /dashboard-stats belum aktif,
-            minimal total alumni tetap diambil dari /info-model.
-        */
         if (empty($flaskStats)) {
             $infoModelResponse = $this->flaskService->ambilInfoModel();
             $infoModel = $infoModelResponse['data'] ?? [];
@@ -127,9 +125,6 @@ class AdminController extends Controller
             ];
         }
 
-        /*
-            Pastikan semua key tetap tersedia agar dashboard.blade.php tidak error.
-        */
         $flaskStats = array_merge([
             'total_alumni' => null,
             'jumlah_data_alumni_basis' => null,
@@ -140,11 +135,6 @@ class AdminController extends Controller
             'top_program_studi' => [],
         ], $flaskStats);
 
-        /*
-            Statistik database:
-            - siswa hanya melihat statistik prediksi miliknya sendiri
-            - admin/guru BK melihat semua statistik
-        */
         $baseQuery = $this->hasilPrediksiQuery();
 
         $dbStats = [
@@ -162,6 +152,11 @@ class AdminController extends Controller
         ));
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Form Input Siswa Manual
+    |--------------------------------------------------------------------------
+    */
     public function inputSiswa()
     {
         $health = $this->flaskService->healthCheck();
@@ -175,9 +170,15 @@ class AdminController extends Controller
         ));
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Proses Prediksi Manual
+    |--------------------------------------------------------------------------
+    */
     public function prosesPrediksi(Request $request)
     {
         $validated = $request->validate([
+            'nisn' => ['nullable', 'string', 'max:30'],
             'nama_siswa' => ['nullable', 'string', 'max:255'],
             'jurusan_smk' => ['required', 'string', 'max:255'],
             'rata_pai' => ['required', 'numeric', 'min:0', 'max:100'],
@@ -202,10 +203,12 @@ class AdminController extends Controller
         $user = Auth::user();
 
         /*
-            Jika role siswa, nama siswa otomatis diambil dari akun login.
-            Ini mencegah siswa menginput hasil atas nama orang lain.
+        |--------------------------------------------------------------------------
+        | Jika role siswa, data identitas otomatis diambil dari akun login.
+        |--------------------------------------------------------------------------
         */
         if ($user && $user->role === 'siswa') {
+            $validated['nisn'] = $user->nisn;
             $validated['nama_siswa'] = $user->name;
         }
 
@@ -214,7 +217,7 @@ class AdminController extends Controller
         if (!($hasilFlask['success'] ?? false)) {
             Log::warning('Prediksi Flask gagal.', [
                 'user_id' => $user?->id,
-                'nisn' => $user?->nisn,
+                'nisn' => $user?->nisn ?? ($validated['nisn'] ?? null),
                 'input' => $validated,
                 'response' => $hasilFlask,
             ]);
@@ -224,7 +227,13 @@ class AdminController extends Controller
                 ->with('error', $hasilFlask['message'] ?? 'Prediksi gagal diproses.');
         }
 
-        $prediksiRf = $hasilFlask['prediksi_rf'] ?? [];
+        $prediksiRf = is_array($hasilFlask['prediksi_rf'] ?? null)
+            ? $hasilFlask['prediksi_rf']
+            : [];
+
+        $inputModel = is_array($hasilFlask['input_model'] ?? null)
+            ? $hasilFlask['input_model']
+            : [];
 
         $profilMap = collect($hasilFlask['profil_siswa'] ?? [])
             ->mapWithKeys(function ($item) {
@@ -233,13 +242,32 @@ class AdminController extends Controller
                 ];
             });
 
+        $prediksi = $hasilFlask['prediksi']
+            ?? $prediksiRf['prediksi']
+            ?? null;
+
+        $statusRf = $hasilFlask['status_rf']
+            ?? $prediksiRf['status']
+            ?? null;
+
+        $probabilitas = $hasilFlask['probabilitas_studi_lanjut']
+            ?? $prediksiRf['probabilitas_studi_lanjut']
+            ?? null;
+
+        $threshold = $hasilFlask['threshold']
+            ?? $prediksiRf['threshold']
+            ?? null;
+
+        $knnDijalankan = $hasilFlask['knn_dijalankan']
+            ?? $hasilFlask['lanjut_ke_knn']
+            ?? $prediksiRf['lanjut_ke_knn']
+            ?? false;
+
         $hasilPrediksi = HasilPrediksi::create([
-            /*
-                Data pemilik hasil prediksi.
-                Wajib ada kolom user_id dan nisn di tabel hasil_prediksis.
-            */
             'user_id' => $user?->id,
-            'nisn' => $user?->nisn,
+            'upload_batch_id' => null,
+
+            'nisn' => $validated['nisn'] ?? $user?->nisn,
             'nama_siswa' => $validated['nama_siswa'] ?? $user?->name,
 
             'jurusan_smk' => $validated['jurusan_smk'],
@@ -252,15 +280,16 @@ class AdminController extends Controller
             'rata_ing' => $validated['rata_ing'],
             'ukk' => $validated['ukk'],
 
-            'nilai_max' => $profilMap['Nilai Maksimum'] ?? null,
-            'nilai_min' => $profilMap['Nilai Minimum'] ?? null,
-            'nilai_std' => $profilMap['Standar Deviasi Nilai'] ?? null,
+            'nilai_max' => $inputModel['nilai_max'] ?? $profilMap['Nilai Maksimum'] ?? null,
+            'nilai_min' => $inputModel['nilai_min'] ?? $profilMap['Nilai Minimum'] ?? null,
+            'nilai_std' => $inputModel['std_nilai'] ?? $profilMap['Standar Deviasi Nilai'] ?? null,
 
-            'prediksi_rf' => $prediksiRf['prediksi'] ?? null,
-            'status_rf' => $prediksiRf['status'] ?? null,
-            'probabilitas_studi_lanjut' => $prediksiRf['probabilitas_studi_lanjut'] ?? null,
-            'threshold_rf' => $prediksiRf['threshold'] ?? null,
-            'knn_dijalankan' => $hasilFlask['knn_dijalankan'] ?? false,
+            'prediksi_rf' => $prediksi,
+            'status_rf' => $statusRf,
+            'probabilitas_studi_lanjut' => $probabilitas,
+            'kategori_probabilitas' => $hasilFlask['kategori_probabilitas'] ?? null,
+            'threshold_rf' => $threshold,
+            'knn_dijalankan' => (bool) $knnDijalankan,
 
             'profil_siswa' => $hasilFlask['profil_siswa'] ?? [],
             'alumni_terdekat' => $hasilFlask['alumni_terdekat'] ?? [],
@@ -269,6 +298,9 @@ class AdminController extends Controller
             'rekomendasi_final' => $hasilFlask['rekomendasi_final'] ?? [],
             'pesan' => $hasilFlask['pesan'] ?? null,
             'response_flask' => $hasilFlask,
+
+            'sumber' => 'manual',
+            'error_message' => null,
         ]);
 
         return redirect()
@@ -276,12 +308,13 @@ class AdminController extends Controller
             ->with('success', 'Prediksi berhasil diproses.');
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Riwayat Hasil Prediksi
+    |--------------------------------------------------------------------------
+    */
     public function hasilPrediksi(Request $request)
     {
-        /*
-            siswa hanya mengambil hasil miliknya sendiri.
-            admin/guru BK mengambil semua hasil.
-        */
         $query = $this->hasilPrediksiQuery();
 
         if ($request->filled('jurusan')) {
@@ -294,10 +327,6 @@ class AdminController extends Controller
 
         $data = $query->latest()->get();
 
-        /*
-            Filter jurusan juga mengikuti hak akses.
-            Jadi siswa hanya melihat daftar jurusan dari riwayat miliknya.
-        */
         $jurusanList = $this->hasilPrediksiQuery()
             ->select('jurusan_smk')
             ->whereNotNull('jurusan_smk')
@@ -311,23 +340,25 @@ class AdminController extends Controller
         ));
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Detail Hasil Prediksi
+    |--------------------------------------------------------------------------
+    */
     public function hasilDetail($id)
     {
-        /*
-            findOrFail tetap aman karena query sudah dibatasi.
-            Jika siswa mencoba membuka id milik siswa lain, hasilnya 404.
-        */
         $detail = $this->hasilPrediksiQuery()->findOrFail($id);
 
         return view($this->viewPath('hasil-prediksi'), compact('detail'));
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Info Model
+    |--------------------------------------------------------------------------
+    */
     public function infoModel()
     {
-        /*
-            Route info-model hanya untuk admin/guru BK.
-        */
-
         $health = $this->flaskService->healthCheck();
         $flaskOnline = $health['success'] ?? false;
 
@@ -337,7 +368,6 @@ class AdminController extends Controller
 
         $infoModel = $infoModelResponse['data'] ?? [];
         $featureImportance = $featureImportanceResponse['data'] ?? [];
-
         $evaluasi = $evaluationResponse['data'] ?? ($infoModel['rf_final_metrics'] ?? []);
 
         $dbStats = [
@@ -381,12 +411,13 @@ class AdminController extends Controller
         ));
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Upload Alumni Lama
+    |--------------------------------------------------------------------------
+    */
     public function prosesUploadAlumni(Request $request)
     {
-        /*
-            Route upload alumni hanya untuk admin/guru BK.
-        */
-
         return back()->with(
             'info',
             'Fitur upload alumni belum dihubungkan karena API Flask saat ini belum menyediakan endpoint upload alumni.'

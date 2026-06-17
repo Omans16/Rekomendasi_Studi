@@ -16,15 +16,25 @@ class RoleMiddleware
             return redirect()->route('login');
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | Validasi Role
+        |--------------------------------------------------------------------------
+        | Mendukung penggunaan:
+        | role:admin
+        | role:guru_bk
+        | role:admin,guru_bk
+        | role:siswa
+        */
         if (!in_array($user->role, $roles, true)) {
             abort(403, 'Anda tidak memiliki hak akses ke halaman ini.');
         }
 
         /*
         |--------------------------------------------------------------------------
-        | Khusus role siswa
+        | Khusus Role Siswa
         |--------------------------------------------------------------------------
-        | Sistem ini hanya untuk siswa kelas 12.
+        | Sistem siswa hanya diperbolehkan untuk siswa kelas 12.
         */
         if ($user->role === 'siswa' && (int) $user->kelas !== 12) {
             abort(403, 'Akses siswa hanya diperbolehkan untuk kelas 12.');

@@ -1,0 +1,884 @@
+/* ============================================================
+   UPLOAD DATA SISWA — ADMIN / GURU BK
+   Path: public/css/admin/upload-siswa.css
+============================================================ */
+
+:root {
+    --up-blue-50: #eff6ff;
+    --up-blue-100: #dbeafe;
+    --up-blue-200: #bfdbfe;
+    --up-blue-600: #2563eb;
+    --up-blue-700: #1d4ed8;
+    --up-blue-800: #1e40af;
+
+    --up-green-50: #ecfdf5;
+    --up-green-100: #dcfce7;
+    --up-green-700: #15803d;
+    --up-green-800: #166534;
+
+    --up-amber-50: #fffbeb;
+    --up-amber-100: #fef3c7;
+    --up-amber-700: #b45309;
+    --up-amber-800: #92400e;
+
+    --up-purple-100: #ede9fe;
+    --up-purple-800: #5b21b6;
+
+    --up-red-50: #fef2f2;
+    --up-red-100: #fee2e2;
+    --up-red-800: #991b1b;
+
+    --up-card: #ffffff;
+    --up-soft: #f8fafc;
+    --up-border: #e5e7eb;
+    --up-border-soft: #eef2f7;
+    --up-text: #0f172a;
+    --up-muted: #64748b;
+
+    --up-shadow: 0 12px 30px rgba(15, 23, 42, 0.055);
+    --up-shadow-soft: 0 8px 22px rgba(15, 23, 42, 0.045);
+}
+.upload-siswa-page,
+.upload-siswa-page * {
+    font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+    box-sizing: border-box;
+}
+
+/* ================= HEADER ================= */
+.upload-siswa-page .page-header {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+    padding: 26px 28px;
+    border: 1px solid var(--up-blue-100);
+    border-radius: 20px;
+    background:
+        radial-gradient(circle at top right, rgba(37, 99, 235, 0.16), transparent 34%),
+        linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+    box-shadow: var(--up-shadow);
+}
+
+.upload-siswa-page .page-header::before {
+    content: "Admin / Guru BK";
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 10px;
+    padding: 6px 11px;
+    border-radius: 999px;
+    background: var(--up-blue-100);
+    color: var(--up-blue-700);
+    font-size: 0.74rem;
+    font-weight: 800;
+}
+
+.upload-siswa-page .page-header h2 {
+    margin: 0 0 8px;
+    color: var(--up-text);
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+}
+
+.upload-siswa-page .page-header p {
+    max-width: 860px;
+    margin: 0;
+    color: #475569;
+    font-size: 0.92rem;
+    font-weight: 500;
+    line-height: 1.7;
+}
+
+/* ================= ALERT ================= */
+.upload-siswa-page .alert {
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border: 1px solid;
+    border-left-width: 5px;
+    border-radius: 14px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.6;
+}
+
+.upload-siswa-page .alert strong {
+    margin-right: 4px;
+    font-weight: 800;
+}
+
+.upload-siswa-page .alert-success {
+    border-color: #10b981;
+    background: var(--up-green-50);
+    color: var(--up-green-800);
+}
+
+.upload-siswa-page .alert-danger {
+    border-color: #ef4444;
+    background: var(--up-red-50);
+    color: var(--up-red-800);
+}
+
+.upload-siswa-page .alert-warning {
+    border-color: #f59e0b;
+    background: var(--up-amber-50);
+    color: var(--up-amber-800);
+}
+
+.upload-siswa-page .alert-summary {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.upload-siswa-page .alert-list {
+    margin: 8px 0 0 18px;
+    padding: 0;
+}
+
+/* ================= LAYOUT ================= */
+.upload-siswa-page .two-col {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
+    gap: 18px;
+    align-items: start;
+}
+
+/* ================= CARD ================= */
+.upload-siswa-page .card {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 18px;
+    padding: 20px;
+    border: 1px solid var(--up-border);
+    border-radius: 18px;
+    background: var(--up-card);
+    box-shadow: var(--up-shadow-soft);
+}
+
+.upload-siswa-page .card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--up-blue-600), #60a5fa);
+}
+
+.upload-siswa-page .card-title {
+    margin: 0 0 10px;
+    color: var(--up-text);
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.upload-siswa-page .card-sub {
+    margin-bottom: 16px;
+    color: var(--up-muted);
+    font-size: 0.84rem;
+    font-weight: 500;
+    line-height: 1.65;
+}
+
+/* ================= UPLOAD AREA ================= */
+.upload-siswa-page .upload-zone {
+    display: flex;
+    min-height: 230px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 30px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 18px;
+    background:
+        radial-gradient(circle at top right, rgba(37, 99, 235, 0.08), transparent 40%),
+        var(--up-soft);
+    cursor: pointer;
+    text-align: center;
+    transition: 0.2s ease;
+}
+
+.upload-siswa-page .upload-zone:hover,
+.upload-siswa-page .upload-zone.is-dragover {
+    border-color: var(--up-blue-600);
+    background: var(--up-blue-50);
+    transform: translateY(-1px);
+}
+
+.upload-siswa-page .upload-zone.is-selected {
+    border-color: #10b981;
+    background:
+        radial-gradient(circle at top right, rgba(16, 185, 129, 0.12), transparent 40%),
+        #ecfdf5;
+}
+
+.upload-siswa-page .upload-icon {
+    width: 54px;
+    height: 54px;
+    margin-bottom: 8px;
+    border-radius: 18px;
+    background: var(--up-blue-100);
+    color: var(--up-blue-700);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    transition: 0.2s ease;
+}
+
+.upload-siswa-page .upload-zone.is-selected .upload-icon {
+    background: var(--up-green-100);
+    color: var(--up-green-700);
+}
+
+.upload-siswa-page .upload-text {
+    color: var(--up-text);
+    font-size: 0.94rem;
+    font-weight: 800;
+}
+
+.upload-siswa-page .upload-hint {
+    margin-top: 0;
+    color: var(--up-muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+/* ================= SELECTED FILE INSIDE UPLOAD AREA ================= */
+.upload-siswa-page .selected-file-inline {
+    width: min(460px, 100%);
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    padding: 11px 12px;
+    border: 1px solid var(--up-green-200);
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+    cursor: default;
+}
+
+.upload-siswa-page .selected-file-inline-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    border-radius: 12px;
+    background: var(--up-green-100);
+    color: var(--up-green-700);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.upload-siswa-page .selected-file-inline-info {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    text-align: left;
+}
+
+.upload-siswa-page .selected-file-inline-info strong {
+    color: var(--up-text);
+    font-size: 0.84rem;
+    font-weight: 800;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.upload-siswa-page .selected-file-inline-info span {
+    color: var(--up-muted);
+    font-size: 0.74rem;
+    font-weight: 600;
+}
+
+.upload-siswa-page .selected-file-inline-remove {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+    border: 0;
+    border-radius: 9px;
+    background: #f8fafc;
+    color: var(--up-red-600);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s ease;
+}
+
+.upload-siswa-page .selected-file-inline-remove:hover {
+    background: var(--up-red-100);
+    color: var(--up-red-800);
+}
+
+/* ================= PROGRESS ================= */
+.upload-siswa-page .upload-progress {
+    margin-top: 14px;
+}
+
+.upload-siswa-page .upload-status {
+    margin-bottom: 7px;
+    color: var(--up-muted);
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.upload-siswa-page .progress-bar {
+    height: 8px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e5e7eb;
+}
+
+.upload-siswa-page .progress-fill {
+    width: 0%;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--up-blue-600), #60a5fa);
+    transition: width 0.4s ease;
+}
+
+/* ================= PROCESS ================= */
+.upload-siswa-page .process-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.upload-siswa-page .process-item {
+    display: flex;
+    gap: 12px;
+    padding: 13px;
+    border: 1px solid var(--up-border-soft);
+    border-radius: 14px;
+    background: var(--up-soft);
+}
+
+.upload-siswa-page .process-num {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+    border-radius: 11px;
+    background: var(--up-blue-600);
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 900;
+}
+
+.upload-siswa-page .process-item strong {
+    color: var(--up-text);
+    font-size: 0.86rem;
+    font-weight: 800;
+}
+
+.upload-siswa-page .process-item p {
+    margin: 3px 0 0;
+    color: var(--up-muted);
+    font-size: 0.78rem;
+    font-weight: 500;
+    line-height: 1.55;
+}
+
+/* ================= TABLE ================= */
+.upload-siswa-page .table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.upload-siswa-page .table-wrap table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+}
+
+.upload-siswa-page .table-wrap th,
+.upload-siswa-page .table-wrap td {
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--up-border-soft);
+    text-align: left;
+    vertical-align: middle;
+}
+
+.upload-siswa-page .table-wrap th {
+    color: var(--up-muted);
+    font-size: 0.74rem;
+    font-weight: 800;
+    background: var(--up-soft);
+}
+
+.upload-siswa-page .table-wrap td {
+    color: var(--up-text);
+    font-weight: 600;
+}
+
+/* ================= TAG / BADGE ================= */
+.upload-siswa-page .tag,
+.upload-siswa-page .stat-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.upload-siswa-page .tag-blue,
+.upload-siswa-page .badge-blue {
+    background: var(--up-blue-100);
+    color: var(--up-blue-800);
+}
+
+.upload-siswa-page .tag-green,
+.upload-siswa-page .badge-green {
+    background: var(--up-green-100);
+    color: var(--up-green-800);
+}
+
+.upload-siswa-page .tag-purple {
+    background: var(--up-purple-100);
+    color: var(--up-purple-800);
+}
+
+.upload-siswa-page .tag-amber,
+.upload-siswa-page .badge-amber {
+    background: var(--up-amber-100);
+    color: var(--up-amber-800);
+}
+
+.upload-siswa-page .badge-red {
+    background: var(--up-red-100);
+    color: var(--up-red-800);
+}
+
+/* ================= METRIC ================= */
+.upload-siswa-page .metric-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--up-border-soft);
+    font-size: 0.86rem;
+}
+
+.upload-siswa-page .metric-row:last-child {
+    border-bottom: none;
+}
+
+.upload-siswa-page .metric-row .label {
+    color: var(--up-muted);
+    font-weight: 600;
+}
+
+.upload-siswa-page .metric-row .value {
+    color: var(--up-text);
+    font-weight: 800;
+    text-align: right;
+}
+
+/* ================= EMPTY ================= */
+.upload-siswa-page .empty-box {
+    padding: 28px 14px;
+    border: 1px dashed #cbd5e1;
+    border-radius: 16px;
+    background: var(--up-soft);
+    text-align: center;
+}
+
+.upload-siswa-page .empty-box.small {
+    padding: 18px 12px;
+}
+
+.upload-siswa-page .empty-title {
+    margin-bottom: 5px;
+    color: var(--up-text);
+    font-size: 0.95rem;
+    font-weight: 800;
+}
+
+.upload-siswa-page .empty-desc {
+    color: var(--up-muted);
+    font-size: 0.84rem;
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+/* ================= BUTTON ================= */
+.upload-siswa-page .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 9px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    background: #ffffff;
+    color: var(--up-text);
+    font-size: 0.84rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.upload-siswa-page .btn:hover {
+    background: #f3f4f6;
+    transform: translateY(-1px);
+}
+
+.upload-siswa-page .btn-primary {
+    border-color: var(--up-blue-600);
+    background: linear-gradient(135deg, var(--up-blue-600) 0%, #3b82f6 100%);
+    color: #ffffff;
+    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.22);
+}
+
+.upload-siswa-page .btn-primary:hover {
+    border-color: var(--up-blue-700);
+    background: linear-gradient(135deg, var(--up-blue-700) 0%, var(--up-blue-600) 100%);
+    color: #ffffff;
+}
+
+.upload-siswa-page .btn-primary:disabled {
+    opacity: 0.62;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.upload-siswa-page .btn-block {
+    width: 100%;
+}
+
+.upload-siswa-page .mt-16 {
+    margin-top: 16px;
+}
+
+.upload-siswa-page .required-columns {
+    margin-top: 16px;
+    padding: 13px 14px;
+    border: 1px solid rgba(37, 99, 235, 0.18);
+    border-radius: 15px;
+    background: rgba(239, 246, 255, 0.72);
+}
+
+.upload-siswa-page .required-columns-title {
+    margin-bottom: 8px;
+    color: #1e40af;
+    font-size: 0.78rem;
+    font-weight: 800;
+}
+
+.upload-siswa-page .required-columns-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    color: #0f172a;
+    font-size: 0.82rem;
+    font-weight: 800;
+    line-height: 1.7;
+}
+
+.upload-siswa-page .required-columns-list span {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #1d4ed8;
+    border: 1px solid #dbeafe;
+    white-space: nowrap;
+}
+
+.upload-siswa-page .required-columns-list i {
+    color: #94a3b8;
+    font-style: normal;
+    font-weight: 700;
+}
+
+/* Dark mode */
+html[data-theme="dark"] .upload-siswa-page .required-columns,
+body.dark .upload-siswa-page .required-columns {
+    border-color: #1e3a8a;
+    background: rgba(30, 58, 138, 0.24);
+}
+
+html[data-theme="dark"] .upload-siswa-page .required-columns-title,
+body.dark .upload-siswa-page .required-columns-title {
+    color: #bfdbfe;
+}
+
+html[data-theme="dark"] .upload-siswa-page .required-columns-list span,
+body.dark .upload-siswa-page .required-columns-list span {
+    border-color: #334155;
+    background: #111827;
+    color: #dbeafe;
+}
+
+html[data-theme="dark"] .upload-siswa-page .required-columns-list i,
+body.dark .upload-siswa-page .required-columns-list i {
+    color: #64748b;
+}
+
+/* ================= UPLOAD PAGE GRID ADJUSTMENT ================= */
+.upload-siswa-page .upload-main-grid {
+    align-items: stretch;
+}
+
+.upload-siswa-page .upload-main-grid > div,
+.upload-siswa-page .upload-bottom-grid > .card {
+    min-width: 0;
+}
+
+.upload-siswa-page .upload-main-grid .card {
+    height: 100%;
+}
+
+.upload-siswa-page .upload-bottom-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
+    gap: 18px;
+    align-items: start;
+    margin-top: 20px;
+}
+
+.upload-siswa-page .upload-bottom-grid .card {
+    margin-bottom: 18px;
+}
+
+.upload-siswa-page .upload-bottom-grid .table-wrap {
+    max-height: 260px;
+    overflow: auto;
+}
+
+.upload-siswa-page .upload-bottom-grid .table-wrap table {
+    min-width: 420px;
+}
+
+.upload-siswa-page .upload-bottom-grid .metric-row .value {
+    max-width: 58%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .upload-siswa-page .upload-bottom-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .upload-siswa-page .upload-bottom-grid .metric-row .value {
+        max-width: 100%;
+    }
+}
+/* ================= DARK MODE ================= */
+html[data-theme="dark"] .upload-siswa-page,
+body.dark .upload-siswa-page {
+    --up-card: #1f2937;
+    --up-soft: #111827;
+    --up-border: #334155;
+    --up-border-soft: #334155;
+    --up-text: #f8fafc;
+    --up-muted: #cbd5e1;
+}
+
+html[data-theme="dark"] .upload-siswa-page .page-header,
+body.dark .upload-siswa-page .page-header {
+    border-color: #1e3a8a;
+    background:
+        radial-gradient(circle at top right, rgba(37, 99, 235, 0.30), transparent 34%),
+        linear-gradient(135deg, #1f2937 0%, #111827 100%);
+}
+
+html[data-theme="dark"] .upload-siswa-page .page-header::before,
+body.dark .upload-siswa-page .page-header::before {
+    background: #1e3a8a;
+    color: #dbeafe;
+}
+
+html[data-theme="dark"] .upload-siswa-page .page-header h2,
+html[data-theme="dark"] .upload-siswa-page .card-title,
+html[data-theme="dark"] .upload-siswa-page .upload-text,
+html[data-theme="dark"] .upload-siswa-page .process-item strong,
+html[data-theme="dark"] .upload-siswa-page .table-wrap td,
+html[data-theme="dark"] .upload-siswa-page .metric-row .value,
+html[data-theme="dark"] .upload-siswa-page .empty-title,
+body.dark .upload-siswa-page .page-header h2,
+body.dark .upload-siswa-page .card-title,
+body.dark .upload-siswa-page .upload-text,
+body.dark .upload-siswa-page .process-item strong,
+body.dark .upload-siswa-page .table-wrap td,
+body.dark .upload-siswa-page .metric-row .value,
+body.dark .upload-siswa-page .empty-title {
+    color: #f8fafc;
+}
+
+html[data-theme="dark"] .upload-siswa-page .page-header p,
+html[data-theme="dark"] .upload-siswa-page .card-sub,
+html[data-theme="dark"] .upload-siswa-page .upload-hint,
+html[data-theme="dark"] .upload-siswa-page .upload-status,
+html[data-theme="dark"] .upload-siswa-page .process-item p,
+html[data-theme="dark"] .upload-siswa-page .table-wrap th,
+html[data-theme="dark"] .upload-siswa-page .metric-row .label,
+html[data-theme="dark"] .upload-siswa-page .empty-desc,
+body.dark .upload-siswa-page .page-header p,
+body.dark .upload-siswa-page .card-sub,
+body.dark .upload-siswa-page .upload-hint,
+body.dark .upload-siswa-page .upload-status,
+body.dark .upload-siswa-page .process-item p,
+body.dark .upload-siswa-page .table-wrap th,
+body.dark .upload-siswa-page .metric-row .label,
+body.dark .upload-siswa-page .empty-desc {
+    color: #cbd5e1;
+}
+
+html[data-theme="dark"] .upload-siswa-page .card,
+body.dark .upload-siswa-page .card {
+    border-color: #334155;
+    background: #1f2937;
+}
+
+html[data-theme="dark"] .upload-siswa-page .upload-zone,
+html[data-theme="dark"] .upload-siswa-page .process-item,
+html[data-theme="dark"] .upload-siswa-page .empty-box,
+body.dark .upload-siswa-page .upload-zone,
+body.dark .upload-siswa-page .process-item,
+body.dark .upload-siswa-page .empty-box {
+    border-color: #334155;
+    background: #111827;
+}
+
+html[data-theme="dark"] .upload-siswa-page .upload-zone:hover,
+html[data-theme="dark"] .upload-siswa-page .upload-zone.is-dragover,
+body.dark .upload-siswa-page .upload-zone:hover,
+body.dark .upload-siswa-page .upload-zone.is-dragover {
+    border-color: #60a5fa;
+    background: #1e3a8a;
+}
+
+html[data-theme="dark"] .upload-siswa-page .upload-zone.is-selected,
+body.dark .upload-siswa-page .upload-zone.is-selected {
+    border-color: #34d399;
+    background:
+        radial-gradient(circle at top right, rgba(16, 185, 129, 0.22), transparent 40%),
+        #052e16;
+}
+
+html[data-theme="dark"] .upload-siswa-page .upload-zone.is-selected .upload-icon,
+body.dark .upload-siswa-page .upload-zone.is-selected .upload-icon {
+    background: #14532d;
+    color: #bbf7d0;
+}
+
+html[data-theme="dark"] .upload-siswa-page .selected-file-inline,
+body.dark .upload-siswa-page .selected-file-inline {
+    border-color: #14532d;
+    background: #111827;
+}
+
+html[data-theme="dark"] .upload-siswa-page .selected-file-inline-icon,
+body.dark .upload-siswa-page .selected-file-inline-icon {
+    background: #14532d;
+    color: #bbf7d0;
+}
+
+html[data-theme="dark"] .upload-siswa-page .selected-file-inline-info strong,
+body.dark .upload-siswa-page .selected-file-inline-info strong {
+    color: #f8fafc;
+}
+
+html[data-theme="dark"] .upload-siswa-page .selected-file-inline-info span,
+body.dark .upload-siswa-page .selected-file-inline-info span {
+    color: #cbd5e1;
+}
+
+html[data-theme="dark"] .upload-siswa-page .selected-file-inline-remove,
+body.dark .upload-siswa-page .selected-file-inline-remove {
+    background: #1f2937;
+    color: #fca5a5;
+}
+
+html[data-theme="dark"] .upload-siswa-page .selected-file-inline-remove:hover,
+body.dark .upload-siswa-page .selected-file-inline-remove:hover {
+    background: #7f1d1d;
+    color: #fecaca;
+}
+
+html[data-theme="dark"] .upload-siswa-page .table-wrap th,
+body.dark .upload-siswa-page .table-wrap th {
+    background: #111827;
+}
+
+html[data-theme="dark"] .upload-siswa-page .table-wrap th,
+html[data-theme="dark"] .upload-siswa-page .table-wrap td,
+html[data-theme="dark"] .upload-siswa-page .metric-row,
+body.dark .upload-siswa-page .table-wrap th,
+body.dark .upload-siswa-page .table-wrap td,
+body.dark .upload-siswa-page .metric-row {
+    border-color: #334155;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1024px) {
+    .upload-siswa-page .two-col {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .upload-siswa-page .page-header {
+        padding: 22px;
+        border-radius: 18px;
+    }
+
+    .upload-siswa-page .page-header h2 {
+        font-size: 1.32rem;
+    }
+
+    .upload-siswa-page .card {
+        padding: 16px;
+        border-radius: 16px;
+    }
+
+    .upload-siswa-page .upload-zone {
+        min-height: 210px;
+        padding: 22px;
+    }
+
+    .upload-siswa-page .selected-file-inline {
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .upload-siswa-page .selected-file-inline-icon {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+    }
+
+    .upload-siswa-page .selected-file-inline-remove {
+        width: 28px;
+        height: 28px;
+        flex-basis: 28px;
+    }
+
+    .upload-siswa-page .metric-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .upload-siswa-page .metric-row .value {
+        text-align: left;
+    }
+}

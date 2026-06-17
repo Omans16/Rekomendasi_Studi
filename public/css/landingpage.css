@@ -157,6 +157,99 @@ body {
     background: var(--lp-yellow-dark);
 }
 
+.selected-file {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 14px;
+    padding: 12px 14px;
+    border: 1px solid #bbf7d0;
+    border-radius: 14px;
+    background: #f0fdf4;
+}
+
+.selected-file-icon {
+    width: 40px;
+    height: 40px;
+    flex: 0 0 40px;
+    border-radius: 12px;
+    background: #dcfce7;
+    color: #15803d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.selected-file-info {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.selected-file-info strong {
+    color: #0f172a;
+    font-size: 0.88rem;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.selected-file-info span {
+    color: #64748b;
+    font-size: 0.76rem;
+    font-weight: 600;
+}
+
+.selected-file-remove {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #ef4444;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.selected-file-remove:hover {
+    background: #fee2e2;
+}
+
+/* Dark mode */
+html[data-theme="dark"] .selected-file,
+body.dark .selected-file {
+    border-color: #14532d;
+    background: #052e16;
+}
+
+html[data-theme="dark"] .selected-file-icon,
+body.dark .selected-file-icon {
+    background: #14532d;
+    color: #bbf7d0;
+}
+
+html[data-theme="dark"] .selected-file-info strong,
+body.dark .selected-file-info strong {
+    color: #f8fafc;
+}
+
+html[data-theme="dark"] .selected-file-info span,
+body.dark .selected-file-info span {
+    color: #cbd5e1;
+}
+
+html[data-theme="dark"] .selected-file-remove,
+body.dark .selected-file-remove {
+    background: #1f2937;
+    color: #fca5a5;
+}
+
 .nav-hamburger,
 .mobile-menu {
     display: none;

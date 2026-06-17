@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\HasilPrediksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -15,9 +16,11 @@ class AuthController extends Controller
     {
         if (Auth::check()) {
             $user = Auth::user();
+
             if ($user->role === 'siswa') {
                 return redirect()->route('siswa.dashboard');
             }
+
             return redirect()->route('admin.dashboard');
         }
 
@@ -35,7 +38,7 @@ class AuthController extends Controller
         ]);
 
         $credentials = [
-            'nisn'     => $validated['nisn'],
+            'nisn'     => trim($validated['nisn']),
             'password' => $validated['password'],
         ];
 
@@ -60,9 +63,11 @@ class AuthController extends Controller
     {
         if (Auth::check()) {
             $user = Auth::user();
+
             if ($user->role === 'siswa') {
                 return redirect()->route('siswa.dashboard');
             }
+
             return redirect()->route('admin.dashboard');
         }
 
@@ -83,8 +88,8 @@ class AuthController extends Controller
             'password.confirmed' => 'Konfirmasi password tidak sesuai.',
         ]);
 
-        User::create([
-            'nisn'     => $validated['nisn'],
+        $user = User::create([
+            'nisn'     => trim($validated['nisn']),
             'name'     => $validated['name'],
             'password' => Hash::make($validated['password']),
             'role'     => 'siswa',
@@ -93,9 +98,25 @@ class AuthController extends Controller
 
         /*
         |--------------------------------------------------------------------------
-        | Setelah register berhasil → arahkan ke halaman login
-        | (Tidak auto-login; siswa harus login secara manual)
+        | Hubungkan Hasil Upload Berdasarkan NISN
         |--------------------------------------------------------------------------
+        | Jika sebelumnya Admin/Guru BK sudah upload data siswa,
+        | maka hasil prediksi yang user_id-nya masih kosong akan otomatis
+        | dikaitkan ke akun siswa yang baru dibuat.
+        */
+        if (!empty($user->nisn)) {
+            HasilPrediksi::where('nisn', $user->nisn)
+                ->whereNull('user_id')
+                ->update([
+                    'user_id' => $user->id,
+                ]);
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | Setelah register berhasil → arahkan ke halaman login
+        |--------------------------------------------------------------------------
+        | Tidak auto-login; siswa harus login secara manual.
         */
         return redirect()
             ->route('login')

@@ -5,7 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
-
+use RuntimeException;
 class FlaskRecommendationService
 {
     protected string $baseUrl;
@@ -220,6 +220,48 @@ class FlaskRecommendationService
                 'message' => 'Terjadi kesalahan saat mengambil statistik dashboard: ' . $error->getMessage(),
                 'data' => [],
             ];
+        }
+    }
+
+    // ini untuk upload excel,csv
+    public function isOnline(): bool
+    {
+        $baseUrl = rtrim(config('services.flask.base_url'), '/');
+        $endpoint = config('services.flask.health_endpoint', '/health');
+
+        try {
+            $response = Http::timeout(5)->get($baseUrl . $endpoint);
+            return $response->successful();
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    public function predict(array $payload): array
+    {
+        $baseUrl = rtrim(config('services.flask.base_url'), '/');
+        $endpoint = config('services.flask.predict_endpoint', '/predict');
+
+        try {
+            $response = Http::timeout(90)
+                ->acceptJson()
+                ->asJson()
+                ->post($baseUrl . $endpoint, $payload);
+
+            if (!$response->successful()) {
+                $message = $response->json('message') ?? 'Flask mengembalikan HTTP ' . $response->status();
+                throw new RuntimeException($message);
+            }
+
+            $json = $response->json();
+
+            if (!is_array($json)) {
+                throw new RuntimeException('Response Flask tidak valid.');
+            }
+
+            return $json;
+        } catch (\Throwable $e) {
+            throw new RuntimeException('Gagal memproses prediksi Flask: ' . $e->getMessage());
         }
     }
 }

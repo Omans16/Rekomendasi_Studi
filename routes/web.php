@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UploadSiswaController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -67,6 +68,12 @@ Route::prefix('admin')
 
         Route::get('/hasil-prediksi/{id}', [AdminController::class, 'hasilDetail'])
             ->name('hasil.prediksi.detail');
+
+        Route::get('/upload-siswa', [UploadSiswaController::class, 'index'])
+            ->name('upload.siswa');
+
+        Route::post('/upload-siswa/proses', [UploadSiswaController::class, 'store'])
+            ->name('upload.siswa.proses');
 
         Route::post('/upload-alumni/proses', [AdminController::class, 'prosesUploadAlumni'])
             ->name('upload.alumni.proses');

@@ -13,6 +13,7 @@ class HasilPrediksi extends Model
 
     protected $fillable = [
         'user_id',
+        'upload_batch_id',
         'nisn',
         'nama_siswa',
 
@@ -33,6 +34,7 @@ class HasilPrediksi extends Model
         'prediksi_rf',
         'status_rf',
         'probabilitas_studi_lanjut',
+        'kategori_probabilitas',
         'threshold_rf',
         'knn_dijalankan',
 
@@ -43,6 +45,9 @@ class HasilPrediksi extends Model
         'rekomendasi_final',
         'pesan',
         'response_flask',
+
+        'sumber',
+        'error_message',
     ];
 
     protected $casts = [
@@ -55,7 +60,7 @@ class HasilPrediksi extends Model
 
         'nilai_max' => 'decimal:2',
         'nilai_min' => 'decimal:2',
-        'nilai_std' => 'decimal:2',
+        'nilai_std' => 'decimal:4',
 
         'probabilitas_studi_lanjut' => 'decimal:4',
         'threshold_rf' => 'decimal:4',
@@ -71,5 +76,10 @@ class HasilPrediksi extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function uploadBatch()
+    {
+        return $this->belongsTo(UploadSiswaBatch::class, 'upload_batch_id');
     }
 }

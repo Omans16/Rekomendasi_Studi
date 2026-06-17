@@ -46,5 +46,14 @@
                 </a>
             </li>
         @endif
+
+        @if(in_array(auth()->user()->role, ['admin', 'guru_bk']))
+            <li class="{{ request()->routeIs('admin.upload.siswa') ? 'active' : '' }}">
+                <a href="{{ route('admin.upload.siswa') }}">
+                    <i class="fa-solid fa-file-arrow-up"></i>
+                    <span class="menu-text">Upload Data Siswa</span>
+                </a>
+            </li>
+        @endif
     </ul>
 </div>
