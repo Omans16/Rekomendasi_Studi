@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\UploadSiswaController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Auth;
@@ -91,18 +92,18 @@ Route::prefix('siswa')
     ->name('siswa.')
     ->middleware(['auth', 'role:siswa'])
     ->group(function () {
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])
+        Route::get('/dashboard', [SiswaController::class, 'dashboard'])
             ->name('dashboard');
 
-        Route::get('/input-siswa', [AdminController::class, 'inputSiswa'])
+        Route::get('/input-siswa', [SiswaController::class, 'inputSiswa'])
             ->name('input.siswa');
 
-        Route::post('/input-siswa/proses', [AdminController::class, 'prosesPrediksi'])
+        Route::post('/input-siswa/proses', [SiswaController::class, 'prosesPrediksi'])
             ->name('input.siswa.proses');
 
-        Route::get('/hasil-prediksi', [AdminController::class, 'hasilPrediksi'])
+        Route::get('/hasil-prediksi', [SiswaController::class, 'hasilPrediksi'])
             ->name('hasil.prediksi');
 
-        Route::get('/hasil-prediksi/{id}', [AdminController::class, 'hasilDetail'])
+        Route::get('/hasil-prediksi/{id}', [SiswaController::class, 'hasilDetail'])
             ->name('hasil.prediksi.detail');
     });

@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-class AdminController extends Controller
+class SiswaController extends Controller
 {
     protected FlaskRecommendationService $flaskService;
 
@@ -19,7 +19,26 @@ class AdminController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | Dashboard Admin / Guru BK
+    | Query Hasil Prediksi Milik Siswa Login
+    |--------------------------------------------------------------------------
+    */
+    private function hasilPrediksiQuery()
+    {
+        $user = Auth::user();
+
+        return HasilPrediksi::query()
+            ->where(function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+
+                if (!empty($user->nisn)) {
+                    $query->orWhere('nisn', $user->nisn);
+                }
+            });
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Dashboard Siswa
     |--------------------------------------------------------------------------
     */
     public function dashboard()
@@ -58,7 +77,7 @@ class AdminController extends Controller
             'top_program_studi' => [],
         ], $flaskStats);
 
-        $baseQuery = HasilPrediksi::query();
+        $baseQuery = $this->hasilPrediksiQuery();
 
         $dbStats = [
             'total_prediksi' => (clone $baseQuery)->count(),
@@ -68,7 +87,7 @@ class AdminController extends Controller
             'prediksi_terakhir' => (clone $baseQuery)->latest()->limit(5)->get(),
         ];
 
-        return view('admin.dashboard', compact(
+        return view('siswa.dashboard', compact(
             'flaskOnline',
             'flaskStats',
             'dbStats'
@@ -77,7 +96,7 @@ class AdminController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | Form Input Siswa Manual Oleh Admin / Guru BK
+    | Form Input Prediksi Siswa
     |--------------------------------------------------------------------------
     */
     public function inputSiswa()
@@ -87,7 +106,7 @@ class AdminController extends Controller
 
         $jurusanList = $this->flaskService->ambilDaftarJurusan();
 
-        return view('admin.input-siswa', compact(
+        return view('siswa.input-siswa', compact(
             'flaskOnline',
             'jurusanList'
         ));
@@ -95,14 +114,12 @@ class AdminController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | Proses Prediksi Manual Oleh Admin / Guru BK
+    | Proses Prediksi Siswa
     |--------------------------------------------------------------------------
     */
     public function prosesPrediksi(Request $request)
     {
         $validated = $request->validate([
-            'nisn' => ['nullable', 'string', 'max:30'],
-            'nama_siswa' => ['nullable', 'string', 'max:255'],
             'jurusan_smk' => ['required', 'string', 'max:255'],
             'rata_pai' => ['required', 'numeric', 'min:0', 'max:100'],
             'rata_ppkn' => ['required', 'numeric', 'min:0', 'max:100'],
@@ -125,11 +142,15 @@ class AdminController extends Controller
 
         $user = Auth::user();
 
+        $validated['nisn'] = $user->nisn;
+        $validated['nama_siswa'] = $user->name;
+
         $hasilFlask = $this->flaskService->prediksiRekomendasi($validated);
 
         if (!($hasilFlask['success'] ?? false)) {
-            Log::warning('Prediksi Flask admin gagal.', [
-                'user_id' => $user?->id,
+            Log::warning('Prediksi Flask siswa gagal.', [
+                'user_id' => $user->id,
+                'nisn' => $user->nisn,
                 'input' => $validated,
                 'response' => $hasilFlask,
             ]);
@@ -176,11 +197,11 @@ class AdminController extends Controller
             ?? false;
 
         $hasilPrediksi = HasilPrediksi::create([
-            'user_id' => $user?->id,
+            'user_id' => $user->id,
             'upload_batch_id' => null,
 
-            'nisn' => $validated['nisn'] ?? null,
-            'nama_siswa' => $validated['nama_siswa'] ?? null,
+            'nisn' => $validated['nisn'],
+            'nama_siswa' => $validated['nama_siswa'],
 
             'jurusan_smk' => $validated['jurusan_smk'],
             'jurusan_smk_lengkap' => $validated['jurusan_smk'],
@@ -216,18 +237,18 @@ class AdminController extends Controller
         ]);
 
         return redirect()
-            ->route('admin.hasil.prediksi.detail', $hasilPrediksi->id)
+            ->route('siswa.hasil.prediksi.detail', $hasilPrediksi->id)
             ->with('success', 'Prediksi berhasil diproses.');
     }
 
     /*
     |--------------------------------------------------------------------------
-    | Riwayat Semua Hasil Prediksi
+    | Riwayat Prediksi Siswa
     |--------------------------------------------------------------------------
     */
     public function hasilPrediksi(Request $request)
     {
-        $query = HasilPrediksi::query();
+        $query = $this->hasilPrediksiQuery();
 
         if ($request->filled('jurusan')) {
             $query->where('jurusan_smk', $request->jurusan);
@@ -239,14 +260,14 @@ class AdminController extends Controller
 
         $data = $query->latest()->get();
 
-        $jurusanList = HasilPrediksi::query()
+        $jurusanList = $this->hasilPrediksiQuery()
             ->select('jurusan_smk')
             ->whereNotNull('jurusan_smk')
             ->distinct()
             ->orderBy('jurusan_smk')
             ->pluck('jurusan_smk');
 
-        return view('admin.hasil-prediksi', compact(
+        return view('siswa.hasil-prediksi', compact(
             'data',
             'jurusanList'
         ));
@@ -254,85 +275,13 @@ class AdminController extends Controller
 
     /*
     |--------------------------------------------------------------------------
-    | Detail Hasil Prediksi
+    | Detail Prediksi Siswa
     |--------------------------------------------------------------------------
     */
     public function hasilDetail($id)
     {
-        $detail = HasilPrediksi::findOrFail($id);
+        $detail = $this->hasilPrediksiQuery()->findOrFail($id);
 
-        return view('admin.hasil-prediksi', compact('detail'));
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Info Model
-    |--------------------------------------------------------------------------
-    */
-    public function infoModel()
-    {
-        $health = $this->flaskService->healthCheck();
-        $flaskOnline = $health['success'] ?? false;
-
-        $infoModelResponse = $this->flaskService->ambilInfoModel();
-        $featureImportanceResponse = $this->flaskService->ambilFeatureImportance();
-        $evaluationResponse = $this->flaskService->ambilEvaluation();
-
-        $infoModel = $infoModelResponse['data'] ?? [];
-        $featureImportance = $featureImportanceResponse['data'] ?? [];
-        $evaluasi = $evaluationResponse['data'] ?? ($infoModel['rf_final_metrics'] ?? []);
-
-        $dbStats = [
-            'total_prediksi' => HasilPrediksi::count(),
-            'total_kuliah' => HasilPrediksi::where('prediksi_rf', 1)->count(),
-            'total_tidak' => HasilPrediksi::where('prediksi_rf', 0)->count(),
-        ];
-
-        $jurusanMapping = [];
-
-        foreach ($this->flaskService->ambilDaftarJurusan() as $jurusan) {
-            if (is_array($jurusan)) {
-                $nama = $jurusan['nama_lengkap'] ?? $jurusan['singkatan'] ?? null;
-
-                if ($nama) {
-                    $jurusanMapping[$nama] = $nama;
-                }
-            } else {
-                $jurusanMapping[$jurusan] = $jurusan;
-            }
-        }
-
-        $dashboardStatsResponse = method_exists($this->flaskService, 'ambilDashboardStats')
-            ? $this->flaskService->ambilDashboardStats()
-            : ['data' => []];
-
-        $dashboardStats = $dashboardStatsResponse['data'] ?? [];
-
-        $alumniPerJurusan = $dashboardStats['alumni_per_jurusan'] ?? [];
-        $dashboard = $dashboardStats;
-
-        return view('admin.info-model', compact(
-            'infoModel',
-            'featureImportance',
-            'evaluasi',
-            'dbStats',
-            'flaskOnline',
-            'jurusanMapping',
-            'alumniPerJurusan',
-            'dashboard'
-        ));
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Upload Alumni Lama
-    |--------------------------------------------------------------------------
-    */
-    public function prosesUploadAlumni(Request $request)
-    {
-        return back()->with(
-            'info',
-            'Fitur upload alumni belum dihubungkan karena API Flask saat ini belum menyediakan endpoint upload alumni.'
-        );
+        return view('siswa.hasil-prediksi', compact('detail'));
     }
 }
