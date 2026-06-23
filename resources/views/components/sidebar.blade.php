@@ -1,10 +1,53 @@
 @php
-    $role = auth()->check() ? auth()->user()->role : null;
+    $user = auth()->user();
+    $role = $user?->role;
+
     $routePrefix = $role === 'siswa' ? 'siswa.' : 'admin.';
     $isAdminArea = in_array($role, ['admin', 'guru_bk']);
+
+    $menus = [
+        [
+            'label' => 'Dashboard',
+            'icon' => 'fa-solid fa-chart-line',
+            'route' => $routePrefix . 'dashboard',
+            'active' => [$routePrefix . 'dashboard'],
+            'show' => true,
+        ],
+        [
+            'label' => 'Input Siswa',
+            'icon' => 'fa-solid fa-user-pen',
+            'route' => $routePrefix . 'input.siswa',
+            'active' => [$routePrefix . 'input.siswa'],
+            'show' => true,
+        ],
+        [
+            'label' => 'Hasil Prediksi',
+            'icon' => 'fa-solid fa-chart-pie',
+            'route' => $routePrefix . 'hasil.prediksi',
+            'active' => [
+                $routePrefix . 'hasil.prediksi',
+                $routePrefix . 'hasil.prediksi.detail',
+            ],
+            'show' => true,
+        ],
+        [
+            'label' => 'Info Model',
+            'icon' => 'fa-solid fa-circle-info',
+            'route' => 'admin.info.model',
+            'active' => ['admin.info.model'],
+            'show' => $isAdminArea,
+        ],
+        [
+            'label' => 'Upload Data Siswa',
+            'icon' => 'fa-solid fa-file-arrow-up',
+            'route' => 'admin.upload.siswa',
+            'active' => ['admin.upload.siswa'],
+            'show' => $isAdminArea,
+        ],
+    ];
 @endphp
 
-<div class="sidebar">
+<aside class="sidebar" id="app-sidebar" aria-label="Sidebar navigasi">
     <div class="sidebar-brand">
         <div class="brand-icon">
             <img src="{{ asset('images/logos.png') }}" alt="Logo SMKN 1 Glagah">
@@ -16,44 +59,20 @@
         </div>
     </div>
 
-    <ul class="sidebar-menu">
-        <li class="{{ request()->routeIs($routePrefix . 'dashboard') ? 'active' : '' }}">
-            <a href="{{ route($routePrefix . 'dashboard') }}">
-                <i class="fa-solid fa-chart-line"></i>
-                <span class="menu-text">Dashboard</span>
-            </a>
-        </li>
+    <nav class="sidebar-nav" aria-label="Menu utama">
+        <ul class="sidebar-menu">
+            @foreach ($menus as $menu)
+                @continue(! $menu['show'])
 
-        <li class="{{ request()->routeIs($routePrefix . 'input.siswa') ? 'active' : '' }}">
-            <a href="{{ route($routePrefix . 'input.siswa') }}">
-                <i class="fa-solid fa-user-pen"></i>
-                <span class="menu-text">Input Siswa</span>
-            </a>
-        </li>
-
-        <li class="{{ request()->routeIs($routePrefix . 'hasil.prediksi') || request()->routeIs($routePrefix . 'hasil.prediksi.detail') ? 'active' : '' }}">
-            <a href="{{ route($routePrefix . 'hasil.prediksi') }}">
-                <i class="fa-solid fa-chart-pie"></i>
-                <span class="menu-text">Hasil Prediksi</span>
-            </a>
-        </li>
-
-        @if($isAdminArea)
-            <li class="{{ request()->routeIs('admin.info.model') ? 'active' : '' }}">
-                <a href="{{ route('admin.info.model') }}">
-                    <i class="fa-solid fa-circle-info"></i>
-                    <span class="menu-text">Info Model</span>
-                </a>
-            </li>
-        @endif
-
-        @if(in_array(auth()->user()->role, ['admin', 'guru_bk']))
-            <li class="{{ request()->routeIs('admin.upload.siswa') ? 'active' : '' }}">
-                <a href="{{ route('admin.upload.siswa') }}">
-                    <i class="fa-solid fa-file-arrow-up"></i>
-                    <span class="menu-text">Upload Data Siswa</span>
-                </a>
-            </li>
-        @endif
-    </ul>
-</div>
+                <li @class([
+                    'active' => request()->routeIs(...$menu['active'])
+                ])>
+                    <a href="{{ route($menu['route']) }}">
+                        <i class="{{ $menu['icon'] }}"></i>
+                        <span class="menu-text">{{ $menu['label'] }}</span>
+                    </a>
+                </li>
+            @endforeach
+        </ul>
+    </nav>
+</aside>

@@ -17,11 +17,6 @@ class SiswaController extends Controller
         $this->flaskService = $flaskService;
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Query Hasil Prediksi Milik Siswa Login
-    |--------------------------------------------------------------------------
-    */
     private function hasilPrediksiQuery()
     {
         $user = Auth::user();
@@ -36,11 +31,6 @@ class SiswaController extends Controller
             });
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Dashboard Siswa
-    |--------------------------------------------------------------------------
-    */
     public function dashboard()
     {
         $health = $this->flaskService->healthCheck();
@@ -94,11 +84,6 @@ class SiswaController extends Controller
         ));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Form Input Prediksi Siswa
-    |--------------------------------------------------------------------------
-    */
     public function inputSiswa()
     {
         $health = $this->flaskService->healthCheck();
@@ -112,11 +97,6 @@ class SiswaController extends Controller
         ));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Proses Prediksi Siswa
-    |--------------------------------------------------------------------------
-    */
     public function prosesPrediksi(Request $request)
     {
         $validated = $request->validate([
@@ -241,11 +221,6 @@ class SiswaController extends Controller
             ->with('success', 'Prediksi berhasil diproses.');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Riwayat Prediksi Siswa
-    |--------------------------------------------------------------------------
-    */
     public function hasilPrediksi(Request $request)
     {
         $query = $this->hasilPrediksiQuery();
@@ -273,11 +248,6 @@ class SiswaController extends Controller
         ));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Detail Prediksi Siswa
-    |--------------------------------------------------------------------------
-    */
     public function hasilDetail($id)
     {
         $detail = $this->hasilPrediksiQuery()->findOrFail($id);

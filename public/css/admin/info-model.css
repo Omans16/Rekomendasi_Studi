@@ -1,403 +1,338 @@
-/* ============================================================
-   INFO MODEL — ADMIN / GURU BK
-   Path: public/css/admin/info-model.css
-   View: info-model.blade.php
-============================================================ */
+/* =========================================================
+   INFO MODEL ADMIN / GURU BK
+   StudyPath SMK
+   Theme: Global style.css
+========================================================= */
 
-:root {
-    --im-blue-50: #eff6ff;
-    --im-blue-100: #dbeafe;
-    --im-blue-200: #bfdbfe;
-    --im-blue-600: #2563eb;
-    --im-blue-700: #1d4ed8;
-    --im-blue-800: #1e40af;
-
-    --im-purple-50: #f5f3ff;
-    --im-purple-100: #ede9fe;
-    --im-purple-600: #7c3aed;
-    --im-purple-700: #6d28d9;
-    --im-purple-800: #5b21b6;
-
-    --im-green-50: #ecfdf5;
-    --im-green-100: #dcfce7;
-    --im-green-600: #16a34a;
-    --im-green-700: #15803d;
-    --im-green-800: #166534;
-
-    --im-amber-50: #fffbeb;
-    --im-amber-100: #fef3c7;
-    --im-amber-500: #f59e0b;
-    --im-amber-700: #b45309;
-    --im-amber-800: #92400e;
-
-    --im-red-50: #fef2f2;
-    --im-red-100: #fee2e2;
-    --im-red-500: #ef4444;
-    --im-red-700: #b91c1c;
-    --im-red-800: #991b1b;
-
-    --im-card: #ffffff;
-    --im-soft: #f8fafc;
-    --im-border: #e5e7eb;
-    --im-border-soft: #eef2f7;
-    --im-text: #0f172a;
-    --im-muted: #64748b;
-    --im-muted-soft: #94a3b8;
-
-    --im-shadow: 0 12px 30px rgba(15, 23, 42, 0.055);
-    --im-shadow-soft: 0 8px 22px rgba(15, 23, 42, 0.045);
-
-    --font-body: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+/* =========================
+   BASE SCOPE
+========================= */
+.admin-info-page,
+.admin-info-page * {
+    box-sizing: border-box;
+    font-family: var(--font-body, 'Plus Jakarta Sans', 'Inter', sans-serif);
 }
 
-/* ================= FONT GLOBAL PAGE ================= */
-.page-header,
-.page-header *,
-.three-col,
-.three-col *,
-.two-col,
-.two-col *,
-.card,
-.card *,
-.stat-card,
-.stat-card *,
-.fitur-table,
-.fitur-table *,
-.status-list,
-.status-list *,
-.chart-legend,
-.chart-legend * {
-    font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+.admin-info-page {
+    width: 100%;
+    max-width: 100%;
+    color: var(--text);
+    --chart-numeric: var(--primary);
+    --chart-derived: var(--success, #16a34a);
+    --chart-ohe: var(--primary-2);
 }
 
-/* ================= PAGE HEADER ================= */
-.page-header {
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 20px;
-    padding: 26px 28px;
-    border: 1px solid var(--im-blue-100);
-    border-radius: 20px;
-    background:
-        radial-gradient(circle at top right, rgba(37, 99, 235, 0.16), transparent 34%),
-        linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
-    box-shadow: var(--im-shadow);
+.admin-info-page p,
+.admin-info-page .section-desc,
+.admin-info-page .table-note,
+.admin-info-page .config-card-subtitle,
+.admin-info-page .config-key,
+.admin-info-page .config-val,
+.admin-info-page .status-item,
+.admin-info-page .fitur-table,
+.admin-info-page .chart-legend,
+.admin-info-page .fi-note {
+    font-size: 12px;
+    font-weight: 400;
 }
 
-.page-header::before {
-    content: "Admin / Guru BK";
-    display: inline-flex;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 6px 11px;
-    border-radius: 999px;
-    background: var(--im-blue-100);
-    color: var(--im-blue-700);
-    font-size: 0.74rem;
-    font-weight: 900;
-    letter-spacing: 0.01em;
-}
-
-.page-header h2 {
-    margin: 0 0 8px;
-    color: var(--im-text);
-    font-size: 1.55rem;
-    font-weight: 900;
-    letter-spacing: -0.035em;
+.admin-info-page h1,
+.admin-info-page h2,
+.admin-info-page h3,
+.admin-info-page h4,
+.admin-info-page h5,
+.admin-info-page h6 {
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 800;
     line-height: 1.25;
 }
 
-.page-header p {
+/* =========================
+   PAGE HEADER
+========================= */
+.admin-info-page .page-header {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding: 26px 28px;
+    border: 1px solid var(--primary-border);
+    border-radius: var(--radius-xl, 24px);
+    background:
+        radial-gradient(circle at top right, var(--primary-soft), transparent 34%),
+        linear-gradient(135deg, var(--card) 0%, var(--surface-3) 100%);
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-info-page .page-header::before {
+    content: "Admin / Guru BK";
+    width: fit-content;
+    padding: 6px 11px;
+    border: 1px solid var(--primary-border);
+    border-radius: 999px;
+    background: var(--primary-soft);
+    color: var(--primary-2);
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.admin-info-page .page-header h2 {
+    max-width: 620px;
+    margin: 0;
+    color: var(--text);
+    letter-spacing: -0.02em;
+}
+
+.admin-info-page .page-header p {
     max-width: 780px;
     margin: 0;
-    color: #475569;
-    font-size: 0.93rem;
-    font-weight: 500;
+    color: var(--muted);
     line-height: 1.7;
 }
 
-/* ================= GRID ================= */
-.three-col {
+/* =========================
+   GRID
+========================= */
+.admin-info-page .three-col {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
     margin-bottom: 18px;
 }
 
-.two-col {
+.admin-info-page .two-col {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 18px;
     margin-bottom: 18px;
 }
 
-/* ================= CARD BASE ================= */
-.card,
-.stat-card {
+/* =========================
+   CARD
+========================= */
+.admin-info-page .card,
+.admin-info-page .stat-card {
     position: relative;
     overflow: hidden;
-    border: 1px solid var(--im-border);
-    border-radius: 18px;
-    background: var(--im-card);
-    box-shadow: var(--im-shadow-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg, 18px);
+    background: color-mix(in srgb, var(--card) 94%, transparent);
+    box-shadow: var(--shadow-sm);
 }
 
-.card {
+.admin-info-page .card {
     padding: 20px;
     margin-bottom: 18px;
 }
 
-.stat-card {
+.admin-info-page .stat-card {
     padding: 18px;
 }
 
-.card::before,
-.stat-card::before {
+.admin-info-page .card::before,
+.admin-info-page .stat-card::before {
     content: "";
     position: absolute;
     inset: 0 0 auto 0;
     height: 4px;
-    background: linear-gradient(90deg, var(--im-blue-600), #60a5fa);
+    background: linear-gradient(90deg, var(--primary), var(--primary-2));
 }
 
-.card-title {
+.admin-info-page .card-title {
+    margin: 0 0 12px;
+    color: var(--text);
     display: flex;
     align-items: center;
     gap: 9px;
-    margin: 0 0 12px;
-    color: var(--im-text);
-    font-size: 1rem;
-    font-weight: 900;
-    letter-spacing: -0.02em;
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
 }
 
-.card-title::before {
+.admin-info-page .card-title::before {
     width: 28px;
     height: 28px;
+    flex: 0 0 28px;
+    border: 1px solid var(--primary-border);
     border-radius: 10px;
-    background: var(--im-blue-50);
-    color: var(--im-blue-700);
+    background: var(--primary-soft);
+    color: var(--primary-2);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-family: "Font Awesome 6 Free";
-    font-size: 0.78rem;
+    font-size: 12px;
     font-weight: 900;
-    flex-shrink: 0;
     content: "\f05a";
 }
 
-.card-title-compact {
+.admin-info-page .card-title-compact {
     margin-bottom: 2px;
 }
 
-.card-title-compact::before,
-.card-title-inline::before {
+.admin-info-page .card-title-compact::before,
+.admin-info-page .card-title-inline::before {
     display: none;
 }
 
-.section-desc,
-.table-note {
+.admin-info-page .section-desc,
+.admin-info-page .table-note {
     margin: 0 0 14px;
-    color: var(--im-muted);
-    font-size: 0.84rem;
-    font-weight: 500;
-    line-height: 1.65;
+    color: var(--muted);
+    line-height: 1.7;
 }
 
-/* ================= MODEL METRIC ================= */
-.model-metric {
-    text-align: center;
+/* =========================
+   MODEL METRIC
+========================= */
+.admin-info-page .model-metric {
     padding: 20px 14px;
+    text-align: center;
 }
 
-.model-metric-val {
-    color: var(--im-text);
-    font-size: 1.75rem;
-    font-weight: 900;
+.admin-info-page .model-metric-val {
+    color: var(--text);
+    font-size: 28px;
+    font-weight: 800;
     line-height: 1;
-    letter-spacing: -0.035em;
+    letter-spacing: -0.03em;
 }
 
-.model-metric-lab {
+.admin-info-page .model-metric-lab {
     margin-top: 8px;
-    color: var(--im-muted);
-    font-size: 0.74rem;
-    font-weight: 900;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.3;
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
 
-/* Warna variasi stat card */
-.three-col .stat-card:nth-child(1)::before,
-.three-col .stat-card:nth-child(2)::before,
-.three-col .stat-card:nth-child(3)::before {
-    background: linear-gradient(90deg, var(--im-blue-600), #60a5fa);
-}
-
-.three-col .stat-card:nth-child(4)::before {
-    background: linear-gradient(90deg, var(--im-purple-600), #a78bfa);
-}
-
-.three-col .stat-card:nth-child(5)::before {
-    background: linear-gradient(90deg, var(--im-green-600), #4ade80);
-}
-
-.three-col .stat-card:nth-child(6)::before {
-    background: linear-gradient(90deg, var(--im-amber-500), #fbbf24);
-}
-
-/* ================= CONFIG CARD ================= */
-.config-card {
+/* =========================
+   CONFIG CARD
+========================= */
+.admin-info-page .config-card {
     padding: 0;
 }
 
-.config-card::before {
+.admin-info-page .config-card::before {
     display: none;
 }
 
-.config-card-header {
+.admin-info-page .config-card-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    background:
+        radial-gradient(circle at top right, var(--primary-soft), transparent 34%),
+        linear-gradient(135deg, var(--card) 0%, var(--surface-3) 100%);
     display: flex;
     align-items: center;
     gap: 13px;
-    padding: 18px 20px;
-    border-bottom: 1px solid var(--im-border-soft);
-    background:
-        radial-gradient(circle at top right, rgba(37, 99, 235, 0.10), transparent 34%),
-        linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
 }
 
-.config-card:nth-child(2) .config-card-header {
-    background:
-        radial-gradient(circle at top right, rgba(124, 58, 237, 0.12), transparent 34%),
-        linear-gradient(135deg, #ffffff 0%, #f5f3ff 100%);
-}
-
-.config-card-icon {
+.admin-info-page .config-card-icon {
     width: 42px;
     height: 42px;
+    border: 1px solid var(--primary-border);
     border-radius: 14px;
-    background: linear-gradient(135deg, var(--im-blue-600), #3b82f6);
-    color: #ffffff;
+    background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    color: var(--btn-text);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.72rem;
+    font-size: 12px;
     font-weight: 900;
     letter-spacing: 0.04em;
     flex-shrink: 0;
-    box-shadow: 0 10px 20px rgba(37, 99, 235, 0.22);
+    box-shadow: 0 10px 20px var(--primary-glow);
 }
 
-.config-icon-purple {
-    background: linear-gradient(135deg, var(--im-purple-600), #8b5cf6);
-    box-shadow: 0 10px 20px rgba(124, 58, 237, 0.22);
+.admin-info-page .config-icon-knn {
+    background: linear-gradient(135deg, var(--primary-2), var(--primary));
 }
 
-.config-card-subtitle {
-    color: var(--im-muted);
-    font-size: 0.78rem;
-    font-weight: 700;
+.admin-info-page .config-card-subtitle {
+    color: var(--muted);
+    line-height: 1.5;
 }
 
-.config-grid {
+.admin-info-page .config-grid {
     padding: 16px 20px 18px;
     display: grid;
-    grid-template-columns: 1fr;
 }
 
-.config-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 14px;
+.admin-info-page .config-item {
     padding: 10px 0;
-    border-bottom: 1px solid var(--im-border-soft);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 14px;
 }
 
-.config-item:last-child {
-    border-bottom: none;
+.admin-info-page .config-item:last-child {
+    border-bottom: 0;
 }
 
-.config-key {
+.admin-info-page .config-key {
     min-width: 145px;
-    color: var(--im-muted);
-    font-size: 0.8rem;
+    color: var(--muted);
     font-weight: 800;
-    line-height: 1.45;
+    line-height: 1.5;
 }
 
-.config-val {
-    color: var(--im-text);
-    font-size: 0.82rem;
+.admin-info-page .config-val {
+    color: var(--text);
     font-weight: 800;
-    line-height: 1.45;
+    line-height: 1.5;
     text-align: right;
 }
 
-/* ================= LEGACY METRIC ROW ================= */
-.metric-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 14px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--im-border-soft);
-    font-size: 0.86rem;
-}
-
-.metric-row:last-child {
-    border-bottom: none;
-}
-
-.metric-row .label {
-    color: var(--im-muted);
-    font-weight: 700;
-}
-
-.metric-row .value {
-    color: var(--im-text);
-    font-weight: 900;
-}
-
-/* ================= STATUS MODEL ================= */
-.status-list {
-    display: flex;
-    flex-direction: column;
+/* =========================
+   STATUS MODEL
+========================= */
+.admin-info-page .status-list {
+    display: grid;
     gap: 10px;
 }
 
-.status-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
+.admin-info-page .status-item {
     min-height: 48px;
     padding: 12px 14px;
-    border-radius: 15px;
     border: 1px solid transparent;
-    font-size: 0.86rem;
-    font-weight: 800;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
 }
 
-.status-item-online {
-    background: var(--im-green-50);
-    border-color: #bbf7d0;
+.admin-info-page .status-item-online {
+    border-color: var(--success-border);
+    background: var(--success-soft);
 }
 
-.status-item-offline {
-    background: var(--im-red-50);
-    border-color: #fecaca;
+.admin-info-page .status-item-offline {
+    border-color: var(--danger-border);
+    background: var(--danger-soft);
 }
 
-.status-item-left {
+.admin-info-page .status-item-left {
+    min-width: 0;
     display: flex;
     align-items: center;
     gap: 10px;
-    min-width: 0;
 }
 
-.status-dot {
+.admin-info-page .status-dot {
     width: 9px;
     height: 9px;
     border-radius: 50%;
@@ -405,143 +340,145 @@
     flex-shrink: 0;
 }
 
-.dot-online {
-    background: #10b981;
-    box-shadow: 0 0 0 4px #d1fae5;
+.admin-info-page .dot-online {
+    background: var(--success);
+    box-shadow: 0 0 0 4px var(--success-soft);
 }
 
-.dot-offline {
-    background: var(--im-red-500);
-    box-shadow: 0 0 0 4px #fee2e2;
+.admin-info-page .dot-offline {
+    background: var(--danger);
+    box-shadow: 0 0 0 4px var(--danger-soft);
 }
 
-.status-item-label {
-    color: #334155;
-    font-size: 0.84rem;
+.admin-info-page .status-item-label {
+    color: var(--text);
+    font-size: 12px;
     font-weight: 800;
 }
 
-.status-item-val {
+.admin-info-page .status-item-val {
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 800;
     white-space: nowrap;
-    font-size: 0.82rem;
-    font-weight: 900;
 }
 
-.val-online {
-    color: #065f46;
+.admin-info-page .val-online {
+    color: var(--success-text);
 }
 
-.val-offline {
-    color: var(--im-red-800);
+.admin-info-page .val-offline {
+    color: var(--danger-text);
 }
 
-/* ================= TABLE ================= */
-.table-responsive {
+/* =========================
+   TABLE
+========================= */
+.admin-info-page .table-responsive {
     width: 100%;
     overflow-x: auto;
 }
 
-.fitur-table {
+.admin-info-page .fitur-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.84rem;
+    color: var(--text);
+    font-size: 12px;
 }
 
-.fitur-table th {
+.admin-info-page .fitur-table th,
+.admin-info-page .fitur-table td {
     padding: 11px 12px;
-    border-bottom: 1px solid var(--im-border);
-    background: var(--im-soft);
-    color: var(--im-muted);
-    font-size: 0.76rem;
-    font-weight: 900;
+    border-bottom: 1px solid var(--border);
     text-align: left;
-    white-space: nowrap;
-}
-
-.fitur-table td {
-    padding: 11px 12px;
-    border-bottom: 1px solid var(--im-border-soft);
-    color: var(--im-text);
     vertical-align: top;
 }
 
-.fitur-table tr:last-child td {
-    border-bottom: none;
-}
-
-.fitur-code {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 8px;
-    border-radius: 9px;
-    background: var(--im-soft);
-    color: var(--im-blue-800);
-    font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
-    font-size: 0.78rem;
-    font-weight: 900;
-}
-
-.table-desc {
-    color: #475569;
-    font-weight: 600;
-    line-height: 1.55;
-}
-
-.table-desc-sm {
-    font-size: 0.84rem;
-}
-
-.table-center {
-    text-align: center;
-}
-
-.text-muted-light {
-    color: var(--im-muted-soft);
-    font-weight: 700;
-}
-
-/* ================= BADGE ================= */
-.stat-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 24px;
-    padding: 4px 9px;
-    border-radius: 999px;
-    font-size: 0.73rem;
-    font-weight: 900;
-    line-height: 1;
+.admin-info-page .fitur-table th {
+    background: color-mix(in srgb, var(--surface-2) 65%, transparent);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
     white-space: nowrap;
 }
 
-.badge-blue {
-    background: var(--im-blue-100);
-    color: var(--im-blue-800);
+.admin-info-page .fitur-table tr:last-child td {
+    border-bottom: 0;
 }
 
-.badge-green {
-    background: var(--im-green-100);
-    color: var(--im-green-800);
+.admin-info-page .fitur-code {
+    padding: 4px 8px;
+    border: 1px solid var(--primary-border);
+    border-radius: 9px;
+    background: var(--primary-soft);
+    color: var(--primary-2);
+    display: inline-flex;
+    align-items: center;
+    font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+    font-size: 12px;
+    font-weight: 800;
 }
 
-.badge-purple {
-    background: var(--im-purple-100);
-    color: var(--im-purple-800);
+.admin-info-page .table-desc {
+    color: var(--muted);
+    font-weight: 400;
+    line-height: 1.6;
 }
 
-.badge-amber {
-    background: var(--im-amber-100);
-    color: var(--im-amber-800);
+.admin-info-page .table-center {
+    text-align: center;
 }
 
-.badge-xs {
+.admin-info-page .text-muted-light {
+    color: var(--muted);
+    font-weight: 400;
+}
+
+/* =========================
+   BADGE
+========================= */
+.admin-info-page .stat-badge {
+    min-height: 24px;
+    padding: 4px 9px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+
+.admin-info-page .badge-blue,
+.admin-info-page .badge-purple,
+.admin-info-page .badge-amber {
+    border-color: var(--primary-border);
+    background: var(--primary-soft);
+    color: var(--primary-2);
+}
+
+.admin-info-page .badge-green {
+    border-color: var(--success-border);
+    background: var(--success-soft);
+    color: var(--success-text);
+}
+
+.admin-info-page .badge-xs {
     min-height: 22px;
     padding: 4px 8px;
-    font-size: 0.68rem;
+    font-size: 11px;
 }
 
-/* ================= FEATURE IMPORTANCE ================= */
-.card-title-inline {
+/* =========================
+   FEATURE IMPORTANCE
+========================= */
+.admin-info-page .feature-card {
+    margin-bottom: 0;
+}
+
+.admin-info-page .card-title-inline {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
@@ -549,410 +486,306 @@
     margin-bottom: 14px;
 }
 
-.chart-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 16px;
-    align-items: center;
-    margin-top: 12px;
-    padding: 12px 14px;
-    border: 1px solid var(--im-border-soft);
-    border-radius: 14px;
-    background: var(--im-soft);
-    color: var(--im-muted);
-    font-size: 0.8rem;
-    font-weight: 700;
-}
-
-.chart-legend span {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-}
-
-.feature-chart {
+.admin-info-page .feature-chart {
     width: 100%;
     min-height: 430px;
     margin-top: 8px;
 }
-#chart-fi {
-    margin-top: 8px;
+
+.admin-info-page .chart-empty {
+    padding: 24px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.6;
+    text-align: center;
 }
 
-.chart-legend {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px 16px;
-    align-items: center;
+.admin-info-page .chart-legend {
     margin-top: 12px;
     padding: 12px 14px;
-    border: 1px solid var(--im-border-soft);
+    border: 1px solid var(--border);
     border-radius: 14px;
-    background: var(--im-soft);
-    color: var(--im-muted);
-    font-size: 0.8rem;
-    font-weight: 800;
+    background: color-mix(in srgb, var(--surface-2) 65%, transparent);
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 16px;
+    line-height: 1.5;
 }
 
-.chart-legend span {
+.admin-info-page .chart-legend span {
     display: inline-flex;
     align-items: center;
     gap: 7px;
 }
 
-.legend-dot {
+.admin-info-page .legend-dot {
     width: 9px;
     height: 9px;
     border-radius: 50%;
     display: inline-block;
 }
 
-.legend-blue {
-    background: #2563eb;
+.admin-info-page .legend-numeric {
+    background: var(--chart-numeric);
 }
 
-.legend-green {
-    background: #10b981;
+.admin-info-page .legend-derived {
+    background: var(--chart-derived);
 }
 
-.legend-purple {
-    background: #7c3aed;
+.admin-info-page .legend-ohe {
+    background: var(--chart-ohe);
 }
 
-.fi-note {
+.admin-info-page .fi-note {
     margin-top: 10px;
-    color: var(--im-muted);
-    font-size: 0.78rem;
-    font-weight: 600;
+    color: var(--muted);
     line-height: 1.6;
 }
 
-.fi-note code {
+.admin-info-page .fi-note code {
     padding: 2px 6px;
+    border: 1px solid var(--primary-border);
     border-radius: 7px;
-    background: var(--im-soft);
-    color: var(--im-blue-800);
+    background: var(--primary-soft);
+    color: var(--primary-2);
     font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
     font-weight: 800;
 }
 
-.apexcharts-yaxis-label {
+.admin-info-page .apexcharts-yaxis-label,
+.admin-info-page .apexcharts-data-labels text {
     font-weight: 700;
 }
 
-.apexcharts-data-labels text {
-    font-weight: 700;
-}
-
-/* ================= OLD BAR SUPPORT ================= */
-.bar-group {
-    margin-top: 15px;
-}
-
-.bar-item {
-    display: grid;
-    grid-template-columns: 100px 1fr 40px;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.bar {
-    height: 20px;
-    overflow: hidden;
-    border-radius: 999px;
-    background: #e5e7eb;
-}
-
-.bar div {
-    height: 100%;
-    border-radius: 999px;
-    background: linear-gradient(90deg, var(--im-purple-600), var(--im-blue-600));
-}
-
-.chart-bar-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-}
-
-.chart-bar-label {
-    width: 90px;
-    flex-shrink: 0;
-    color: var(--im-muted);
-    font-size: 0.76rem;
-    font-weight: 800;
-    text-align: right;
-}
-
-.chart-bar-bg2 {
-    flex: 1;
-    height: 20px;
-    overflow: hidden;
-    border-radius: 999px;
-    background: #e5e7eb;
-}
-
-.chart-bar-inner {
-    height: 100%;
-    border-radius: 999px;
-    display: flex;
-    align-items: center;
-    padding-left: 8px;
-    color: #ffffff;
-    font-size: 0.72rem;
-    font-weight: 900;
-    transition: width 0.5s ease;
-}
-
-.fi-purple {
-    background: var(--im-purple-600);
-}
-
-.fi-blue {
-    background: var(--im-blue-600);
-}
-
-/* ================= DARK MODE ================= */
-html[data-theme="dark"] .page-header,
-body.dark .page-header {
-    border-color: #1e3a8a;
+/* =========================
+   DARK MODE
+========================= */
+html[data-theme="dark"] .admin-info-page .page-header,
+body.dark .admin-info-page .page-header {
     background:
-        radial-gradient(circle at top right, rgba(37, 99, 235, 0.30), transparent 34%),
-        linear-gradient(135deg, #1f2937 0%, #111827 100%);
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.24);
+        radial-gradient(circle at top right, var(--primary-soft), transparent 34%),
+        linear-gradient(135deg, var(--card) 0%, var(--surface) 100%);
 }
 
-html[data-theme="dark"] .page-header::before,
-body.dark .page-header::before {
-    background: #1e3a8a;
-    color: #dbeafe;
+html[data-theme="dark"] .admin-info-page .card,
+html[data-theme="dark"] .admin-info-page .stat-card,
+body.dark .admin-info-page .card,
+body.dark .admin-info-page .stat-card {
+    background: color-mix(in srgb, var(--card) 94%, transparent);
 }
 
-html[data-theme="dark"] .page-header h2,
-html[data-theme="dark"] .card-title,
-html[data-theme="dark"] .model-metric-val,
-html[data-theme="dark"] .config-val,
-html[data-theme="dark"] .metric-row .value,
-html[data-theme="dark"] .fitur-table td,
-html[data-theme="dark"] .status-item-label,
-body.dark .page-header h2,
-body.dark .card-title,
-body.dark .model-metric-val,
-body.dark .config-val,
-body.dark .metric-row .value,
-body.dark .fitur-table td,
-body.dark .status-item-label {
-    color: #f8fafc;
-}
-
-html[data-theme="dark"] .page-header p,
-html[data-theme="dark"] .model-metric-lab,
-html[data-theme="dark"] .config-card-subtitle,
-html[data-theme="dark"] .config-key,
-html[data-theme="dark"] .metric-row .label,
-html[data-theme="dark"] .section-desc,
-html[data-theme="dark"] .table-note,
-html[data-theme="dark"] .table-desc,
-html[data-theme="dark"] .fi-note,
-html[data-theme="dark"] .chart-legend,
-html[data-theme="dark"] .chart-bar-label,
-body.dark .page-header p,
-body.dark .model-metric-lab,
-body.dark .config-card-subtitle,
-body.dark .config-key,
-body.dark .metric-row .label,
-body.dark .section-desc,
-body.dark .table-note,
-body.dark .table-desc,
-body.dark .fi-note,
-body.dark .chart-legend,
-body.dark .chart-bar-label {
-    color: #cbd5e1;
-}
-
-html[data-theme="dark"] .card,
-html[data-theme="dark"] .stat-card,
-body.dark .card,
-body.dark .stat-card {
-    border-color: #334155;
-    background: #1f2937;
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
-}
-
-html[data-theme="dark"] .config-card-header,
-body.dark .config-card-header {
-    border-bottom-color: #334155;
+html[data-theme="dark"] .admin-info-page .config-card-header,
+body.dark .admin-info-page .config-card-header {
     background:
-        radial-gradient(circle at top right, rgba(37, 99, 235, 0.18), transparent 34%),
-        linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        radial-gradient(circle at top right, var(--primary-soft), transparent 34%),
+        linear-gradient(135deg, var(--card) 0%, var(--surface) 100%);
 }
 
-html[data-theme="dark"] .config-card:nth-child(2) .config-card-header,
-body.dark .config-card:nth-child(2) .config-card-header {
-    background:
-        radial-gradient(circle at top right, rgba(124, 58, 237, 0.20), transparent 34%),
-        linear-gradient(135deg, #1f2937 0%, #111827 100%);
-}
-
-html[data-theme="dark"] .config-item,
-html[data-theme="dark"] .metric-row,
-html[data-theme="dark"] .fitur-table th,
-html[data-theme="dark"] .fitur-table td,
-body.dark .config-item,
-body.dark .metric-row,
-body.dark .fitur-table th,
-body.dark .fitur-table td {
-    border-color: #334155;
-}
-
-html[data-theme="dark"] .fitur-table th,
-body.dark .fitur-table th {
-    background: #111827;
-    color: #cbd5e1;
-}
-
-html[data-theme="dark"] .fitur-code,
-html[data-theme="dark"] .fi-note code,
-body.dark .fitur-code,
-body.dark .fi-note code {
-    background: #111827;
-    color: #bfdbfe;
-}
-
-html[data-theme="dark"] .status-item-online,
-body.dark .status-item-online {
-    background: #052e16;
-    border-color: #166534;
-}
-
-html[data-theme="dark"] .status-item-offline,
-body.dark .status-item-offline {
-    background: #450a0a;
-    border-color: #991b1b;
-}
-
-html[data-theme="dark"] .dot-online,
-body.dark .dot-online {
-    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.20);
-}
-
-html[data-theme="dark"] .dot-offline,
-body.dark .dot-offline {
-    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.22);
-}
-
-html[data-theme="dark"] .val-online,
-body.dark .val-online {
-    color: #86efac;
-}
-
-html[data-theme="dark"] .val-offline,
-body.dark .val-offline {
-    color: #fecaca;
-}
-
-html[data-theme="dark"] .chart-legend,
-body.dark .chart-legend {
-    border-color: #334155;
-    background: #111827;
-}
-
-html[data-theme="dark"] .chart-bar-bg2,
-html[data-theme="dark"] .bar,
-body.dark .chart-bar-bg2,
-body.dark .bar {
-    background: #374151;
-}
-
-html[data-theme="dark"] .badge-blue,
-body.dark .badge-blue {
-    background: #1e3a8a;
-    color: #dbeafe;
-}
-
-html[data-theme="dark"] .badge-green,
-body.dark .badge-green {
-    background: #14532d;
-    color: #dcfce7;
-}
-
-html[data-theme="dark"] .badge-purple,
-body.dark .badge-purple {
-    background: #312e81;
-    color: #ddd6fe;
-}
-
-html[data-theme="dark"] .badge-amber,
-body.dark .badge-amber {
-    background: #78350f;
-    color: #fef3c7;
-}
-
-/* ================= RESPONSIVE ================= */
-@media (max-width: 1100px) {
-    .three-col {
+/* =========================================================
+   RESPONSIVE 1024PX
+========================================================= */
+@media (max-width: 1024px) {
+    .admin-info-page .three-col {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .two-col {
+    .admin-info-page .two-col {
         grid-template-columns: 1fr;
+    }
+
+    .admin-info-page .page-header {
+        padding: 24px;
     }
 }
 
-@media (max-width: 700px) {
-    .page-header {
+/* =========================================================
+   RESPONSIVE 768PX
+========================================================= */
+@media (max-width: 768px) {
+    .admin-info-page .page-header {
+        margin-bottom: 16px;
         padding: 22px;
         border-radius: 18px;
     }
 
-    .page-header h2 {
-        font-size: 1.32rem;
+    .admin-info-page .three-col {
+        gap: 12px;
     }
 
-    .three-col {
-        grid-template-columns: 1fr;
-    }
-
-    .card,
-    .stat-card {
+    .admin-info-page .card,
+    .admin-info-page .stat-card {
         border-radius: 16px;
     }
 
-    .config-card-header {
+    .admin-info-page .card {
+        padding: 18px;
+    }
+
+    .admin-info-page .config-card {
+        padding: 0;
+    }
+
+    .admin-info-page .config-card-header {
         padding: 16px;
     }
 
-    .config-grid {
+    .admin-info-page .config-grid {
         padding: 14px 16px 16px;
     }
 
-    .config-item {
+    .admin-info-page .config-item {
         flex-direction: column;
         gap: 4px;
     }
 
-    .config-key {
+    .admin-info-page .config-key {
         min-width: 0;
     }
 
-    .config-val {
+    .admin-info-page .config-val {
         text-align: left;
     }
 
-    .status-item {
+    .admin-info-page .status-item {
         align-items: flex-start;
         flex-direction: column;
         gap: 8px;
     }
 
-    .feature-chart {
+    .admin-info-page .feature-chart {
         min-height: 460px;
     }
 
-    .chart-legend {
+    .admin-info-page .chart-legend {
         align-items: flex-start;
         flex-direction: column;
+    }
+}
+
+/* =========================================================
+   RESPONSIVE 480PX
+========================================================= */
+@media (max-width: 480px) {
+    .admin-info-page {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .admin-info-page .page-header {
+        margin-bottom: 14px;
+        padding: 18px;
+        border-radius: 16px;
+    }
+
+    .admin-info-page .page-header::before {
+        padding: 5px 10px;
+    }
+
+    .admin-info-page .page-header h2,
+    .admin-info-page .page-header p {
+        max-width: 100%;
+    }
+
+    .admin-info-page .three-col,
+    .admin-info-page .two-col {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .admin-info-page .card,
+    .admin-info-page .stat-card {
+        width: 100%;
+        margin-bottom: 14px;
+        border-radius: 14px;
+    }
+
+    .admin-info-page .card {
+        padding: 16px;
+    }
+
+    .admin-info-page .config-card {
+        padding: 0;
+    }
+
+    .admin-info-page .card-title {
+        margin-bottom: 12px;
+        align-items: flex-start;
+    }
+
+    .admin-info-page .card-title::before {
+        width: 26px;
+        height: 26px;
+        flex-basis: 26px;
+        border-radius: 9px;
+    }
+
+    .admin-info-page .model-metric-val {
+        font-size: 24px;
+    }
+
+    .admin-info-page .table-responsive {
+        overflow: visible;
+    }
+
+    .admin-info-page .fitur-table,
+    .admin-info-page .fitur-table thead,
+    .admin-info-page .fitur-table tbody,
+    .admin-info-page .fitur-table th,
+    .admin-info-page .fitur-table td,
+    .admin-info-page .fitur-table tr {
+        display: block;
+        width: 100%;
+    }
+
+    .admin-info-page .fitur-table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .admin-info-page .fitur-table thead {
+        display: none;
+    }
+
+    .admin-info-page .fitur-table tbody {
+        display: grid;
+        gap: 12px;
+    }
+
+    .admin-info-page .fitur-table tr {
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: color-mix(in srgb, var(--card) 94%, transparent);
+    }
+
+    .admin-info-page .fitur-table td {
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+        display: grid;
+        grid-template-columns: minmax(0, 100px) minmax(0, 1fr);
+        gap: 10px;
+        align-items: start;
+        word-break: break-word;
+    }
+
+    .admin-info-page .fitur-table td:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .admin-info-page .fitur-table td::before {
+        content: attr(data-label);
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 1.5;
+    }
+
+    .admin-info-page .feature-chart {
+        min-height: 500px;
     }
 }

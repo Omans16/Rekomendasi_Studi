@@ -1,30 +1,44 @@
+/* =========================================================
+   SISWA DASHBOARD
+   StudyPath SMK
+========================================================= */
+
+/* =========================
+   BASE SCOPE
+========================= */
 .siswa-dashboard-page,
 .siswa-dashboard-page * {
-    font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
-}
-
-:root {
-    --siswa-primary: #2563eb;
-    --siswa-primary-dark: #1d4ed8;
-    --siswa-primary-soft: #eaf2ff;
-    --siswa-green-soft: #dcfce7;
-    --siswa-green-text: #166534;
-    --siswa-amber-soft: #fef3c7;
-    --siswa-amber-text: #92400e;
-    --siswa-red-soft: #fee2e2;
-    --siswa-red-text: #991b1b;
-    --siswa-text: #0f172a;
-    --siswa-muted: #64748b;
-    --siswa-border: #e5e7eb;
-    --siswa-bg: #f8fafc;
-    --siswa-card: #ffffff;
-    --siswa-shadow: 0 12px 30px rgba(15, 23, 42, 0.06);
+    box-sizing: border-box;
+    font-family: var(--font-body, 'Plus Jakarta Sans', 'Inter', sans-serif);
 }
 
 .siswa-dashboard-page {
-    color: var(--siswa-text);
+    width: 100%;
+    max-width: 100%;
+    color: var(--text);
 }
 
+.siswa-dashboard-page p {
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.7;
+}
+
+.siswa-dashboard-page h1,
+.siswa-dashboard-page h2,
+.siswa-dashboard-page h3,
+.siswa-dashboard-page h4,
+.siswa-dashboard-page h5,
+.siswa-dashboard-page h6 {
+    color: var(--text);
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.25;
+}
+
+/* =========================
+   HERO
+========================= */
 .siswa-hero {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 280px;
@@ -32,44 +46,51 @@
     margin-bottom: 18px;
 }
 
+.siswa-hero-content,
+.siswa-hero-card,
+.stat-card,
+.dashboard-card,
+.empty-dashboard-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg, 18px);
+    background: color-mix(in srgb, var(--card) 94%, transparent);
+    box-shadow: var(--shadow-sm);
+}
+
 .siswa-hero-content {
     position: relative;
     overflow: hidden;
     padding: 28px;
-    border: 1px solid #dbeafe;
-    border-radius: 18px;
     background:
-        radial-gradient(circle at top right, rgba(37, 99, 235, 0.18), transparent 34%),
-        linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
-    box-shadow: var(--siswa-shadow);
+        radial-gradient(circle at top right, var(--primary-soft), transparent 36%),
+        linear-gradient(135deg, var(--card) 0%, var(--surface-3) 100%);
 }
 
 .siswa-eyebrow {
-    display: inline-flex;
-    align-items: center;
+    width: fit-content;
     margin-bottom: 10px;
     padding: 5px 10px;
+    border: 1px solid var(--primary-border);
     border-radius: 999px;
-    background: #dbeafe;
-    color: #1d4ed8;
-    font-size: 0.75rem;
-    font-weight: 700;
+    background: var(--primary-soft);
+    color: var(--primary-2);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.2;
 }
 
 .siswa-hero h2 {
     margin: 0 0 8px;
-    color: var(--siswa-text);
-    font-size: 1.65rem;
+    color: var(--text);
+    font-size: 20px;
     font-weight: 800;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.02em;
 }
 
 .siswa-hero p {
     max-width: 760px;
     margin: 0;
-    color: #475569;
-    font-size: 0.95rem;
-    line-height: 1.7;
+    color: var(--muted);
 }
 
 .siswa-hero-actions {
@@ -79,107 +100,125 @@
     margin-top: 20px;
 }
 
+/* =========================
+   BUTTONS
+========================= */
 .btn-dashboard-primary,
 .btn-dashboard-secondary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     min-height: 40px;
     padding: 0 16px;
     border-radius: 12px;
-    font-size: 0.86rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 12px;
     font-weight: 800;
+    line-height: 1;
     text-decoration: none;
     white-space: nowrap;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease,
+        box-shadow 0.2s ease;
 }
 
 .btn-dashboard-primary {
-    border: 1px solid var(--siswa-primary);
-    background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
-    color: #ffffff;
-    box-shadow: 0 10px 22px rgba(37, 99, 235, 0.24);
+    border: 1px solid var(--primary);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+    color: var(--btn-text);
+    box-shadow: 0 10px 24px var(--primary-glow);
 }
 
 .btn-dashboard-primary:hover {
-    background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
-    color: #ffffff;
+    color: var(--btn-text);
     transform: translateY(-1px);
+    box-shadow: 0 14px 30px var(--primary-glow);
 }
 
 .btn-dashboard-secondary {
-    border: 1px solid #bfdbfe;
-    background: #ffffff;
-    color: #1d4ed8;
+    border: 1px solid var(--primary-border);
+    background: var(--surface);
+    color: var(--primary-2);
 }
 
 .btn-dashboard-secondary:hover {
-    background: #eff6ff;
-    color: #1d4ed8;
+    background: var(--primary-soft);
+    color: var(--primary-2);
+    transform: translateY(-1px);
 }
 
+.btn-dashboard-primary:active,
+.btn-dashboard-secondary:active {
+    transform: translateY(0);
+}
+
+/* =========================
+   HERO STATUS CARD
+========================= */
 .siswa-hero-card {
     padding: 22px;
-    border: 1px solid var(--siswa-border);
-    border-radius: 18px;
-    background: var(--siswa-card);
-    box-shadow: var(--siswa-shadow);
 }
 
 .hero-card-label {
     margin-bottom: 8px;
-    color: var(--siswa-muted);
-    font-size: 0.78rem;
-    font-weight: 700;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.3;
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
 
 .hero-card-value {
     margin-bottom: 8px;
-    font-size: 1.7rem;
+    font-size: 20px;
     font-weight: 800;
+    line-height: 1.2;
 }
 
 .hero-online {
-    color: var(--siswa-green-text);
+    color: var(--success-text);
 }
 
 .hero-offline {
-    color: var(--siswa-amber-text);
+    color: var(--warning-text, #8a5a00);
 }
 
 .hero-card-desc {
-    color: var(--siswa-muted);
-    font-size: 0.88rem;
-    line-height: 1.55;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.6;
 }
 
+/* =========================
+   ALERT
+========================= */
 .alert-ml-offline {
     margin-bottom: 18px;
     padding: 13px 16px;
-    border: 1px solid #fcd34d;
-    border-left: 4px solid #f59e0b;
+    border: 1px solid var(--warning-border, var(--primary-border));
+    border-left: 4px solid var(--primary-2);
     border-radius: 12px;
-    background: var(--siswa-amber-soft);
-    color: var(--siswa-amber-text);
-    font-size: 0.88rem;
-    line-height: 1.5;
+    background: var(--warning-soft, var(--primary-soft));
+    color: var(--warning-text, var(--primary-2));
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.6;
 }
 
+/* =========================
+   STATS
+========================= */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 14px;
     margin-bottom: 18px;
-}
-
-.stat-card,
-.dashboard-card,
-.empty-dashboard-card {
-    border: 1px solid var(--siswa-border);
-    border-radius: 16px;
-    background: var(--siswa-card);
-    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.045);
 }
 
 .stat-card {
@@ -188,82 +227,102 @@
 
 .stat-label {
     margin-bottom: 8px;
-    color: var(--siswa-muted);
-    font-size: 0.76rem;
+    color: var(--muted);
+    font-size: 12px;
     font-weight: 800;
+    line-height: 1.3;
     text-transform: uppercase;
     letter-spacing: 0.04em;
 }
 
 .stat-value {
-    color: var(--siswa-text);
-    font-size: 2rem;
+    color: var(--text);
+    font-size: 28px;
     font-weight: 800;
     line-height: 1;
 }
 
 .stat-sub {
     margin-top: 9px;
-    color: var(--siswa-muted);
-    font-size: 0.83rem;
-    line-height: 1.5;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.6;
 }
 
+/* =========================
+   CARD
+========================= */
 .dashboard-card {
     padding: 20px;
     margin-bottom: 18px;
 }
 
 .section-header {
+    margin-bottom: 14px;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 14px;
 }
 
-.card-title {
+.card-title,
+.empty-title {
     margin-bottom: 10px;
-    color: var(--siswa-text);
-    font-size: 1rem;
+    color: var(--text);
+    font-size: 15px;
     font-weight: 800;
+    line-height: 1.35;
 }
 
 .card-sub {
-    color: var(--siswa-muted);
-    font-size: 0.85rem;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.6;
 }
 
 .card-link,
 .note-link {
-    color: var(--siswa-primary);
-    font-size: 0.86rem;
+    color: var(--primary-2);
+    font-size: 12px;
     font-weight: 800;
+    line-height: 1.4;
     text-decoration: none;
+    white-space: nowrap;
 }
 
 .card-link:hover,
 .note-link:hover {
-    color: var(--siswa-primary-dark);
+    color: var(--primary);
 }
 
+/* =========================
+   TABLE
+========================= */
 .table-responsive {
     width: 100%;
+    max-width: 100%;
     overflow-x: auto;
 }
 
 .dashboard-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.88rem;
+    color: var(--text);
+    font-size: 12px;
 }
 
 .dashboard-table thead tr {
-    border-bottom: 1px solid var(--siswa-border);
+    border-bottom: 1px solid var(--border);
 }
 
 .dashboard-table tbody tr {
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--border);
+}
+
+.dashboard-table tbody tr:last-child {
+    border-bottom: 0;
 }
 
 .dashboard-table th,
@@ -274,13 +333,27 @@
 }
 
 .dashboard-table th {
-    color: var(--siswa-muted);
-    font-size: 0.78rem;
+    color: var(--muted);
+    font-size: 12px;
     font-weight: 800;
+    line-height: 1.4;
+    white-space: nowrap;
 }
 
 .dashboard-table td {
-    color: var(--siswa-text);
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.dashboard-table .btn-sm,
+.dashboard-table .btn.btn-primary.btn-sm {
+    min-height: 32px;
+    padding: 0 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 800;
 }
 
 .td-strong {
@@ -288,58 +361,71 @@
 }
 
 .text-muted-small {
-    color: #94a3b8;
-    font-size: 0.78rem;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 400;
 }
 
+/* =========================
+   BADGES
+========================= */
 .stat-badge {
-    display: inline-flex;
-    align-items: center;
+    max-width: 100%;
+    min-height: 24px;
     padding: 4px 9px;
     border-radius: 999px;
-    font-size: 0.75rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    font-size: 11px;
     font-weight: 800;
+    line-height: 1.2;
+    white-space: normal;
 }
 
 .badge-blue {
-    background: #dbeafe;
-    color: #1e40af;
+    border-color: var(--primary-border);
+    background: var(--primary-soft);
+    color: var(--primary-2);
 }
 
 .badge-green {
-    background: var(--siswa-green-soft);
-    color: var(--siswa-green-text);
+    border-color: var(--success-border);
+    background: var(--success-soft);
+    color: var(--success-text);
 }
 
 .badge-amber {
-    background: var(--siswa-amber-soft);
-    color: var(--siswa-amber-text);
+    border-color: var(--warning-border, var(--primary-border));
+    background: var(--warning-soft, var(--primary-soft));
+    color: var(--warning-text, var(--primary-2));
 }
 
+/* =========================
+   EMPTY STATE
+========================= */
 .empty-dashboard-card {
     padding: 28px;
     margin-bottom: 18px;
     text-align: center;
 }
 
-.empty-title {
-    margin-bottom: 8px;
-    color: var(--siswa-text);
-    font-size: 1.1rem;
-    font-weight: 800;
-}
-
 .empty-desc {
     max-width: 620px;
     margin: 0 auto 18px;
-    color: var(--siswa-muted);
-    font-size: 0.92rem;
-    line-height: 1.65;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.7;
 }
 
+/* =========================
+   INFO GRID
+========================= */
 .info-grid {
     display: grid;
-    grid-template-columns: 1.35fr 1fr;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
     gap: 18px;
 }
 
@@ -350,7 +436,7 @@
 
 .step-item {
     display: grid;
-    grid-template-columns: 34px 1fr;
+    grid-template-columns: 34px minmax(0, 1fr);
     gap: 12px;
     align-items: flex-start;
 }
@@ -358,103 +444,74 @@
 .step-number {
     width: 34px;
     height: 34px;
+    border: 1px solid var(--primary-border);
     border-radius: 12px;
-    background: var(--siswa-primary-soft);
-    color: var(--siswa-primary-dark);
+    background: var(--primary-soft);
+    color: var(--primary-2);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.82rem;
+    font-size: 12px;
     font-weight: 900;
+    line-height: 1;
 }
 
 .step-title {
     margin-bottom: 4px;
-    color: var(--siswa-text);
-    font-size: 0.92rem;
+    color: var(--text);
+    font-size: 12px;
     font-weight: 800;
+    line-height: 1.4;
 }
 
 .step-desc,
 .student-note {
-    color: var(--siswa-muted);
-    font-size: 0.88rem;
-    line-height: 1.65;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.7;
 }
 
 .student-note {
     margin-bottom: 14px;
 }
 
-body.dark .siswa-dashboard-page {
-    --siswa-text: #f8fafc;
-    --siswa-muted: #cbd5e1;
-    --siswa-border: #334155;
-    --siswa-card: #1f2937;
-    --siswa-bg: #111827;
-    --siswa-primary-soft: #1e3a8a;
-}
-
+/* =========================
+   DARK MODE ADJUSTMENT
+========================= */
+html[data-theme="dark"] .siswa-hero-content,
 body.dark .siswa-hero-content {
-    border-color: #1e3a8a;
     background:
-        radial-gradient(circle at top right, rgba(37, 99, 235, 0.28), transparent 34%),
-        linear-gradient(135deg, #1f2937 0%, #111827 100%);
+        radial-gradient(circle at top right, var(--primary-soft), transparent 36%),
+        linear-gradient(135deg, var(--card) 0%, var(--surface) 100%);
 }
 
-body.dark .siswa-eyebrow {
-    background: #1e3a8a;
-    color: #dbeafe;
-}
-
-body.dark .siswa-hero p,
-body.dark .hero-card-desc,
-body.dark .stat-sub,
-body.dark .card-sub,
-body.dark .empty-desc,
-body.dark .step-desc,
-body.dark .student-note {
-    color: #cbd5e1;
-}
-
+html[data-theme="dark"] .btn-dashboard-secondary,
 body.dark .btn-dashboard-secondary {
-    border-color: #334155;
-    background: #111827;
-    color: #bfdbfe;
+    background: var(--surface-2);
 }
 
-body.dark .dashboard-table thead tr,
-body.dark .dashboard-table tbody tr {
-    border-color: #334155;
-}
-
-body.dark .dashboard-table th,
-body.dark .text-muted-small {
-    color: #94a3b8;
-}
-
-body.dark .badge-blue {
-    background: #1e3a8a;
-    color: #dbeafe;
-}
-
-body.dark .badge-green {
-    background: #14532d;
-    color: #dcfce7;
-}
-
-body.dark .badge-amber {
-    background: #78350f;
-    color: #fef3c7;
-}
-
+/* =========================================================
+   RESPONSIVE 1024PX
+========================================================= */
 @media (max-width: 1024px) {
     .siswa-hero {
         grid-template-columns: 1fr;
     }
 
+    .siswa-hero-card {
+        display: grid;
+        grid-template-columns: minmax(0, 140px) minmax(0, 1fr);
+        column-gap: 16px;
+        align-items: center;
+    }
+
+    .hero-card-label {
+        grid-column: 1 / -1;
+    }
+
     .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .info-grid {
@@ -462,25 +519,212 @@ body.dark .badge-amber {
     }
 }
 
-@media (max-width: 640px) {
+/* =========================================================
+   RESPONSIVE 768PX
+========================================================= */
+@media (max-width: 768px) {
+    .siswa-hero {
+        gap: 14px;
+        margin-bottom: 14px;
+    }
+
+    .siswa-hero-content,
+    .siswa-hero-card,
+    .dashboard-card,
+    .empty-dashboard-card {
+        border-radius: 16px;
+    }
+
     .siswa-hero-content {
         padding: 22px;
     }
 
-    .siswa-hero h2 {
-        font-size: 1.35rem;
+    .siswa-hero-card {
+        padding: 18px;
+        grid-template-columns: 1fr;
+    }
+
+    .siswa-hero-actions {
+        margin-top: 16px;
     }
 
     .stats-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .dashboard-card {
+        padding: 18px;
+        margin-bottom: 14px;
     }
 
     .section-header {
         flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .dashboard-table {
+        min-width: 680px;
+    }
+}
+
+/* =========================================================
+   RESPONSIVE 480PX
+========================================================= */
+@media (max-width: 480px) {
+    .siswa-dashboard-page {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .siswa-hero,
+    .stats-grid,
+    .info-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .siswa-hero {
+        margin-bottom: 12px;
+    }
+
+    .siswa-hero-content,
+    .siswa-hero-card,
+    .stat-card,
+    .dashboard-card,
+    .empty-dashboard-card {
+        width: 100%;
+        border-radius: 14px;
+    }
+
+    .siswa-hero-content {
+        padding: 18px;
+    }
+
+    .siswa-hero-card,
+    .stat-card,
+    .dashboard-card {
+        padding: 16px;
+    }
+
+    .empty-dashboard-card {
+        padding: 18px;
+    }
+
+    .siswa-eyebrow {
+        margin-bottom: 8px;
+    }
+
+    .siswa-hero-actions {
+        gap: 8px;
     }
 
     .btn-dashboard-primary,
     .btn-dashboard-secondary {
         width: 100%;
+        min-height: 38px;
+        padding-inline: 12px;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.35;
+    }
+
+    .stat-value {
+        font-size: 24px;
+    }
+
+    .section-header {
+        margin-bottom: 12px;
+    }
+
+    .card-link,
+    .note-link {
+        white-space: normal;
+    }
+
+    .table-responsive {
+        overflow: visible;
+    }
+
+    .dashboard-table,
+    .dashboard-table thead,
+    .dashboard-table tbody,
+    .dashboard-table th,
+    .dashboard-table td,
+    .dashboard-table tr {
+        display: block;
+        width: 100%;
+    }
+
+    .dashboard-table {
+        min-width: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .dashboard-table thead {
+        display: none;
+    }
+
+    .dashboard-table tbody {
+        display: grid;
+        gap: 12px;
+    }
+
+    .dashboard-table tbody tr {
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: color-mix(in srgb, var(--card) 94%, transparent);
+    }
+
+    .dashboard-table td {
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+        display: grid;
+        grid-template-columns: minmax(0, 110px) minmax(0, 1fr);
+        gap: 10px;
+        align-items: start;
+        word-break: break-word;
+    }
+
+    .dashboard-table td:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .dashboard-table td::before {
+        content: attr(data-label);
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 1.5;
+    }
+
+    .dashboard-table .btn-sm,
+    .dashboard-table .btn.btn-primary.btn-sm {
+        width: 100%;
+        min-height: 36px;
+    }
+
+    .stat-badge {
+        justify-content: flex-start;
+        text-align: left;
+    }
+
+    .step-list {
+        gap: 12px;
+    }
+
+    .step-item {
+        grid-template-columns: 30px minmax(0, 1fr);
+        gap: 10px;
+    }
+
+    .step-number {
+        width: 30px;
+        height: 30px;
+        border-radius: 10px;
     }
 }

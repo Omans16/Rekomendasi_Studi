@@ -3,265 +3,361 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Http\Client\RequestException;
-use RuntimeException;
+use Illuminate\Support\Facades\Log;
+use Throwable;
+
 class FlaskRecommendationService
 {
     protected string $baseUrl;
+    protected string $predictEndpoint;
+    protected string $healthEndpoint;
+    protected string $jurusanEndpoint;
+    protected string $dashboardStatsEndpoint;
+    protected string $infoModelEndpoint;
+    protected string $featureImportanceEndpoint;
+    protected string $evaluationEndpoint;
+    protected int $timeout;
 
     public function __construct()
     {
-        $this->baseUrl = rtrim(config('services.flask.base_url'), '/');
+        $this->baseUrl = rtrim(config('flask.base_url'), '/');
+
+        $this->predictEndpoint = config('flask.predict_endpoint', '/predict');
+        $this->healthEndpoint = config('flask.health_endpoint', '/health');
+        $this->jurusanEndpoint = config('flask.jurusan_endpoint', '/jurusan');
+        $this->dashboardStatsEndpoint = config('flask.dashboard_stats_endpoint', '/dashboard-stats');
+        $this->infoModelEndpoint = config('flask.info_model_endpoint', '/info-model');
+        $this->featureImportanceEndpoint = config('flask.feature_importance_endpoint', '/feature-importance');
+        $this->evaluationEndpoint = config('flask.evaluation_endpoint', '/evaluation');
+
+        $this->timeout = (int) config('flask.timeout', 30);
+    }
+
+    private function makeUrl(string $endpoint): string
+    {
+        $endpoint = trim($endpoint);
+
+        if (preg_match('/^https?:\/\//', $endpoint)) {
+            return $endpoint;
+        }
+
+        return $this->baseUrl . '/' . ltrim($endpoint, '/');
+    }
+
+    private function getRequest(string $endpoint, string $context = 'Flask GET'): array
+    {
+        $url = $this->makeUrl($endpoint);
+
+        try {
+            $response = Http::timeout($this->timeout)
+                ->connectTimeout(10)
+                ->acceptJson()
+                ->get($url);
+
+            $json = $response->json();
+            $data = is_array($json) ? $json : [
+                'raw' => $response->body(),
+            ];
+
+            if (!$response->successful()) {
+                Log::warning($context . ' gagal.', [
+                    'url' => $url,
+                    'status' => $response->status(),
+                    'response' => $data,
+                ]);
+
+                return [
+                    'success' => false,
+                    'status_code' => $response->status(),
+                    'message' => $data['message'] ?? $data['error'] ?? 'Gagal mengambil data dari API Flask.',
+                    'data' => [],
+                    'raw' => $data,
+                ];
+            }
+
+            return [
+                'success' => true,
+                'status_code' => $response->status(),
+                'message' => $data['message'] ?? 'Berhasil mengambil data dari API Flask.',
+                'data' => $this->extractData($data),
+                'raw' => $data,
+            ];
+        } catch (Throwable $e) {
+            Log::error($context . ' error.', [
+                'url' => $url,
+                'message' => $e->getMessage(),
+            ]);
+
+            return [
+                'success' => false,
+                'status_code' => 0,
+                'message' => 'Tidak dapat terhubung ke API Flask: ' . $e->getMessage(),
+                'data' => [],
+                'raw' => [],
+            ];
+        }
+    }
+
+    private function postRequest(string $endpoint, array $payload, string $context = 'Flask POST'): array
+    {
+        $url = $this->makeUrl($endpoint);
+
+        try {
+            $response = Http::timeout($this->timeout)
+                ->connectTimeout(10)
+                ->acceptJson()
+                ->asJson()
+                ->post($url, $payload);
+
+            $json = $response->json();
+            $data = is_array($json) ? $json : [
+                'raw' => $response->body(),
+            ];
+
+            if (!$response->successful()) {
+                Log::warning($context . ' gagal.', [
+                    'url' => $url,
+                    'status' => $response->status(),
+                    'payload' => $payload,
+                    'response' => $data,
+                ]);
+
+                return [
+                    'success' => false,
+                    'status_code' => $response->status(),
+                    'message' => $data['message'] ?? $data['error'] ?? 'Prediksi gagal diproses oleh API Flask.',
+                    'response_flask' => $data,
+                ];
+            }
+
+            $result = $this->flattenPredictResponse($data);
+            $result['success'] = $result['success'] ?? true;
+            $result['status_code'] = $response->status();
+
+            return $result;
+        } catch (Throwable $e) {
+            Log::error($context . ' error.', [
+                'url' => $url,
+                'payload' => $payload,
+                'message' => $e->getMessage(),
+            ]);
+
+            return [
+                'success' => false,
+                'status_code' => 0,
+                'message' => 'Tidak dapat terhubung ke API Flask: ' . $e->getMessage(),
+            ];
+        }
+    }
+
+    private function extractData(array $payload): array
+    {
+        if (isset($payload['data']) && is_array($payload['data'])) {
+            return $payload['data'];
+        }
+
+        return $payload;
+    }
+
+    private function extractByKeys(array $payload, array $keys): array
+    {
+        $data = $this->extractData($payload);
+
+        foreach ($keys as $key) {
+            if (isset($data[$key]) && is_array($data[$key])) {
+                return $data[$key];
+            }
+        }
+
+        return is_array($data) ? $data : [];
+    }
+
+    private function flattenPredictResponse(array $payload): array
+    {
+        if (isset($payload['data']) && is_array($payload['data'])) {
+            return array_merge($payload['data'], $payload);
+        }
+
+        return $payload;
+    }
+
+    private function normalizePredictPayload(array $input): array
+    {
+        $jurusan = $input['jurusan_smk']
+            ?? $input['Jurusan_Smk']
+            ?? null;
+
+        $ukk = $input['ukk']
+            ?? $input['UKK']
+            ?? null;
+
+        return [
+            // Format tambahan untuk upload/manual Laravel
+            'nisn' => $input['nisn'] ?? null,
+            'nama_siswa' => $input['nama_siswa'] ?? null,
+
+            // Format lowercase Laravel
+            'jurusan_smk' => $jurusan,
+            'ukk' => isset($ukk) ? (float) $ukk : null,
+
+            // Format asli yang terlihat dari Flask /health
+            'Jurusan_Smk' => $jurusan,
+            'UKK' => isset($ukk) ? (float) $ukk : null,
+
+            'rata_pai' => isset($input['rata_pai']) ? (float) $input['rata_pai'] : null,
+            'rata_ppkn' => isset($input['rata_ppkn']) ? (float) $input['rata_ppkn'] : null,
+            'rata_ind' => isset($input['rata_ind']) ? (float) $input['rata_ind'] : null,
+            'rata_mtk' => isset($input['rata_mtk']) ? (float) $input['rata_mtk'] : null,
+            'rata_ing' => isset($input['rata_ing']) ? (float) $input['rata_ing'] : null,
+        ];
     }
 
     public function healthCheck(): array
     {
-        try {
-            $response = Http::timeout(20)->get($this->baseUrl . '/');
+        $response = $this->getRequest($this->healthEndpoint, 'Health check Flask');
 
-            return $response->json() ?? [
-                'success' => false,
-                'message' => 'Response Flask tidak valid.',
-            ];
-        } catch (ConnectionException $error) {
-            return [
-                'success' => false,
-                'message' => 'Tidak dapat terhubung ke API Flask. Pastikan Flask berjalan di ' . $this->baseUrl,
-            ];
-        } catch (\Throwable $error) {
-            return [
-                'success' => false,
-                'message' => 'Terjadi kesalahan saat menghubungi Flask: ' . $error->getMessage(),
-            ];
-        }
+        return [
+            'success' => $response['success'] ?? false,
+            'status_code' => $response['status_code'] ?? 0,
+            'message' => $response['message'] ?? null,
+            'data' => $response['data'] ?? [],
+            'raw' => $response['raw'] ?? [],
+        ];
     }
 
     public function ambilDaftarJurusan(): array
     {
-        try {
-            $response = Http::timeout(20)->get($this->baseUrl . '/jurusan');
+        $response = $this->getRequest($this->jurusanEndpoint, 'Ambil daftar jurusan Flask');
 
-            if (!$response->successful()) {
-                return [];
-            }
-
-            $json = $response->json();
-
-            return $json['data'] ?? [];
-        } catch (\Throwable $error) {
+        if (!($response['success'] ?? false)) {
             return [];
         }
-    }
 
-    public function prediksiRekomendasi(array $dataInput): array
-    {
-        try {
-            $payload = [
-                'Jurusan_Smk' => $dataInput['jurusan_smk'],
-                'rata_pai' => (float) $dataInput['rata_pai'],
-                'rata_ppkn' => (float) $dataInput['rata_ppkn'],
-                'rata_ind' => (float) $dataInput['rata_ind'],
-                'rata_mtk' => (float) $dataInput['rata_mtk'],
-                'rata_ing' => (float) $dataInput['rata_ing'],
-                'UKK' => (float) $dataInput['ukk'],
-            ];
+        $data = $response['data'] ?? [];
 
-            $response = Http::timeout(60)
-                ->acceptJson()
-                ->asJson()
-                ->post($this->baseUrl . '/predict', $payload);
-
-            $json = $response->json();
-
-            if (!$response->successful()) {
-                return [
-                    'success' => false,
-                    'message' => $json['message'] ?? 'Proses prediksi dari Flask gagal.',
-                    'detail' => $json,
-                ];
-            }
-
-            return $json ?? [
-                'success' => false,
-                'message' => 'Response Flask kosong atau tidak valid.',
-            ];
-        } catch (ConnectionException $error) {
-            return [
-                'success' => false,
-                'message' => 'Tidak dapat terhubung ke API Flask. Pastikan Flask sudah berjalan.',
-            ];
-        } catch (RequestException $error) {
-            return [
-                'success' => false,
-                'message' => 'Request ke API Flask gagal: ' . $error->getMessage(),
-            ];
-        } catch (\Throwable $error) {
-            return [
-                'success' => false,
-                'message' => 'Terjadi kesalahan saat memproses prediksi: ' . $error->getMessage(),
-            ];
+        if (isset($data['jurusan']) && is_array($data['jurusan'])) {
+            return $data['jurusan'];
         }
-    }
 
-    public function ambilInfoModel(): array
-    {
-        try {
-            $response = Http::timeout(30)->get($this->baseUrl . '/info-model');
-
-            $json = $response->json();
-
-            if (!$response->successful()) {
-                return [
-                    'success' => false,
-                    'message' => $json['message'] ?? 'Gagal mengambil informasi model.',
-                    'data' => [],
-                ];
-            }
-
-            return $json ?? [
-                'success' => false,
-                'message' => 'Response info model tidak valid.',
-                'data' => [],
-            ];
-        } catch (\Throwable $error) {
-            return [
-                'success' => false,
-                'message' => 'Terjadi kesalahan saat mengambil informasi model: ' . $error->getMessage(),
-                'data' => [],
-            ];
+        if (isset($data['daftar_jurusan']) && is_array($data['daftar_jurusan'])) {
+            return $data['daftar_jurusan'];
         }
-    }
 
-
-    public function ambilFeatureImportance(): array
-    {
-        try {
-            $response = Http::timeout(30)
-                ->get($this->baseUrl . '/feature-importance');
-
-            $json = $response->json();
-
-            if (!$response->successful()) {
-                return [
-                    'success' => false,
-                    'message' => $json['message'] ?? 'Gagal mengambil feature importance.',
-                    'data' => [],
-                ];
-            }
-
-            return $json ?? [
-                'success' => false,
-                'message' => 'Response feature importance tidak valid.',
-                'data' => [],
-            ];
-        } catch (\Throwable $error) {
-            return [
-                'success' => false,
-                'message' => 'Terjadi kesalahan saat mengambil feature importance: ' . $error->getMessage(),
-                'data' => [],
-            ];
+        if (isset($data['data']) && is_array($data['data'])) {
+            return $data['data'];
         }
-    }
 
-    public function ambilEvaluation(): array
-    {
-        try {
-            $response = Http::timeout(30)->get($this->baseUrl . '/evaluation');
-
-            $json = $response->json();
-
-            if (!$response->successful()) {
-                return [
-                    'success' => false,
-                    'message' => $json['message'] ?? 'Gagal mengambil evaluasi model.',
-                    'data' => [],
-                ];
-            }
-
-            return $json ?? [
-                'success' => false,
-                'message' => 'Response evaluasi model tidak valid.',
-                'data' => [],
-            ];
-        } catch (\Throwable $error) {
-            return [
-                'success' => false,
-                'message' => 'Terjadi kesalahan saat mengambil evaluasi model: ' . $error->getMessage(),
-                'data' => [],
-            ];
+        if (array_is_list($data)) {
+            return $data;
         }
+
+        return [];
     }
 
     public function ambilDashboardStats(): array
     {
-        try {
-            $response = Http::timeout(30)->get($this->baseUrl . '/dashboard-stats');
+        $response = $this->getRequest($this->dashboardStatsEndpoint, 'Ambil dashboard stats Flask');
 
-            $json = $response->json();
-
-            if (!$response->successful()) {
-                return [
-                    'success' => false,
-                    'message' => $json['message'] ?? 'Gagal mengambil statistik dashboard.',
-                    'data' => [],
-                ];
-            }
-
-            return $json ?? [
-                'success' => false,
-                'message' => 'Response statistik dashboard tidak valid.',
-                'data' => [],
-            ];
-
-        } catch (\Throwable $error) {
-            return [
-                'success' => false,
-                'message' => 'Terjadi kesalahan saat mengambil statistik dashboard: ' . $error->getMessage(),
-                'data' => [],
-            ];
+        if (!($response['success'] ?? false)) {
+            return $response;
         }
+
+        $raw = $response['raw'] ?? [];
+        $data = $this->extractByKeys($raw, [
+            'dashboard_stats',
+            'stats',
+            'dashboard',
+        ]);
+
+        return [
+            'success' => true,
+            'status_code' => $response['status_code'] ?? 200,
+            'message' => $response['message'] ?? null,
+            'data' => $data,
+            'raw' => $raw,
+        ];
     }
 
-    // ini untuk upload excel,csv
-    public function isOnline(): bool
+    public function ambilInfoModel(): array
     {
-        $baseUrl = rtrim(config('services.flask.base_url'), '/');
-        $endpoint = config('services.flask.health_endpoint', '/health');
+        $response = $this->getRequest($this->infoModelEndpoint, 'Ambil info model Flask');
 
-        try {
-            $response = Http::timeout(5)->get($baseUrl . $endpoint);
-            return $response->successful();
-        } catch (\Throwable $e) {
-            return false;
+        if (!($response['success'] ?? false)) {
+            return $response;
         }
+
+        $raw = $response['raw'] ?? [];
+        $data = $this->extractByKeys($raw, [
+            'info_model',
+            'model',
+        ]);
+
+        return [
+            'success' => true,
+            'status_code' => $response['status_code'] ?? 200,
+            'message' => $response['message'] ?? null,
+            'data' => $data,
+            'raw' => $raw,
+        ];
     }
 
-    public function predict(array $payload): array
+    public function ambilFeatureImportance(): array
     {
-        $baseUrl = rtrim(config('services.flask.base_url'), '/');
-        $endpoint = config('services.flask.predict_endpoint', '/predict');
+        $response = $this->getRequest($this->featureImportanceEndpoint, 'Ambil feature importance Flask');
 
-        try {
-            $response = Http::timeout(90)
-                ->acceptJson()
-                ->asJson()
-                ->post($baseUrl . $endpoint, $payload);
-
-            if (!$response->successful()) {
-                $message = $response->json('message') ?? 'Flask mengembalikan HTTP ' . $response->status();
-                throw new RuntimeException($message);
-            }
-
-            $json = $response->json();
-
-            if (!is_array($json)) {
-                throw new RuntimeException('Response Flask tidak valid.');
-            }
-
-            return $json;
-        } catch (\Throwable $e) {
-            throw new RuntimeException('Gagal memproses prediksi Flask: ' . $e->getMessage());
+        if (!($response['success'] ?? false)) {
+            return $response;
         }
+
+        $raw = $response['raw'] ?? [];
+        $data = $this->extractByKeys($raw, [
+            'feature_importance',
+            'importance',
+            'features',
+        ]);
+
+        return [
+            'success' => true,
+            'status_code' => $response['status_code'] ?? 200,
+            'message' => $response['message'] ?? null,
+            'data' => $data,
+            'raw' => $raw,
+        ];
+    }
+
+    public function ambilEvaluation(): array
+    {
+        $response = $this->getRequest($this->evaluationEndpoint, 'Ambil evaluation Flask');
+
+        if (!($response['success'] ?? false)) {
+            return $response;
+        }
+
+        $raw = $response['raw'] ?? [];
+        $data = $this->extractByKeys($raw, [
+            'evaluation',
+            'evaluasi',
+            'metrics',
+            'rf_final_metrics',
+        ]);
+
+        return [
+            'success' => true,
+            'status_code' => $response['status_code'] ?? 200,
+            'message' => $response['message'] ?? null,
+            'data' => $data,
+            'raw' => $raw,
+        ];
+    }
+
+    public function prediksiRekomendasi(array $input): array
+    {
+        $payload = $this->normalizePredictPayload($input);
+
+        return $this->postRequest(
+            $this->predictEndpoint,
+            $payload,
+            'Prediksi rekomendasi Flask'
+        );
     }
 }

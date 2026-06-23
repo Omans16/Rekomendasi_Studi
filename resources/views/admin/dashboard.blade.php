@@ -1,17 +1,24 @@
 @extends('layouts.app')
 
-<link rel="stylesheet" href="{{ asset('css/admin/dashboard.css') }}">
-<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.0/dist/apexcharts.min.js"></script>
+@push('styles')
+    <link rel="stylesheet" href="{{ asset('css/admin/dashboard.css') }}">
+@endpush
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.0/dist/apexcharts.min.js"></script>
+    <script src="{{ asset('js/admin/dashboard.js') }}" defer></script>
+@endpush
 
 @section('content')
+
 @php
     $flaskStats = $flaskStats ?? [];
     $dbStats = $dbStats ?? [];
     $flaskOnline = $flaskOnline ?? false;
 
     $alumniPerJurusan = $flaskStats['alumni_per_jurusan'] ?? [];
-    $topUniv          = $flaskStats['top_universitas'] ?? [];
-    $topJurKuliah     = $flaskStats['top_program_studi'] ?? [];
+    $topUniv = $flaskStats['top_universitas'] ?? [];
+    $topJurKuliah = $flaskStats['top_program_studi'] ?? [];
 
     $totalAlumniKnn = $flaskStats['total_alumni']
         ?? $flaskStats['jumlah_data_alumni_basis']
@@ -21,20 +28,39 @@
     $totalProgramStudi = $flaskStats['total_program_studi'] ?? '—';
 
     $prediksiTerakhir = $dbStats['prediksi_terakhir'] ?? collect();
+
+    if (!($prediksiTerakhir instanceof \Illuminate\Support\Collection)) {
+        $prediksiTerakhir = collect($prediksiTerakhir);
+    }
+
+    $dashboardChartPayload = [
+        'topUniv' => $topUniv,
+        'topJurKuliah' => $topJurKuliah,
+        'alumniSmk' => $alumniPerJurusan,
+    ];
 @endphp
 
 <div class="dashboard-page">
-    <div class="page-header page-header-row">
 
+    <div class="page-header">
+        <div class="page-header-row">
+            <div>
+                <h2>Dashboard Admin / Guru BK</h2>
+                <p>
+                    Pantau ringkasan data alumni, hasil prediksi terbaru, serta sebaran universitas,
+                    program studi, dan jurusan SMK berdasarkan data tracer study.
+                </p>
+            </div>
 
-        <a href="{{ route('admin.input.siswa') }}" class="btn-dashboard-primary">
-            Minta Rekomendasi
-        </a>
+            <a href="{{ route('admin.input.siswa') }}" class="btn-dashboard-primary">
+                Minta Rekomendasi
+            </a>
+        </div>
     </div>
 
     @if(!$flaskOnline)
         <div class="alert-ml-offline">
-            ⚠️ Layanan ML (Flask) sedang tidak aktif. Beberapa data tidak tersedia.
+            Layanan ML Flask sedang tidak aktif. Beberapa data model dan grafik mungkin tidak tersedia.
         </div>
     @endif
 
@@ -60,7 +86,9 @@
             <div class="stat-value">{{ $dbStats['total_prediksi'] ?? 0 }}</div>
             <div class="stat-sub">
                 <span class="stat-badge badge-blue">
-                    Teridentifikasi: {{ $dbStats['total_kuliah'] ?? 0 }} | Tidak Teridentifikasi: {{ $dbStats['total_tidak'] ?? 0 }}
+                    Teridentifikasi: {{ $dbStats['total_kuliah'] ?? 0 }}
+                    |
+                    Tidak Teridentifikasi: {{ $dbStats['total_tidak'] ?? 0 }}
                 </span>
             </div>
         </div>
@@ -72,7 +100,7 @@
         </div>
     </div>
 
-    @if(!empty($prediksiTerakhir) && $prediksiTerakhir->count())
+    @if($prediksiTerakhir->count())
         <div class="card dashboard-card">
             <div class="card-title">Prediksi Terakhir</div>
 
@@ -85,41 +113,58 @@
                             <th>Status</th>
                             <th>Probabilitas</th>
                             <th>Waktu</th>
-                            <th></th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @foreach($prediksiTerakhir as $item)
                             @php
                                 $prediksiRf = (int) ($item->prediksi_rf ?? 0);
+
                                 $probabilitas = $item->probabilitas_studi_lanjut !== null
                                     ? round((float) $item->probabilitas_studi_lanjut * 100, 1)
                                     : 0;
                             @endphp
+
                             <tr>
-                                <td class="td-strong">{{ $item->nama_siswa ?? 'Siswa' }}</td>
-                                <td>
+                                <td class="td-strong" data-label="Nama Siswa">
+                                    {{ $item->nama_siswa ?? 'Siswa' }}
+                                </td>
+
+                                <td data-label="Jurusan">
                                     <span class="stat-badge badge-blue" title="{{ $item->jurusan_smk_lengkap ?? $item->jurusan_smk }}">
                                         {{ $item->jurusan_smk }}
                                     </span>
                                 </td>
-                                <td>
+
+                                <td data-label="Status">
                                     @if($prediksiRf === 1)
-                                        <span class="stat-badge badge-green">Teridentifikasi Studi Lanjut</span>
+                                        <span class="stat-badge badge-green">
+                                            Teridentifikasi Studi Lanjut
+                                        </span>
                                     @else
-                                        <span class="stat-badge badge-amber">Tidak Teridentifikasi Studi Lanjut</span>
+                                        <span class="stat-badge badge-amber">
+                                            Tidak Teridentifikasi Studi Lanjut
+                                        </span>
                                     @endif
                                 </td>
-                                <td>
+
+                                <td data-label="Probabilitas">
                                     {{ $probabilitas }}%
+
                                     @if(!empty($item->kategori_probabilitas))
-                                        <span class="text-muted-small">({{ $item->kategori_probabilitas }})</span>
+                                        <span class="text-muted-small">
+                                            ({{ $item->kategori_probabilitas }})
+                                        </span>
                                     @endif
                                 </td>
-                                <td class="text-muted-small">
-                                    {{ $item->created_at->diffForHumans() }}
+
+                                <td class="text-muted-small" data-label="Waktu">
+                                    {{ $item->created_at ? $item->created_at->diffForHumans() : '-' }}
                                 </td>
-                                <td>
+
+                                <td data-label="Aksi">
                                     <a href="{{ route('admin.hasil.prediksi.detail', $item->id) }}" class="btn btn-primary btn-sm">
                                         Detail
                                     </a>
@@ -138,413 +183,44 @@
 
     <div class="card dashboard-card">
         <div class="card-title">Sebaran Alumni Berdasarkan Jurusan SMK</div>
+
         <div class="card-sub" id="subtitleSmk">
             Menampilkan jumlah alumni tracer study pada setiap jurusan SMK. Data diurutkan dari jumlah alumni terbanyak.
         </div>
-        <div id="chartSmk" class="chart chart-smk"></div>
+
+        <div class="chart-scroll">
+            <div id="chartSmk" class="chart chart-smk"></div>
+        </div>
     </div>
 
     <div class="card dashboard-card">
         <div class="card-title">Sebaran Alumni Berdasarkan Universitas Tujuan</div>
+
         <div class="card-sub" id="subtitleUniv">
             Menampilkan universitas tujuan alumni terbanyak berdasarkan data tracer study.
         </div>
-        <div id="chartUniv" class="chart chart-large"></div>
+
+        <div class="chart-scroll">
+            <div id="chartUniv" class="chart chart-large"></div>
+        </div>
     </div>
 
     <div class="card dashboard-card">
-    <div class="card-title">Sebaran Alumni Berdasarkan Program Studi</div>
-    <div class="card-sub">
-        Menampilkan 10 program studi yang paling banyak dipilih alumni.
+        <div class="card-title">Sebaran Alumni Berdasarkan Program Studi</div>
+
+        <div class="card-sub">
+            Menampilkan 10 program studi yang paling banyak dipilih alumni.
+        </div>
+
+        <div class="chart-scroll">
+            <div id="chartJurKuliah" class="chart chart-large"></div>
+        </div>
     </div>
-        <div id="chartJurKuliah" class="chart chart-large"></div>
-    </div>
+
+    <script type="application/json" id="dashboardChartPayload">
+        @json($dashboardChartPayload)
+    </script>
+
 </div>
 
-<script>
-const rawTopUniv = @json($topUniv);
-const rawTopJurKuliah = @json($topJurKuliah);
-const rawAlumniSmk = @json($alumniPerJurusan);
-
-let chartUniv = null;
-let chartJur = null;
-let chartSmk = null;
-
-function isDarkMode() {
-    return document.body.classList.contains('dark');
-}
-
-function getChartTheme() {
-    const dark = isDarkMode();
-
-    return {
-        mode: dark ? 'dark' : 'light',
-        text: dark ? '#e5e7eb' : '#374151',
-        muted: dark ? '#cbd5e1' : '#6b7280',
-        grid: dark ? '#334155' : '#f3f4f6',
-        tooltipBg: dark ? '#111827' : '#ffffff',
-        tooltipText: dark ? '#f9fafb' : '#111827'
-    };
-}
-
-function buildChartUniv(data) {
-    if (chartUniv) chartUniv.destroy();
-    if (!Array.isArray(data) || !data.length) return;
-
-    const theme = getChartTheme();
-
-    const rows = [...data].map(item => {
-        return {
-            label: item.universitas || item.nama_universitas || '-',
-            jumlah: item.jumlah || item.total || 0
-        };
-    })
-    .sort((a, b) => b.jumlah - a.jumlah)
-    .slice(0, 10);
-
-    const labels = rows.map(item => item.label);
-    const values = rows.map(item => item.jumlah);
-    const dynamicHeight = Math.max(360, rows.length * 42);
-
-    chartUniv = new ApexCharts(document.getElementById('chartUniv'), {
-        chart: {
-            type: 'bar',
-            height: dynamicHeight,
-            toolbar: { show: false },
-            fontFamily: 'inherit',
-            foreColor: theme.text,
-            background: 'transparent'
-        },
-        theme: {
-            mode: theme.mode
-        },
-        plotOptions: {
-            bar: {
-                horizontal: true,
-                borderRadius: 6,
-                barHeight: '68%',
-                dataLabels: {
-                    position: 'right'
-                }
-            }
-        },
-        series: [
-            {
-                name: 'Jumlah Alumni',
-                data: values
-            }
-        ],
-        colors: ['#2563eb'],
-        dataLabels: {
-            enabled: true,
-            formatter: val => `${val} alumni`,
-            offsetX: 6,
-            style: {
-                fontSize: '12px',
-                fontWeight: 700,
-                colors: [theme.text]
-            }
-        },
-        xaxis: {
-            categories: labels,
-            labels: {
-                style: {
-                    fontSize: '12px',
-                    colors: theme.muted
-                }
-            }
-        },
-        yaxis: {
-            labels: {
-                style: {
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    colors: theme.text
-                },
-                maxWidth: 260
-            }
-        },
-        grid: {
-            borderColor: theme.grid,
-            strokeDashArray: 4,
-            padding: {
-                right: 36,
-                left: 8
-            }
-        },
-        tooltip: {
-            theme: theme.mode,
-            custom: function({ dataPointIndex }) {
-                const item = rows[dataPointIndex];
-
-                return `
-                    <div style="padding:10px 12px;">
-                        <div style="font-weight:800;margin-bottom:4px;">
-                            ${item.label}
-                        </div>
-                        <div style="font-size:12px;font-weight:700;">
-                            ${item.jumlah} alumni
-                        </div>
-                    </div>
-                `;
-            }
-        },
-        legend: {
-            show: false
-        }
-    });
-
-    chartUniv.render();
-}
-
-function buildChartJur(data) {
-    if (chartJur) chartJur.destroy();
-    if (!Array.isArray(data) || !data.length) return;
-
-    const theme = getChartTheme();
-
-    const rows = [...data].map(item => {
-        return {
-            label: item.program_studi || item.jurusan_kuliah || item.Jurusan_Kuliah || '-',
-            jumlah: item.jumlah || item.total || 0
-        };
-    })
-    .sort((a, b) => b.jumlah - a.jumlah)
-    .slice(0, 10);
-
-    const labels = rows.map(item => item.label);
-    const values = rows.map(item => item.jumlah);
-    const dynamicHeight = Math.max(390, rows.length * 44);
-
-    chartJur = new ApexCharts(document.getElementById('chartJurKuliah'), {
-        chart: {
-            type: 'bar',
-            height: dynamicHeight,
-            toolbar: { show: false },
-            fontFamily: 'inherit',
-            foreColor: theme.text,
-            background: 'transparent'
-        },
-        theme: {
-            mode: theme.mode
-        },
-        plotOptions: {
-            bar: {
-                horizontal: true,
-                borderRadius: 6,
-                barHeight: '68%',
-                dataLabels: {
-                    position: 'right'
-                }
-            }
-        },
-        series: [
-            {
-                name: 'Jumlah Alumni',
-                data: values
-            }
-        ],
-        colors: ['#7c3aed'],
-        dataLabels: {
-            enabled: true,
-            formatter: val => `${val} alumni`,
-            offsetX: 6,
-            style: {
-                fontSize: '12px',
-                fontWeight: 700,
-                colors: [theme.text]
-            }
-        },
-        xaxis: {
-            categories: labels,
-            labels: {
-                style: {
-                    fontSize: '12px',
-                    colors: theme.muted
-                }
-            }
-        },
-        yaxis: {
-            labels: {
-                style: {
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    colors: theme.text
-                },
-                maxWidth: 280
-            }
-        },
-        grid: {
-            borderColor: theme.grid,
-            strokeDashArray: 4,
-            padding: {
-                right: 36,
-                left: 8
-            }
-        },
-        tooltip: {
-            theme: theme.mode,
-            custom: function({ dataPointIndex }) {
-                const item = rows[dataPointIndex];
-
-                return `
-                    <div style="padding:10px 12px;">
-                        <div style="font-weight:800;margin-bottom:4px;">
-                            ${item.label}
-                        </div>
-                        <div style="font-size:12px;font-weight:700;">
-                            ${item.jumlah} alumni
-                        </div>
-                    </div>
-                `;
-            }
-        },
-        legend: {
-            show: false
-        }
-    });
-
-    chartJur.render();
-}
-
-function buildChartSmk(data) {
-    if (chartSmk) chartSmk.destroy();
-    if (!data || !Object.keys(data).length) return;
-
-    const theme = getChartTheme();
-
-    const rows = Object.keys(data).map(key => {
-        return {
-            key: key,
-            label: data[key].nama_lengkap || key,
-            shortLabel: key,
-            jumlah: data[key].jumlah_alumni || data[key].jumlah || 0
-        };
-    }).sort((a, b) => b.jumlah - a.jumlah);
-
-    const labels = rows.map(item => item.shortLabel);
-    const fullLabels = rows.map(item => item.label);
-    const values = rows.map(item => item.jumlah);
-
-    const dynamicHeight = Math.max(360, rows.length * 34);
-
-    chartSmk = new ApexCharts(document.getElementById('chartSmk'), {
-        chart: {
-            type: 'bar',
-            height: dynamicHeight,
-            toolbar: { show: false },
-            fontFamily: 'inherit',
-            foreColor: theme.text,
-            background: 'transparent'
-        },
-        theme: {
-            mode: theme.mode
-        },
-        plotOptions: {
-            bar: {
-                horizontal: true,
-                borderRadius: 6,
-                barHeight: '68%',
-                distributed: false,
-                dataLabels: {
-                    position: 'right'
-                }
-            }
-        },
-        series: [
-            {
-                name: 'Jumlah Alumni',
-                data: values
-            }
-        ],
-        colors: ['#7c3aed'],
-        dataLabels: {
-            enabled: true,
-            formatter: val => `${val} alumni`,
-            offsetX: 6,
-            style: {
-                fontSize: '12px',
-                fontWeight: 700,
-                colors: [theme.text]
-            }
-        },
-        xaxis: {
-            categories: labels,
-            labels: {
-                style: {
-                    fontSize: '12px',
-                    colors: theme.muted
-                }
-            }
-        },
-        yaxis: {
-            labels: {
-                style: {
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    colors: theme.text
-                },
-                maxWidth: 120
-            }
-        },
-        grid: {
-            borderColor: theme.grid,
-            strokeDashArray: 4,
-            padding: {
-                right: 36,
-                left: 8
-            }
-        },
-        tooltip: {
-            theme: theme.mode,
-            custom: function({ dataPointIndex }) {
-                const item = rows[dataPointIndex];
-
-                return `
-                    <div style="padding:10px 12px;">
-                        <div style="font-weight:800;margin-bottom:4px;">
-                            ${item.shortLabel}
-                        </div>
-                        <div style="font-size:12px;margin-bottom:4px;">
-                            ${item.label}
-                        </div>
-                        <div style="font-size:12px;font-weight:700;">
-                            ${item.jumlah} alumni
-                        </div>
-                    </div>
-                `;
-            }
-        },
-        legend: {
-            show: false
-        }
-    });
-
-    chartSmk.render();
-}
-
-function renderCharts() {
-    buildChartUniv(rawTopUniv);
-    buildChartJur(rawTopJurKuliah);
-    buildChartSmk(rawAlumniSmk);
-}
-
-function resetFilter() {
-    const jurusanSelect = document.getElementById('filterJurusan');
-    if (jurusanSelect) jurusanSelect.value = '';
-
-    activeJurusan = null;
-    buildChartSmk(rawAlumniSmk, null);
-
-    document.getElementById('subtitleUniv').textContent = `Seluruh data — ${totalAlumni} alumni`;
-    document.getElementById('filterInfo').textContent = '';
-}
-
-document.addEventListener('DOMContentLoaded', renderCharts);
-
-new MutationObserver(renderCharts).observe(document.body, {
-    attributes: true,
-    attributeFilter: ['class']
-});
-</script>
 @endsection

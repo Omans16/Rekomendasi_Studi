@@ -17,11 +17,6 @@ class AdminController extends Controller
         $this->flaskService = $flaskService;
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Dashboard Admin / Guru BK
-    |--------------------------------------------------------------------------
-    */
     public function dashboard()
     {
         $health = $this->flaskService->healthCheck();
@@ -75,11 +70,6 @@ class AdminController extends Controller
         ));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Form Input Siswa Manual Oleh Admin / Guru BK
-    |--------------------------------------------------------------------------
-    */
     public function inputSiswa()
     {
         $health = $this->flaskService->healthCheck();
@@ -93,11 +83,6 @@ class AdminController extends Controller
         ));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Proses Prediksi Manual Oleh Admin / Guru BK
-    |--------------------------------------------------------------------------
-    */
     public function prosesPrediksi(Request $request)
     {
         $validated = $request->validate([
@@ -220,11 +205,6 @@ class AdminController extends Controller
             ->with('success', 'Prediksi berhasil diproses.');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Riwayat Semua Hasil Prediksi
-    |--------------------------------------------------------------------------
-    */
     public function hasilPrediksi(Request $request)
     {
         $query = HasilPrediksi::query();
@@ -252,11 +232,6 @@ class AdminController extends Controller
         ));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Detail Hasil Prediksi
-    |--------------------------------------------------------------------------
-    */
     public function hasilDetail($id)
     {
         $detail = HasilPrediksi::findOrFail($id);
@@ -264,11 +239,6 @@ class AdminController extends Controller
         return view('admin.hasil-prediksi', compact('detail'));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Info Model
-    |--------------------------------------------------------------------------
-    */
     public function infoModel()
     {
         $health = $this->flaskService->healthCheck();
@@ -323,11 +293,6 @@ class AdminController extends Controller
         ));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Upload Alumni Lama
-    |--------------------------------------------------------------------------
-    */
     public function prosesUploadAlumni(Request $request)
     {
         return back()->with(

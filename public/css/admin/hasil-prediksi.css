@@ -1,479 +1,544 @@
-/* ============================================================
-   HASIL PREDIKSI — ADMIN / GURU BK
-   Path: public/css/admin/hasil-prediksi.css
-   Untuk monitoring hasil RF + KNN Similarity
-============================================================ */
+/* =========================================================
+   HASIL PREDIKSI ADMIN / GURU BK
+   StudyPath SMK
+   Theme: Global style.css
+========================================================= */
 
-:root {
-    --admin-blue-50: #eff6ff;
-    --admin-blue-100: #dbeafe;
-    --admin-blue-200: #bfdbfe;
-    --admin-blue-600: #2563eb;
-    --admin-blue-700: #1d4ed8;
-    --admin-blue-800: #1e40af;
-
-    --admin-green-50: #ecfdf5;
-    --admin-green-100: #dcfce7;
-    --admin-green-600: #16a34a;
-    --admin-green-700: #15803d;
-    --admin-green-800: #166534;
-
-    --admin-amber-50: #fffbeb;
-    --admin-amber-100: #fef3c7;
-    --admin-amber-500: #f59e0b;
-    --admin-amber-700: #b45309;
-    --admin-amber-800: #92400e;
-
-    --admin-purple-50: #f5f3ff;
-    --admin-purple-100: #ede9fe;
-    --admin-purple-600: #7c3aed;
-    --admin-purple-700: #6d28d9;
-    --admin-purple-800: #5b21b6;
-
-    --admin-red-50: #fef2f2;
-    --admin-red-100: #fee2e2;
-    --admin-red-500: #ef4444;
-    --admin-red-700: #b91c1c;
-    --admin-red-800: #991b1b;
-
-    --page-card: #ffffff;
-    --page-soft: #f8fafc;
-    --page-border: #e5e7eb;
-    --page-border-soft: #eef2f7;
-    --page-text: #0f172a;
-    --page-muted: #64748b;
-    --page-muted-soft: #94a3b8;
-
-    --page-shadow: 0 12px 30px rgba(15, 23, 42, 0.055);
-    --page-shadow-soft: 0 8px 22px rgba(15, 23, 42, 0.045);
+/* =========================
+   BASE SCOPE
+========================= */
+.admin-hasil-page,
+.admin-hasil-page * {
+    box-sizing: border-box;
+    font-family: var(--font-body, 'Plus Jakarta Sans', 'Inter', sans-serif);
 }
 
-/* ================= FONT GLOBAL ================= */
-.page-header,
-.page-header *,
-.result-header,
-.result-header *,
-.card,
-.card *,
-.alert,
-.alert *,
-.btn,
-.form-select,
-.filter-form,
-.filter-form *,
-.prediksi-table,
-.prediksi-table *,
-.pagination-row,
-.pagination-row * {
-    font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
+.admin-hasil-page {
+    width: 100%;
+    max-width: 100%;
+    color: var(--text);
 }
 
-/* ================= PAGE HEADER ================= */
-.page-header {
-    position: relative;
-    overflow: hidden;
-    margin-bottom: 20px;
-    padding: 26px 28px;
-    border: 1px solid var(--admin-blue-100);
-    border-radius: 20px;
-    background:
-        radial-gradient(circle at top right, rgba(37, 99, 235, 0.16), transparent 34%),
-        linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
-    box-shadow: var(--page-shadow);
+.admin-hasil-page p,
+.admin-hasil-page .alert,
+.admin-hasil-page .card-sub,
+.admin-hasil-page .score-note,
+.admin-hasil-page .quality-desc,
+.admin-hasil-page .interpretasi-text,
+.admin-hasil-page .rek-sub,
+.admin-hasil-page .empty-recommendation-desc,
+.admin-hasil-page .placeholder-desc {
+    font-size: 12px;
+    font-weight: 400;
 }
 
-.page-header::before {
-    content: "Admin / Guru BK";
-    display: inline-flex;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 6px 11px;
-    border-radius: 999px;
-    background: var(--admin-blue-100);
-    color: var(--admin-blue-700);
-    font-size: 0.74rem;
+.admin-hasil-page h1,
+.admin-hasil-page h2,
+.admin-hasil-page h3,
+.admin-hasil-page h4,
+.admin-hasil-page h5,
+.admin-hasil-page h6 {
+    color: var(--text);
+    font-size: 20px;
     font-weight: 800;
-    letter-spacing: 0.01em;
-}
-
-.page-header h2 {
-    margin: 0 0 8px;
-    color: var(--page-text);
-    font-size: 1.5rem;
-    font-weight: 800;
-    letter-spacing: -0.035em;
     line-height: 1.25;
 }
 
-.page-header p {
+/* =========================
+   PAGE HEADER
+========================= */
+.admin-hasil-page .page-header {
+    position: relative;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding: 26px 28px;
+    border: 1px solid var(--primary-border);
+    border-radius: var(--radius-xl, 24px);
+    background:
+        radial-gradient(circle at top right, var(--primary-soft), transparent 34%),
+        linear-gradient(135deg, var(--card) 0%, var(--surface-3) 100%);
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-hasil-page .page-header::before {
+    content: "Admin / Guru BK";
+    width: fit-content;
+    padding: 6px 11px;
+    border: 1px solid var(--primary-border);
+    border-radius: 999px;
+    background: var(--primary-soft);
+    color: var(--primary-2);
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.admin-hasil-page .page-header h2 {
+    max-width: 680px;
+    margin: 0;
+    color: var(--text);
+    letter-spacing: -0.02em;
+}
+
+.admin-hasil-page .page-header p {
     max-width: 820px;
     margin: 0;
-    color: #475569;
-    font-size: 0.92rem;
-    font-weight: 500;
+    color: var(--muted);
     line-height: 1.7;
 }
 
-/* ================= ALERT ================= */
-.alert {
+/* =========================
+   ALERT
+========================= */
+.admin-hasil-page .alert {
     margin-bottom: 18px;
     padding: 14px 16px;
+    border: 1px solid var(--success-border);
+    border-left: 5px solid var(--success);
     border-radius: 14px;
-    font-size: 0.88rem;
-    font-weight: 600;
-    line-height: 1.55;
+    background: var(--success-soft);
+    color: var(--success-text);
+    line-height: 1.6;
 }
 
-.alert-success {
-    border-left: 5px solid #10b981;
-    background: var(--admin-green-50);
-    color: var(--admin-green-800);
-}
-
-/* ================= RESULT HEADER DETAIL ================= */
-.result-header {
+/* =========================
+   RESULT HEADER
+========================= */
+.admin-hasil-page .result-header {
     position: relative;
     overflow: hidden;
     margin-bottom: 22px;
     padding: 26px 28px;
-    border-radius: 22px;
-    box-shadow: var(--page-shadow);
+    border-radius: var(--radius-xl, 24px);
+    box-shadow: var(--shadow-sm);
 }
 
-.result-header.result-kuliah {
-    border: 1px solid #bbf7d0;
+.admin-hasil-page .result-header.result-kuliah {
+    border: 1px solid rgba(34, 197, 94, 0.42);
     background:
-        radial-gradient(circle at top right, rgba(34, 197, 94, 0.18), transparent 34%),
-        linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
+        radial-gradient(circle at top right, rgba(34, 197, 94, 0.34), transparent 34%),
+        linear-gradient(135deg, #ffffff 0%, #dcfce7 100%);
+    box-shadow: 0 14px 34px rgba(34, 197, 94, 0.12);
 }
 
-.result-header.result-tidak {
-    border: 1px solid #fed7aa;
+.admin-hasil-page .result-header.result-tidak {
+    border: 1px solid rgba(245, 158, 11, 0.42);
     background:
-        radial-gradient(circle at top right, rgba(245, 158, 11, 0.20), transparent 34%),
-        linear-gradient(135deg, #ffffff 0%, #fffbeb 100%);
+        radial-gradient(circle at top right, rgba(245, 158, 11, 0.30), transparent 34%),
+        linear-gradient(135deg, #ffffff 0%, #fef3c7 100%);
+    box-shadow: 0 14px 34px rgba(245, 158, 11, 0.12);
 }
 
-.result-header-inner {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+.admin-hasil-page .result-header-inner {
+    display: grid;
+    gap: 10px;
 }
 
-.result-status-badge {
-    display: inline-flex;
-    align-items: center;
+.admin-hasil-page .result-status-badge {
     width: fit-content;
     padding: 7px 12px;
+    border: 1px solid transparent;
     border-radius: 999px;
-    font-size: 0.78rem;
+    display: inline-flex;
+    align-items: center;
+    font-size: 12px;
     font-weight: 800;
-    letter-spacing: 0.01em;
+    line-height: 1.2;
 }
 
-.result-status-badge.badge-kuliah {
-    background: var(--admin-green-100);
-    color: var(--admin-green-800);
+.admin-hasil-page .result-status-badge.badge-kuliah {
+    border-color: rgba(34, 197, 94, 0.42);
+    background: #dcfce7;
+    color: #166534;
 }
 
-.result-status-badge.badge-tidak {
-    background: var(--admin-amber-100);
-    color: var(--admin-amber-800);
+.admin-hasil-page .result-status-badge.badge-tidak {
+    border-color: rgba(245, 158, 11, 0.42);
+    background: #fef3c7;
+    color: #92400e;
 }
 
-.result-meta-row {
+.admin-hasil-page .result-header h3 {
+    margin: 2px 0 0;
+    color: var(--text);
+    letter-spacing: -0.02em;
+}
+
+.admin-hasil-page .result-header p {
+    max-width: 820px;
+    margin: 0;
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.admin-hasil-page .result-meta-row {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    align-items: center;
+    margin-top: 6px;
 }
 
-.result-meta-sep {
+.admin-hasil-page .result-meta-sep {
     display: none;
 }
 
-.result-meta-item {
+.admin-hasil-page .result-meta-item {
+    min-height: 38px;
+    padding: 7px 11px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.88);
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    min-height: 38px;
-    padding: 7px 12px;
-    border: 1px solid rgba(226, 232, 240, 0.9);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.78);
 }
 
-.result-meta-label {
-    color: var(--page-muted);
-    font-size: 0.74rem;
-    font-weight: 700;
+.admin-hasil-page .result-header.result-kuliah .result-meta-item {
+    border-color: rgba(34, 197, 94, 0.22);
 }
 
-.result-meta-val {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: var(--page-text);
-    font-size: 0.8rem;
+.admin-hasil-page .result-header.result-tidak .result-meta-item {
+    border-color: rgba(245, 158, 11, 0.22);
+}
+
+.admin-hasil-page .result-meta-label {
+    color: var(--muted);
+    font-size: 12px;
     font-weight: 800;
 }
 
-.jurusan-fullname {
-    color: var(--page-muted);
-    font-size: 0.76rem;
-    font-weight: 600;
+.admin-hasil-page .result-header.result-kuliah .result-meta-label {
+    color: #166534;
 }
 
-/* ================= LAYOUT ================= */
-.two-col {
+.admin-hasil-page .result-header.result-tidak .result-meta-label {
+    color: #92400e;
+}
+
+.admin-hasil-page .result-meta-val {
+    color: var(--text);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.admin-hasil-page .result-header.result-kuliah .result-meta-val {
+    color: #052e16;
+}
+
+.admin-hasil-page .result-header.result-tidak .result-meta-val {
+    color: #78350f;
+}
+
+.admin-hasil-page .jurusan-fullname {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 400;
+}
+
+/* =========================
+   GRID
+========================= */
+.admin-hasil-page .two-col {
     display: grid;
-    grid-template-columns: minmax(0, 0.95fr) minmax(360px, 1.05fr);
+    grid-template-columns: minmax(0, 0.95fr) minmax(340px, 1.05fr);
     gap: 18px;
     align-items: start;
 }
 
-/* ================= CARD BASE ================= */
-.card {
+/* =========================
+   CARD
+========================= */
+.admin-hasil-page .card {
     position: relative;
     overflow: hidden;
     margin-bottom: 18px;
     padding: 20px;
-    border: 1px solid var(--page-border);
-    border-radius: 18px;
-    background: var(--page-card);
-    box-shadow: var(--page-shadow-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg, 18px);
+    background: color-mix(in srgb, var(--card) 94%, transparent);
+    box-shadow: var(--shadow-sm);
 }
 
-.card::before {
+.admin-hasil-page .card::before {
     content: "";
     position: absolute;
     inset: 0 0 auto 0;
     height: 4px;
-    background: linear-gradient(90deg, var(--admin-blue-600), #60a5fa);
+    background: linear-gradient(90deg, var(--primary), var(--primary-2));
 }
 
-.card-title {
+.admin-hasil-page .card-title {
+    margin-bottom: 14px;
+    color: var(--text);
     display: flex;
     align-items: center;
     gap: 9px;
-    margin: 0 0 14px;
-    color: var(--page-text);
-    font-size: 1rem;
+    font-size: 15px;
     font-weight: 800;
-    letter-spacing: -0.02em;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
 }
 
-.card-title::before {
+.admin-hasil-page .card-title::before {
     width: 28px;
     height: 28px;
+    flex: 0 0 28px;
+    border: 1px solid var(--primary-border);
     border-radius: 10px;
-    background: var(--admin-blue-50);
-    color: var(--admin-blue-700);
+    background: var(--primary-soft);
+    color: var(--primary-2);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-family: "Font Awesome 6 Free";
-    font-size: 0.78rem;
+    font-size: 12px;
     font-weight: 900;
-    flex-shrink: 0;
+}
+
+.admin-hasil-page .card-academic .card-title::before {
+    content: "\f19d";
+}
+
+.admin-hasil-page .card-summary .card-title::before {
+    content: "\f080";
+}
+
+.admin-hasil-page .card-interpretation .card-title::before {
     content: "\f05a";
 }
 
-.card-sub {
+.admin-hasil-page .card-alumni .card-title::before {
+    content: "\f0c0";
+}
+
+.admin-hasil-page .card-recommendation .card-title::before {
+    content: "\f5fd";
+}
+
+.admin-hasil-page .card-sub {
     margin-bottom: 12px;
-    color: var(--page-muted);
-    font-size: 0.84rem;
-    font-weight: 500;
-    line-height: 1.65;
+    color: var(--muted);
+    line-height: 1.7;
 }
 
-/* ================= METRIC ROW ================= */
-.metric-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 14px;
+/* =========================
+   METRIC
+========================= */
+.admin-hasil-page .metric-row {
     padding: 11px 0;
-    border-bottom: 1px solid var(--page-border-soft);
-    font-size: 0.86rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    font-size: 12px;
 }
 
-.metric-row:last-child {
-    border-bottom: none;
+.admin-hasil-page .metric-row:last-child {
+    border-bottom: 0;
 }
 
-.metric-row .label {
-    color: var(--page-muted);
-    font-weight: 600;
+.admin-hasil-page .metric-row .label {
+    color: var(--muted);
+    font-weight: 700;
 }
 
-.metric-row .value {
-    color: var(--page-text);
+.admin-hasil-page .metric-row .value {
+    color: var(--text);
     font-weight: 800;
     text-align: right;
 }
 
-/* ================= SCORE BAR ================= */
-.score-bar-wrap {
+/* =========================
+   SCORE BAR
+========================= */
+.admin-hasil-page .score-bar-wrap {
     margin-bottom: 16px;
     padding: 13px;
-    border: 1px solid var(--page-border-soft);
+    border: 1px solid var(--border);
     border-radius: 15px;
-    background: var(--page-soft);
+    background: color-mix(in srgb, var(--surface-2) 55%, transparent);
 }
 
-.score-bar-label {
+.admin-hasil-page .score-bar-label {
+    margin-bottom: 8px;
+    color: var(--text);
     display: flex;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 8px;
-    color: var(--page-text);
-    font-size: 0.82rem;
-    font-weight: 700;
-}
-
-.score-bar-label span:last-child {
-    min-width: 56px;
-    padding: 4px 9px;
-    border-radius: 999px;
-    background: #ffffff;
-    color: var(--admin-blue-700);
-    text-align: center;
+    font-size: 12px;
     font-weight: 800;
-}
-
-.score-bar-bg {
-    height: 9px;
-    overflow: hidden;
-    background: #e5e7eb;
-    border-radius: 999px;
-}
-
-.score-bar-fill {
-    height: 100%;
-    border-radius: 999px;
-    transition: width 0.45s ease;
-}
-
-.fill-blue {
-    background: linear-gradient(90deg, var(--admin-blue-600), #60a5fa);
-}
-
-.fill-green {
-    background: linear-gradient(90deg, var(--admin-green-600), #4ade80);
-}
-
-.fill-amber {
-    background: linear-gradient(90deg, var(--admin-amber-500), #fbbf24);
-}
-
-.fill-purple {
-    background: linear-gradient(90deg, var(--admin-purple-600), #a78bfa);
-}
-
-/* ================= FORMULA / INTERPRETATION ================= */
-.formula-box {
-    margin: 12px 0;
-    padding: 13px 14px;
-    border: 1px solid var(--admin-blue-100);
-    border-radius: 14px;
-    background: var(--admin-blue-50);
-    color: #334155;
-    font-family: var(--font-body, 'Plus Jakarta Sans', sans-serif);
-    font-size: 0.82rem;
-    font-weight: 700;
-    line-height: 1.6;
-}
-
-.interpretasi-text {
-    color: var(--page-text);
-    font-size: 0.9rem;
-    font-weight: 500;
-    line-height: 1.8;
-}
-
-/* ================= REKOMENDASI BLOCK ================= */
-.rekomendasi-sub {
-    margin-bottom: 16px;
-    padding: 13px 14px;
-    border-left: 4px solid var(--admin-blue-600);
-    border-radius: 0 12px 12px 0;
-    background: var(--admin-blue-50);
-    color: #334155;
-    font-size: 0.84rem;
-    font-weight: 600;
-    line-height: 1.65;
-}
-
-.rek-univ-block {
-    margin-bottom: 12px;
-    overflow: hidden;
-    border: 1px solid var(--page-border);
-    border-radius: 16px;
-    background: #ffffff;
-}
-
-.rek-univ-block:last-child {
-    margin-bottom: 0;
-}
-
-.rek-univ-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 13px;
-    padding: 15px;
-    background: #ffffff;
-}
-
-.rek-rank {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    min-width: 34px;
-    border-radius: 12px;
-    background: var(--admin-blue-50);
-    color: var(--admin-blue-700);
-    font-size: 0.9rem;
-    font-weight: 800;
-    flex-shrink: 0;
-}
-
-.rank-top {
-    background: linear-gradient(135deg, var(--admin-blue-600), #3b82f6);
-    color: #ffffff;
-}
-
-.rek-content {
-    flex: 1;
-    min-width: 0;
-}
-
-.rek-name {
-    color: var(--page-text);
-    font-size: 0.94rem;
-    font-weight: 800;
-    line-height: 1.35;
-}
-
-.rek-jurusan {
-    margin-top: 3px;
-    color: var(--admin-blue-700);
-    font-size: 0.86rem;
-    font-weight: 700;
-    line-height: 1.45;
-}
-
-.rek-sub {
-    margin-top: 5px;
-    color: var(--page-muted);
-    font-size: 0.78rem;
-    font-weight: 500;
     line-height: 1.5;
 }
 
-.rek-score-stack {
+.admin-hasil-page .score-bar-label span:last-child {
+    min-width: 56px;
+    padding: 4px 9px;
+    border: 1px solid var(--primary-border);
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--primary-2);
+    text-align: center;
+}
+
+.admin-hasil-page .score-bar-bg {
+    height: 9px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--muted) 18%, transparent);
+}
+
+.admin-hasil-page .score-bar-fill {
+    width: 0;
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--primary), var(--primary-2));
+    transition: width 0.45s ease;
+}
+
+.admin-hasil-page .score-note {
+    margin-top: 8px;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+/* =========================
+   QUALITY / FORMULA
+========================= */
+.admin-hasil-page .formula-box,
+.admin-hasil-page .quality-box {
+    margin: 12px 0;
+    padding: 13px 14px;
+    border: 1px solid var(--primary-border);
+    border-radius: 14px;
+    background: var(--primary-soft);
+    color: var(--text);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.admin-hasil-page .formula-box {
+    font-weight: 800;
+}
+
+.admin-hasil-page .quality-label {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.admin-hasil-page .quality-value {
+    margin-top: 3px;
+    color: var(--primary-2);
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.admin-hasil-page .quality-desc {
+    margin-top: 4px;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.admin-hasil-page .interpretasi-text {
+    color: var(--text);
+    font-weight: 600;
+    line-height: 1.8;
+}
+
+/* =========================
+   REKOMENDASI
+========================= */
+.admin-hasil-page .rekomendasi-sub {
+    margin-bottom: 16px;
+    padding: 13px 14px;
+    border-left: 4px solid var(--primary);
+    border-radius: 0 12px 12px 0;
+    background: var(--primary-soft);
+    color: var(--text);
+    line-height: 1.7;
+}
+
+.admin-hasil-page .rek-univ-block {
+    margin-bottom: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--card);
+}
+
+.admin-hasil-page .rek-univ-block:last-child {
+    margin-bottom: 0;
+}
+
+.admin-hasil-page .rek-univ-header {
+    padding: 15px;
+    background: var(--card);
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+}
+
+.admin-hasil-page .rek-rank {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    border: 1px solid var(--primary-border);
+    border-radius: 12px;
+    background: var(--primary-soft);
+    color: var(--primary-2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 900;
+    flex-shrink: 0;
+}
+
+.admin-hasil-page .rank-top {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, var(--primary), var(--primary-2));
+    color: var(--btn-text);
+}
+
+.admin-hasil-page .rek-content {
+    min-width: 0;
+    flex: 1;
+}
+
+.admin-hasil-page .rek-name {
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.45;
+}
+
+.admin-hasil-page .rek-jurusan {
+    margin-top: 3px;
+    color: var(--primary-2);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.45;
+}
+
+.admin-hasil-page .rek-sub {
+    margin-top: 5px;
+    color: var(--muted);
+    line-height: 1.6;
+}
+
+.admin-hasil-page .rek-score-stack {
     display: flex;
     flex-direction: column;
     gap: 7px;
@@ -482,643 +547,681 @@
     white-space: nowrap;
 }
 
-.rek-score-chip {
+.admin-hasil-page .rek-score-chip {
     padding: 5px 9px;
+    border: 1px solid var(--primary-border);
     border-radius: 999px;
-    font-size: 0.7rem;
-    font-weight: 800;
-}
-
-.chip-cbf {
-    background: var(--admin-blue-100);
-    color: var(--admin-blue-800);
-}
-
-.chip-hybrid {
-    background: var(--admin-purple-100);
-    color: var(--admin-purple-800);
-}
-
-/* ================= BADGE ================= */
-.stat-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 9px;
-    border-radius: 999px;
-    font-size: 0.74rem;
+    background: var(--primary-soft);
+    color: var(--primary-2);
+    font-size: 11px;
     font-weight: 800;
     line-height: 1.2;
 }
 
-.badge-blue {
-    background: var(--admin-blue-100);
-    color: var(--admin-blue-800);
+.admin-hasil-page .chip-cbf,
+.admin-hasil-page .chip-hybrid {
+    border-color: var(--primary-border);
+    background: var(--primary-soft);
+    color: var(--primary-2);
 }
 
-.badge-green {
-    background: var(--admin-green-100);
-    color: var(--admin-green-800);
+/* =========================
+   BADGE
+========================= */
+.admin-hasil-page .stat-badge {
+    padding: 4px 9px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1.2;
+    white-space: normal;
 }
 
-.badge-amber {
-    background: var(--admin-amber-100);
-    color: var(--admin-amber-800);
+.admin-hasil-page .badge-blue,
+.admin-hasil-page .stat-badge {
+    border-color: var(--primary-border);
+    background: var(--primary-soft);
+    color: var(--primary-2);
 }
 
-.badge-purple {
-    background: var(--admin-purple-100);
-    color: var(--admin-purple-800);
+.admin-hasil-page .badge-green {
+    border-color: var(--success-border);
+    background: var(--success-soft);
+    color: var(--success-text);
 }
 
-/* ================= EMPTY STATE ================= */
-.empty-recommendation,
-.card-placeholder {
+.admin-hasil-page .badge-amber {
+    border-color: var(--primary-border);
+    background: var(--primary-soft);
+    color: var(--primary-2);
+}
+
+/* =========================
+   EMPTY
+========================= */
+.admin-hasil-page .empty-recommendation,
+.admin-hasil-page .card-placeholder {
     padding: 34px 18px;
     text-align: center;
 }
 
-.empty-recommendation-title,
-.placeholder-title {
+.admin-hasil-page .empty-recommendation-title,
+.admin-hasil-page .placeholder-title {
     margin-bottom: 7px;
-    color: var(--page-text);
-    font-size: 1rem;
+    color: var(--text);
+    font-size: 15px;
     font-weight: 800;
 }
 
-.empty-recommendation-desc,
-.placeholder-desc {
+.admin-hasil-page .empty-recommendation-desc,
+.admin-hasil-page .placeholder-desc {
     max-width: 560px;
     margin: 0 auto 16px;
-    color: var(--page-muted);
-    font-size: 0.86rem;
-    font-weight: 500;
+    color: var(--muted);
     line-height: 1.7;
 }
 
-.empty-recommendation.muted {
-    color: var(--page-muted);
-    font-size: 0.86rem;
-    font-weight: 600;
+.admin-hasil-page .empty-recommendation.muted {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 400;
 }
 
-.placeholder-icon {
+.admin-hasil-page .placeholder-icon {
     width: 48px;
     height: 48px;
     margin: 0 auto 12px;
+    border: 1px solid var(--primary-border);
     border-radius: 16px;
-    background: var(--admin-blue-50);
-    color: var(--admin-blue-700);
+    background: var(--primary-soft);
+    color: var(--primary-2);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.2rem;
+    font-size: 20px;
     font-weight: 800;
 }
 
-/* ================= BUTTON ================= */
-.btn {
+/* =========================
+   BUTTON
+========================= */
+.admin-hasil-page .btn {
+    min-height: 40px;
+    padding: 9px 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--text);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: 40px;
-    padding: 9px 16px;
-    border: 1px solid #d1d5db;
-    border-radius: 12px;
-    background: #ffffff;
-    color: var(--page-text);
-    font-size: 0.84rem;
-    font-weight: 700;
-    cursor: pointer;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.2;
     text-decoration: none;
+    cursor: pointer;
     transition:
-        background-color 0.2s ease,
+        background 0.2s ease,
         color 0.2s ease,
         border-color 0.2s ease,
         box-shadow 0.2s ease,
         transform 0.15s ease;
 }
 
-.btn:hover {
-    background: #f3f4f6;
+.admin-hasil-page .btn:hover {
+    border-color: var(--primary-border);
+    background: var(--primary-soft);
+    color: var(--primary-2);
     transform: translateY(-1px);
 }
 
-.btn-primary {
-    border-color: var(--admin-blue-600);
-    background: linear-gradient(135deg, var(--admin-blue-600) 0%, #3b82f6 100%);
-    color: #ffffff;
-    box-shadow: 0 12px 24px rgba(37, 99, 235, 0.22);
+.admin-hasil-page .btn-primary {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+    color: var(--btn-text);
+    box-shadow: 0 12px 24px var(--primary-glow);
 }
 
-.btn-primary:hover {
-    border-color: var(--admin-blue-700);
-    background: linear-gradient(135deg, var(--admin-blue-700) 0%, var(--admin-blue-600) 100%);
-    color: #ffffff;
+.admin-hasil-page .btn-primary:hover {
+    border-color: var(--primary-2);
+    background: linear-gradient(135deg, var(--primary-2) 0%, var(--primary) 100%);
+    color: var(--btn-text);
 }
 
-.btn-sm {
+.admin-hasil-page .btn-sm {
     min-height: 34px;
     padding: 7px 12px;
-    font-size: 0.78rem;
+    font-size: 12px;
 }
 
-.action-row {
+/* =========================
+   ACTION ROW
+========================= */
+.admin-hasil-page .result-action-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(340px, 1.05fr);
+    gap: 18px;
+    align-items: start;
+    margin-top: -4px;
+    margin-bottom: 18px;
+}
+
+.admin-hasil-page .action-row {
     display: flex;
     gap: 10px;
-    margin-top: 4px;
 }
 
-.action-link {
+.admin-hasil-page .result-action-bottom {
+    width: 100%;
+}
+
+.admin-hasil-page .result-action-spacer {
+    display: block;
+}
+
+.admin-hasil-page .action-link {
     flex: 1;
     text-align: center;
 }
 
-/* ================= FILTER FORM ================= */
-.filter-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
+/* =========================
+   FILTER & TABLE
+========================= */
+.admin-hasil-page .filter-form {
     margin-bottom: 18px;
     padding: 14px;
-    border: 1px solid var(--page-border);
+    border: 1px solid var(--border);
     border-radius: 16px;
-    background: #ffffff;
-    box-shadow: var(--page-shadow-soft);
+    background: color-mix(in srgb, var(--card) 94%, transparent);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    box-shadow: var(--shadow-sm);
 }
 
-.form-select,
-.filter-select {
-    min-height: 38px;
+.admin-hasil-page .form-select,
+.admin-hasil-page .filter-select {
     width: auto;
+    min-height: 38px;
     padding: 8px 12px;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--border);
     border-radius: 12px;
-    background: #ffffff;
-    color: var(--page-text);
-    font-size: 0.84rem;
-    font-weight: 700;
+    background: var(--field-bg, var(--surface));
+    color: var(--input-text, var(--text));
+    font-size: 12px;
+    font-weight: 800;
     outline: none;
 }
 
-.form-select:focus,
-.filter-select:focus {
-    border-color: var(--admin-blue-600);
-    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.11);
+.admin-hasil-page .form-select:focus,
+.admin-hasil-page .filter-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-soft);
 }
 
-.reset-link {
-    color: var(--page-muted);
-    font-size: 0.84rem;
-    font-weight: 700;
+.admin-hasil-page .reset-link {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
     text-decoration: none;
 }
 
-.reset-link:hover {
-    color: var(--admin-blue-700);
+.admin-hasil-page .reset-link:hover {
+    color: var(--primary-2);
 }
 
-/* ================= TABLE RIWAYAT ================= */
-#tabelWrap {
+.admin-hasil-page #tabelWrap {
     width: 100%;
     overflow-x: auto;
 }
 
-.prediksi-table {
+.admin-hasil-page .prediksi-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.86rem;
+    color: var(--text);
+    font-size: 12px;
 }
 
-.prediksi-table th,
-.prediksi-table td {
+.admin-hasil-page .prediksi-table th,
+.admin-hasil-page .prediksi-table td {
     padding: 11px 8px;
     text-align: left;
     vertical-align: middle;
 }
 
-.prediksi-table th {
-    color: var(--page-muted);
-    font-size: 0.76rem;
+.admin-hasil-page .prediksi-table th {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.admin-hasil-page .table-head-row,
+.admin-hasil-page .table-body-row {
+    border-bottom: 1px solid var(--border);
+}
+
+.admin-hasil-page .table-name {
+    color: var(--text);
     font-weight: 800;
 }
 
-.table-head-row {
-    border-bottom: 1px solid var(--page-border);
+.admin-hasil-page .table-index,
+.admin-hasil-page .table-date,
+.admin-hasil-page .table-category {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 400;
 }
 
-.table-body-row {
-    border-bottom: 1px solid #f1f5f9;
-}
-
-.table-name {
-    color: var(--page-text);
-    font-weight: 800;
-}
-
-.table-index,
-.table-date,
-.table-category {
-    color: var(--page-muted-soft);
-    font-size: 0.78rem;
-    font-weight: 600;
-}
-
-/* ================= PAGINATION ================= */
-.pagination-row {
+/* =========================
+   PAGINATION
+========================= */
+.admin-hasil-page .pagination-row {
+    margin-top: 16px;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
     align-items: center;
     justify-content: space-between;
-    margin-top: 16px;
+    gap: 10px;
 }
 
-.pagination-info {
-    color: var(--page-muted);
-    font-size: 0.8rem;
-    font-weight: 600;
+.admin-hasil-page .pagination-info {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 400;
 }
 
-.pagination-controls {
+.admin-hasil-page .pagination-controls {
     display: flex;
-    gap: 7px;
     align-items: center;
+    gap: 7px;
 }
 
-.pagination-btn {
+.admin-hasil-page .pagination-btn {
     min-height: 34px;
     padding: 7px 13px;
-    border: 1px solid var(--page-border);
+    border: 1px solid var(--border);
     border-radius: 11px;
-    background: #ffffff;
-    color: #334155;
-    font-size: 0.78rem;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 12px;
     font-weight: 800;
     cursor: pointer;
 }
 
-.pagination-btn:hover:not(:disabled) {
-    border-color: var(--admin-blue-200);
-    background: var(--admin-blue-50);
-    color: var(--admin-blue-700);
+.admin-hasil-page .pagination-btn:hover:not(:disabled) {
+    border-color: var(--primary-border);
+    background: var(--primary-soft);
+    color: var(--primary-2);
 }
 
-.pagination-btn:disabled {
+.admin-hasil-page .pagination-btn:disabled {
     cursor: not-allowed;
+    opacity: 0.45;
 }
 
-.page-indicator {
+.admin-hasil-page .page-indicator {
     min-width: 88px;
-    color: #334155;
-    font-size: 0.8rem;
+    color: var(--text);
+    font-size: 12px;
     font-weight: 800;
     text-align: center;
 }
 
-/* ================= LEGACY SUPPORT ================= */
-.result-box {
-    padding: 16px;
-    margin-bottom: 12px;
-    border: 1px solid var(--page-border);
-    border-radius: 14px;
-}
-
-.result-title {
-    font-size: 0.95rem;
-    font-weight: 800;
-}
-
-.result-desc {
-    margin-top: 5px;
-    font-size: 0.84rem;
-}
-
-.rec-card {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 8px;
-    padding: 12px 14px;
-    border: 1px solid var(--page-border);
-    border-radius: 14px;
-    background: #ffffff;
-}
-
-.rec-rank {
-    width: 30px;
-    height: 30px;
-    border-radius: 12px;
-    background: var(--admin-blue-50);
-    color: var(--admin-blue-700);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    flex-shrink: 0;
-}
-
-.rank-1 {
-    background: var(--admin-blue-600);
-    color: #ffffff;
-}
-
-.rank-2,
-.rank-3,
-.rank-4,
-.rank-5 {
-    background: var(--admin-blue-50);
-    color: var(--admin-blue-700);
-}
-
-.rec-info {
-    flex: 1;
-}
-
-.rec-jurusan {
-    color: var(--page-text);
-    font-size: 0.86rem;
-    font-weight: 800;
-}
-
-.rec-univ {
-    margin-top: 2px;
-    color: var(--page-muted);
-    font-size: 0.8rem;
-}
-
-.rec-scores {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 6px;
-}
-
-.score-pill {
-    padding: 3px 8px;
-    border-radius: 999px;
-    font-size: 0.72rem;
-    font-weight: 800;
-}
-
-/* ================= DARK MODE ================= */
-html[data-theme="dark"] .page-header,
-body.dark .page-header {
-    border-color: #1e3a8a;
+/* =========================
+   DARK MODE
+========================= */
+html[data-theme="dark"] .admin-hasil-page .page-header,
+body.dark .admin-hasil-page .page-header {
     background:
-        radial-gradient(circle at top right, rgba(37, 99, 235, 0.30), transparent 34%),
-        linear-gradient(135deg, #1f2937 0%, #111827 100%);
-    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.24);
+        radial-gradient(circle at top right, var(--primary-soft), transparent 34%),
+        linear-gradient(135deg, var(--card) 0%, var(--surface) 100%);
 }
 
-html[data-theme="dark"] .page-header::before,
-body.dark .page-header::before {
-    background: #1e3a8a;
-    color: #dbeafe;
-}
-
-html[data-theme="dark"] .page-header h2,
-html[data-theme="dark"] .card-title,
-html[data-theme="dark"] .metric-row .value,
-html[data-theme="dark"] .interpretasi-text,
-html[data-theme="dark"] .rek-name,
-html[data-theme="dark"] .table-name,
-html[data-theme="dark"] .empty-recommendation-title,
-html[data-theme="dark"] .placeholder-title,
-html[data-theme="dark"] .result-meta-val,
-html[data-theme="dark"] .prediksi-table td,
-body.dark .page-header h2,
-body.dark .card-title,
-body.dark .metric-row .value,
-body.dark .interpretasi-text,
-body.dark .rek-name,
-body.dark .table-name,
-body.dark .empty-recommendation-title,
-body.dark .placeholder-title,
-body.dark .result-meta-val,
-body.dark .prediksi-table td {
-    color: #f8fafc;
-}
-
-html[data-theme="dark"] .page-header p,
-html[data-theme="dark"] .card-sub,
-html[data-theme="dark"] .metric-row .label,
-html[data-theme="dark"] .rek-sub,
-html[data-theme="dark"] .empty-recommendation-desc,
-html[data-theme="dark"] .placeholder-desc,
-html[data-theme="dark"] .pagination-info,
-html[data-theme="dark"] .result-meta-label,
-html[data-theme="dark"] .jurusan-fullname,
-body.dark .page-header p,
-body.dark .card-sub,
-body.dark .metric-row .label,
-body.dark .rek-sub,
-body.dark .empty-recommendation-desc,
-body.dark .placeholder-desc,
-body.dark .pagination-info,
-body.dark .result-meta-label,
-body.dark .jurusan-fullname {
-    color: #cbd5e1;
-}
-
-html[data-theme="dark"] .card,
-html[data-theme="dark"] .filter-form,
-body.dark .card,
-body.dark .filter-form {
-    border-color: #334155;
-    background: #1f2937;
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
-}
-
-html[data-theme="dark"] .result-header.result-kuliah,
-body.dark .result-header.result-kuliah {
-    border-color: #166534;
+html[data-theme="dark"] .admin-hasil-page .result-header.result-kuliah,
+body.dark .admin-hasil-page .result-header.result-kuliah {
+    border-color: rgba(34, 197, 94, 0.45);
     background:
-        radial-gradient(circle at top right, rgba(34, 197, 94, 0.16), transparent 34%),
+        radial-gradient(circle at top right, rgba(34, 197, 94, 0.24), transparent 34%),
         linear-gradient(135deg, #052e16 0%, #14532d 100%);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
 }
 
-html[data-theme="dark"] .result-header.result-tidak,
-body.dark .result-header.result-tidak {
-    border-color: #92400e;
+html[data-theme="dark"] .admin-hasil-page .result-header.result-tidak,
+body.dark .admin-hasil-page .result-header.result-tidak {
+    border-color: rgba(251, 191, 36, 0.40);
     background:
-        radial-gradient(circle at top right, rgba(245, 158, 11, 0.16), transparent 34%),
-        linear-gradient(135deg, #431407 0%, #78350f 100%);
+        radial-gradient(circle at top right, rgba(245, 158, 11, 0.22), transparent 34%),
+        linear-gradient(135deg, #422006 0%, #78350f 100%);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.28);
 }
 
-html[data-theme="dark"] .result-meta-item,
-body.dark .result-meta-item {
-    border-color: rgba(148, 163, 184, 0.20);
-    background: rgba(15, 23, 42, 0.55);
+html[data-theme="dark"] .admin-hasil-page .result-status-badge.badge-kuliah,
+body.dark .admin-hasil-page .result-status-badge.badge-kuliah {
+    border-color: rgba(134, 239, 172, 0.32);
+    background: rgba(34, 197, 94, 0.18);
+    color: #bbf7d0;
 }
 
-html[data-theme="dark"] .score-bar-wrap,
-html[data-theme="dark"] .rek-univ-header,
-html[data-theme="dark"] .rek-univ-block,
-html[data-theme="dark"] .rec-card,
-body.dark .score-bar-wrap,
-body.dark .rek-univ-header,
-body.dark .rek-univ-block,
-body.dark .rec-card {
-    border-color: #334155;
-    background: #111827;
+html[data-theme="dark"] .admin-hasil-page .result-status-badge.badge-tidak,
+body.dark .admin-hasil-page .result-status-badge.badge-tidak {
+    border-color: rgba(253, 230, 138, 0.28);
+    background: rgba(245, 158, 11, 0.18);
+    color: #fde68a;
 }
 
-html[data-theme="dark"] .score-bar-bg,
-body.dark .score-bar-bg {
-    background: #374151;
+html[data-theme="dark"] .admin-hasil-page .result-meta-item,
+body.dark .admin-hasil-page .result-meta-item {
+    background: color-mix(in srgb, var(--surface) 75%, transparent);
 }
 
-html[data-theme="dark"] .score-bar-label,
-body.dark .score-bar-label {
-    color: #f8fafc;
+html[data-theme="dark"] .admin-hasil-page .result-header.result-kuliah .result-meta-label,
+body.dark .admin-hasil-page .result-header.result-kuliah .result-meta-label {
+    color: #bbf7d0;
 }
 
-html[data-theme="dark"] .score-bar-label span:last-child,
-body.dark .score-bar-label span:last-child {
-    background: #1f2937;
-    color: #bfdbfe;
+html[data-theme="dark"] .admin-hasil-page .result-header.result-kuliah .result-meta-val,
+body.dark .admin-hasil-page .result-header.result-kuliah .result-meta-val {
+    color: #f0fdf4;
 }
 
-html[data-theme="dark"] .formula-box,
-body.dark .formula-box {
-    border-color: #1e3a8a;
-    background: #111827;
-    color: #cbd5e1;
+html[data-theme="dark"] .admin-hasil-page .result-header.result-tidak .result-meta-label,
+body.dark .admin-hasil-page .result-header.result-tidak .result-meta-label {
+    color: #fde68a;
 }
 
-html[data-theme="dark"] .metric-row,
-html[data-theme="dark"] .table-head-row,
-html[data-theme="dark"] .table-body-row,
-body.dark .metric-row,
-body.dark .table-head-row,
-body.dark .table-body-row {
-    border-color: #334155;
+html[data-theme="dark"] .admin-hasil-page .result-header.result-tidak .result-meta-val,
+body.dark .admin-hasil-page .result-header.result-tidak .result-meta-val {
+    color: #fff7d6;
 }
 
-html[data-theme="dark"] .rekomendasi-sub,
-body.dark .rekomendasi-sub {
-    border-left-color: #60a5fa;
-    background: #111827;
-    color: #cbd5e1;
+html[data-theme="dark"] .admin-hasil-page .card,
+html[data-theme="dark"] .admin-hasil-page .filter-form,
+body.dark .admin-hasil-page .card,
+body.dark .admin-hasil-page .filter-form {
+    background: color-mix(in srgb, var(--card) 94%, transparent);
 }
 
-html[data-theme="dark"] .rek-jurusan,
-body.dark .rek-jurusan {
-    color: #bfdbfe;
+html[data-theme="dark"] .admin-hasil-page .score-bar-wrap,
+html[data-theme="dark"] .admin-hasil-page .rek-univ-header,
+html[data-theme="dark"] .admin-hasil-page .rek-univ-block,
+body.dark .admin-hasil-page .score-bar-wrap,
+body.dark .admin-hasil-page .rek-univ-header,
+body.dark .admin-hasil-page .rek-univ-block {
+    background: color-mix(in srgb, var(--surface-2) 70%, transparent);
 }
 
-html[data-theme="dark"] .form-select,
-html[data-theme="dark"] .filter-select,
-html[data-theme="dark"] .pagination-btn,
-body.dark .form-select,
-body.dark .filter-select,
-body.dark .pagination-btn {
-    border-color: #374151;
-    background: #111827;
-    color: #f8fafc;
+html[data-theme="dark"] .admin-hasil-page .score-bar-label span:last-child,
+body.dark .admin-hasil-page .score-bar-label span:last-child {
+    background: var(--surface);
 }
 
-html[data-theme="dark"] .prediksi-table th,
-html[data-theme="dark"] .table-index,
-html[data-theme="dark"] .table-date,
-html[data-theme="dark"] .table-category,
-body.dark .prediksi-table th,
-body.dark .table-index,
-body.dark .table-date,
-body.dark .table-category {
-    color: #94a3b8;
-}
-
-html[data-theme="dark"] .page-indicator,
-body.dark .page-indicator {
-    color: #f8fafc;
-}
-
-html[data-theme="dark"] .badge-blue,
-body.dark .badge-blue {
-    background: #1e3a8a;
-    color: #dbeafe;
-}
-
-html[data-theme="dark"] .badge-green,
-body.dark .badge-green {
-    background: #14532d;
-    color: #dcfce7;
-}
-
-html[data-theme="dark"] .badge-amber,
-body.dark .badge-amber {
-    background: #78350f;
-    color: #fef3c7;
-}
-
-html[data-theme="dark"] .badge-purple,
-body.dark .badge-purple {
-    background: #312e81;
-    color: #ddd6fe;
-}
-
-html[data-theme="dark"] .alert-success,
-body.dark .alert-success {
-    background: #064e3b;
-    border-left-color: #34d399;
-    color: #d1fae5;
-}
-
-/* ================= RESPONSIVE ================= */
+/* =========================================================
+   RESPONSIVE 1024PX
+========================================================= */
 @media (max-width: 1024px) {
-    .two-col {
+    .admin-hasil-page .two-col,
+    .admin-hasil-page .result-action-grid {
         grid-template-columns: 1fr;
+    }
+
+    .admin-hasil-page .result-action-spacer {
+        display: none;
+    }
+
+    .admin-hasil-page .page-header,
+    .admin-hasil-page .result-header {
+        padding: 24px;
     }
 }
 
+/* =========================================================
+   RESPONSIVE 768PX
+========================================================= */
 @media (max-width: 768px) {
-    .page-header,
-    .result-header {
+    .admin-hasil-page .page-header,
+    .admin-hasil-page .result-header {
+        margin-bottom: 16px;
         padding: 22px;
         border-radius: 18px;
     }
 
-    .page-header h2 {
-        font-size: 1.32rem;
-    }
-
-    .card {
-        padding: 16px;
+    .admin-hasil-page .card {
+        margin-bottom: 16px;
+        padding: 18px;
         border-radius: 16px;
     }
 
-    .result-meta-row {
+    .admin-hasil-page .result-meta-row {
         gap: 8px;
     }
 
-    .result-meta-item {
+    .admin-hasil-page .result-meta-item {
         width: 100%;
         justify-content: space-between;
         border-radius: 14px;
     }
 
-    .rek-univ-header {
+    .admin-hasil-page .rek-univ-header {
         flex-direction: column;
     }
 
-    .rek-score-stack {
+    .admin-hasil-page .rek-score-stack {
         flex-direction: row;
         align-items: flex-start;
+        white-space: normal;
     }
 
-    .action-row {
+    .admin-hasil-page .action-row {
         flex-direction: column;
     }
 
-    .filter-select {
+    .admin-hasil-page .action-link,
+    .admin-hasil-page .filter-select {
         width: 100%;
     }
 
-    .pagination-row {
+    .admin-hasil-page .pagination-row {
         flex-direction: column;
         align-items: flex-start;
+    }
+
+    .admin-hasil-page .prediksi-table {
+        min-width: 760px;
+    }
+}
+
+/* =========================================================
+   RESPONSIVE 480PX
+========================================================= */
+@media (max-width: 480px) {
+    .admin-hasil-page {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    .admin-hasil-page .page-header,
+    .admin-hasil-page .result-header {
+        margin-bottom: 14px;
+        padding: 18px;
+        border-radius: 16px;
+    }
+
+    .admin-hasil-page .page-header::before,
+    .admin-hasil-page .result-status-badge {
+        padding: 5px 10px;
+    }
+
+    .admin-hasil-page .page-header h2,
+    .admin-hasil-page .page-header p,
+    .admin-hasil-page .result-header h3,
+    .admin-hasil-page .result-header p {
+        max-width: 100%;
+    }
+
+    .admin-hasil-page .two-col {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .admin-hasil-page .card {
+        width: 100%;
+        margin-bottom: 14px;
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .admin-hasil-page .card-title {
+        margin-bottom: 12px;
+        align-items: flex-start;
+    }
+
+    .admin-hasil-page .card-title::before {
+        width: 26px;
+        height: 26px;
+        flex-basis: 26px;
+        border-radius: 9px;
+    }
+
+    .admin-hasil-page .metric-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .admin-hasil-page .metric-row .value {
+        text-align: left;
+    }
+
+    .admin-hasil-page .score-bar-label {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .admin-hasil-page .score-bar-label span:last-child {
+        width: fit-content;
+        min-width: 0;
+    }
+
+    .admin-hasil-page .rek-univ-header {
+        padding: 13px;
+        gap: 10px;
+    }
+
+    .admin-hasil-page .rek-score-stack {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .admin-hasil-page .result-meta-item {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .admin-hasil-page .result-action-grid {
+        width: 100%;
+        margin-top: 0;
+        margin-bottom: 14px;
+    }
+
+    .admin-hasil-page .result-action-bottom {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .admin-hasil-page .filter-form {
+        padding: 12px;
+        border-radius: 14px;
+    }
+
+    .admin-hasil-page .filter-select,
+    .admin-hasil-page .reset-link,
+    .admin-hasil-page .action-link {
+        width: 100%;
+    }
+
+    .admin-hasil-page #tabelWrap {
+        overflow: visible;
+    }
+
+    .admin-hasil-page .prediksi-table,
+    .admin-hasil-page .prediksi-table thead,
+    .admin-hasil-page .prediksi-table tbody,
+    .admin-hasil-page .prediksi-table th,
+    .admin-hasil-page .prediksi-table td,
+    .admin-hasil-page .prediksi-table tr {
+        display: block;
+        width: 100%;
+    }
+
+    .admin-hasil-page .prediksi-table {
+        min-width: 0;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .admin-hasil-page .prediksi-table thead {
+        display: none;
+    }
+
+    .admin-hasil-page .prediksi-table tbody {
+        display: grid;
+        gap: 12px;
+    }
+
+    .admin-hasil-page .table-body-row {
+        padding: 12px;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        background: color-mix(in srgb, var(--card) 94%, transparent);
+    }
+
+    .admin-hasil-page .prediksi-table td {
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+        display: grid;
+        grid-template-columns: minmax(0, 108px) minmax(0, 1fr);
+        align-items: start;
+        gap: 10px;
+        word-break: break-word;
+    }
+
+    .admin-hasil-page .prediksi-table td:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .admin-hasil-page .prediksi-table td::before {
+        content: attr(data-label);
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 800;
+        line-height: 1.5;
+    }
+
+    .admin-hasil-page .prediksi-table .btn-sm {
+        width: 100%;
+    }
+
+    .admin-hasil-page .pagination-controls {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .admin-hasil-page .pagination-btn {
+        flex: 1;
+    }
+
+    .admin-hasil-page .page-indicator {
+        min-width: auto;
+        flex: 1.2;
     }
 }

@@ -2,7 +2,6 @@
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/siswa/dashboard.css') }}">
-<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.0/dist/apexcharts.min.js"></script>
 @endpush
 
 @section('content')
@@ -21,7 +20,9 @@
     <div class="siswa-hero">
         <div class="siswa-hero-content">
             <div class="siswa-eyebrow">Dashboard Siswa</div>
+
             <h2>Halo, {{ auth()->user()->name ?? 'Siswa' }}</h2>
+
             <p>
                 Gunakan halaman ini untuk meminta rekomendasi studi lanjut berdasarkan data akademikmu.
                 Sistem akan membantu menampilkan potensi studi lanjut dan pilihan universitas atau program studi yang relevan.
@@ -42,6 +43,7 @@
 
         <div class="siswa-hero-card">
             <div class="hero-card-label">Status Sistem</div>
+
             @if($flaskOnline)
                 <div class="hero-card-value hero-online">Aktif</div>
                 <div class="hero-card-desc">Rekomendasi dapat dijalankan saat ini.</div>
@@ -83,9 +85,7 @@
             <div class="section-header">
                 <div>
                     <div class="card-title">Hasil Rekomendasi Terakhir</div>
-                    <div class="card-sub">
-                        Berikut riwayat hasil terbaru milikmu.
-                    </div>
+                    <div class="card-sub">Berikut riwayat hasil terbaru milikmu.</div>
                 </div>
 
                 <a href="{{ route('siswa.hasil.prediksi') }}" class="card-link">
@@ -102,9 +102,10 @@
                             <th>Status</th>
                             <th>Probabilitas</th>
                             <th>Waktu</th>
-                            <th></th>
+                            <th>Aksi</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @foreach($prediksiTerakhir as $item)
                             @php
@@ -115,24 +116,33 @@
                             @endphp
 
                             <tr>
-                                <td class="td-strong">{{ $item->nama_siswa ?? auth()->user()->name ?? 'Siswa' }}</td>
-                                <td>
+                                <td class="td-strong" data-label="Nama">
+                                    {{ $item->nama_siswa ?? auth()->user()->name ?? 'Siswa' }}
+                                </td>
+
+                                <td data-label="Jurusan SMK">
                                     <span class="stat-badge badge-blue" title="{{ $item->jurusan_smk_lengkap ?? $item->jurusan_smk }}">
                                         {{ $item->jurusan_smk }}
                                     </span>
                                 </td>
-                                <td>
+
+                                <td data-label="Status">
                                     @if($prediksiRf === 1)
                                         <span class="stat-badge badge-green">Teridentifikasi Studi Lanjut</span>
                                     @else
                                         <span class="stat-badge badge-amber">Belum Teridentifikasi Studi Lanjut</span>
                                     @endif
                                 </td>
-                                <td>{{ $probabilitas }}%</td>
-                                <td class="text-muted-small">
+
+                                <td data-label="Probabilitas">
+                                    {{ $probabilitas }}%
+                                </td>
+
+                                <td class="text-muted-small" data-label="Waktu">
                                     {{ $item->created_at ? $item->created_at->diffForHumans() : '-' }}
                                 </td>
-                                <td>
+
+                                <td data-label="Aksi">
                                     <a href="{{ route('siswa.hasil.prediksi.detail', $item->id) }}" class="btn btn-primary btn-sm">
                                         Detail
                                     </a>
@@ -146,9 +156,11 @@
     @else
         <div class="empty-dashboard-card">
             <div class="empty-title">Belum Ada Hasil Rekomendasi</div>
+
             <div class="empty-desc">
                 Kamu belum pernah mengisi data akademik. Mulai dengan memasukkan nilai dan jurusan SMK untuk mendapatkan rekomendasi studi lanjut.
             </div>
+
             <a href="{{ route('siswa.input.siswa') }}" class="btn-dashboard-primary">
                 Minta Rekomendasi Sekarang
             </a>
@@ -188,6 +200,7 @@
 
         <div class="card dashboard-card">
             <div class="card-title">Catatan untuk Siswa</div>
+
             <div class="student-note">
                 Hasil sistem digunakan sebagai bahan pertimbangan awal. Keputusan akhir tetap perlu disesuaikan dengan minat, kemampuan, biaya, lokasi kampus, dan arahan dari guru BK atau orang tua.
             </div>

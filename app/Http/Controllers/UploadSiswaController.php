@@ -9,15 +9,23 @@ use App\Models\User;
 use App\Services\FlaskRecommendationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
 
 class UploadSiswaController extends Controller
 {
+    /*
+    |--------------------------------------------------------------------------
+    | Halaman Upload Data Siswa
+    |--------------------------------------------------------------------------
+    */
     public function index(FlaskRecommendationService $flask)
     {
-        $flaskOnline = $flask->isOnline();
+        $health = $flask->healthCheck();
+        $flaskOnline = $health['success'] ?? false;
 
         $lastBatch = UploadSiswaBatch::with('uploader')
             ->latest()
@@ -35,6 +43,11 @@ class UploadSiswaController extends Controller
         ));
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Proses Upload Data Siswa
+    |--------------------------------------------------------------------------
+    */
     public function store(Request $request, FlaskRecommendationService $flask)
     {
         set_time_limit(600);
@@ -47,8 +60,14 @@ class UploadSiswaController extends Controller
             'file_siswa.max' => 'Ukuran file maksimal 10MB.',
         ]);
 
-        if (!$flask->isOnline()) {
-            return back()->with('error', 'Layanan Flask API sedang tidak aktif. Upload belum dapat diproses.');
+        $health = $flask->healthCheck();
+        $flaskOnline = $health['success'] ?? false;
+
+        if (!$flaskOnline) {
+            return back()->with(
+                'error',
+                'Layanan Flask API sedang tidak aktif. Upload belum dapat diproses.'
+            );
         }
 
         $file = $request->file('file_siswa');
@@ -84,8 +103,12 @@ class UploadSiswaController extends Controller
                 'total_rows' => 0,
                 'valid_rows' => 0,
                 'failed_rows' => 0,
+
                 'linked_user_count' => 0,
                 'unlinked_user_count' => 0,
+                'created_user_count' => 0,
+                'existing_user_count' => 0,
+
                 'prediksi_success_count' => 0,
                 'rekomendasi_success_count' => 0,
             ];
@@ -119,26 +142,56 @@ class UploadSiswaController extends Controller
                     continue;
                 }
 
-                $user = User::where('nisn', $payload['nisn'])->first();
-
-                if ($user) {
-                    $summary['linked_user_count']++;
-                } else {
-                    $summary['unlinked_user_count']++;
-                }
-
                 try {
-                    $response = $flask->predict($payload);
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Buat / Hubungkan Akun Siswa Berdasarkan NISN
+                    |--------------------------------------------------------------------------
+                    | Jika NISN belum ada di tabel users, sistem otomatis membuat akun:
+                    | - nisn     = NISN dari file upload
+                    | - name     = nama siswa dari file upload
+                    | - password = NISN dari file upload
+                    | - role     = siswa
+                    | - kelas    = 12
+                    */
+                    $user = User::where('nisn', $payload['nisn'])->first();
+
+                    if (!$user) {
+                        $user = User::create([
+                            'nisn'     => $payload['nisn'],
+                            'name'     => $payload['nama_siswa'],
+                            'password' => Hash::make($payload['nisn']),
+                            'role'     => 'siswa',
+                            'kelas'    => 12,
+                        ]);
+
+                        $summary['created_user_count']++;
+                        $accountMessage = 'Akun siswa otomatis dibuat. Login menggunakan NISN dan password awal NISN.';
+                    } else {
+                        $summary['existing_user_count']++;
+                        $accountMessage = 'Akun siswa sudah tersedia dan berhasil dihubungkan.';
+                    }
+
+                    $summary['linked_user_count']++;
+
+                    $response = $flask->prediksiRekomendasi($payload);
+
+                    if (!($response['success'] ?? false)) {
+                        throw new \RuntimeException(
+                            $response['message'] ?? 'Prediksi gagal diproses oleh API Flask.'
+                        );
+                    }
 
                     $stats = $this->calculateNilaiStats($payload);
                     $parsed = $this->parseFlaskResponse($response);
 
                     $hasil = HasilPrediksi::create([
-                        'user_id' => $user?->id,
+                        'user_id' => $user->id,
                         'upload_batch_id' => $batch->id,
 
                         'nisn' => $payload['nisn'],
                         'nama_siswa' => $payload['nama_siswa'],
+
                         'jurusan_smk' => $payload['jurusan_smk'],
                         'jurusan_smk_lengkap' => $payload['jurusan_smk'],
 
@@ -160,13 +213,12 @@ class UploadSiswaController extends Controller
                         'threshold_rf' => $parsed['threshold_rf'],
                         'knn_dijalankan' => $parsed['knn_dijalankan'],
 
-                        'pesan' => $response['pesan'] ?? null,
-                        'narasi_rekomendasi' => $response['narasi_rekomendasi'] ?? null,
-
                         'profil_siswa' => $response['profil_siswa'] ?? $this->buildProfilFallback($payload, $stats),
                         'alumni_terdekat' => $response['alumni_terdekat'] ?? [],
-                        'rekomendasi_final' => $response['rekomendasi_final'] ?? [],
+                        'narasi_rekomendasi' => $response['narasi_rekomendasi'] ?? null,
                         'kualitas_rekomendasi' => $response['kualitas_rekomendasi'] ?? null,
+                        'rekomendasi_final' => $response['rekomendasi_final'] ?? [],
+                        'pesan' => $response['pesan'] ?? null,
                         'response_flask' => $response,
 
                         'sumber' => 'upload_siswa',
@@ -176,21 +228,29 @@ class UploadSiswaController extends Controller
                     $summary['valid_rows']++;
                     $summary['prediksi_success_count']++;
 
-                    if ($parsed['prediksi_rf'] === 1 && !empty($response['rekomendasi_final'] ?? [])) {
+                    if (
+                        $parsed['prediksi_rf'] === 1
+                        && !empty($response['rekomendasi_final'] ?? [])
+                    ) {
                         $summary['rekomendasi_success_count']++;
                     }
 
                     $uploadRow->update([
-                        'user_id' => $user?->id,
+                        'user_id' => $user->id,
                         'hasil_prediksi_id' => $hasil->id,
                         'status' => 'success',
-                        'message' => $user
-                            ? 'Berhasil diproses dan terhubung ke akun siswa.'
-                            : 'Berhasil diproses. Akun siswa belum tersedia, hasil disimpan berdasarkan NISN.',
+                        'message' => 'Berhasil diproses. ' . $accountMessage,
                         'response' => $response,
                     ]);
                 } catch (\Throwable $e) {
                     $summary['failed_rows']++;
+
+                    Log::warning('Upload siswa baris gagal diproses.', [
+                        'batch_id' => $batch->id,
+                        'row_number' => $rowNumber,
+                        'payload' => $payload,
+                        'message' => $e->getMessage(),
+                    ]);
 
                     $uploadRow->update([
                         'status' => 'failed',
@@ -213,9 +273,14 @@ class UploadSiswaController extends Controller
 
             return redirect()
                 ->route('admin.upload.siswa')
-                ->with('success', 'Upload data siswa selesai diproses.')
+                ->with('success', 'Upload data siswa selesai diproses. Akun siswa otomatis dibuat untuk NISN yang belum terdaftar.')
                 ->with('upload_summary', $summary);
         } catch (\Throwable $e) {
+            Log::error('Upload siswa gagal diproses.', [
+                'batch_id' => $batch->id,
+                'message' => $e->getMessage(),
+            ]);
+
             $batch->update([
                 'status' => 'failed',
                 'summary' => [
@@ -227,6 +292,11 @@ class UploadSiswaController extends Controller
         }
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Baca File Excel / CSV
+    |--------------------------------------------------------------------------
+    */
     private function readSpreadsheetRows(string $path, string $extension): array
     {
         if (in_array($extension, ['csv', 'txt'], true)) {
@@ -312,6 +382,11 @@ class UploadSiswaController extends Controller
         return trim($header, '_');
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Normalisasi Payload Sesuai Input Flask
+    |--------------------------------------------------------------------------
+    */
     private function normalizePayload(array $row): array
     {
         $alias = [
@@ -441,6 +516,11 @@ class UploadSiswaController extends Controller
         ];
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | Parsing Response Flask
+    |--------------------------------------------------------------------------
+    */
     private function parseFlaskResponse(array $response): array
     {
         $hasilRf = is_array($response['prediksi_rf'] ?? null)
@@ -455,7 +535,9 @@ class UploadSiswaController extends Controller
 
         $status = $response['status_rf']
             ?? $hasilRf['status']
-            ?? ($prediksi === 1 ? 'Teridentifikasi Studi Lanjut' : 'Tidak Teridentifikasi Studi Lanjut');
+            ?? ($prediksi === 1
+                ? 'Teridentifikasi Studi Lanjut'
+                : 'Tidak Teridentifikasi Studi Lanjut');
 
         $probabilitas = (float) (
             $response['probabilitas_studi_lanjut']
@@ -476,6 +558,10 @@ class UploadSiswaController extends Controller
             ?? false
         );
 
+        $inputModel = is_array($response['input_model'] ?? null)
+            ? $response['input_model']
+            : [];
+
         return [
             'prediksi_rf' => $prediksi,
             'status_rf' => $status,
@@ -483,9 +569,7 @@ class UploadSiswaController extends Controller
             'kategori_probabilitas' => $response['kategori_probabilitas'] ?? null,
             'threshold_rf' => $threshold,
             'knn_dijalankan' => $knnDijalankan,
-            'input_model' => is_array($response['input_model'] ?? null)
-                ? $response['input_model']
-                : [],
+            'input_model' => $inputModel,
         ];
     }
 
@@ -495,12 +579,14 @@ class UploadSiswaController extends Controller
             ['atribut' => 'NISN', 'nilai' => $payload['nisn']],
             ['atribut' => 'Nama Siswa', 'nilai' => $payload['nama_siswa']],
             ['atribut' => 'Jurusan SMK', 'nilai' => $payload['jurusan_smk']],
+
             ['atribut' => 'Rata-rata PAI', 'nilai' => $payload['rata_pai']],
             ['atribut' => 'Rata-rata PPKn', 'nilai' => $payload['rata_ppkn']],
             ['atribut' => 'Rata-rata Bahasa Indonesia', 'nilai' => $payload['rata_ind']],
             ['atribut' => 'Rata-rata Matematika', 'nilai' => $payload['rata_mtk']],
             ['atribut' => 'Rata-rata Bahasa Inggris', 'nilai' => $payload['rata_ing']],
             ['atribut' => 'UKK', 'nilai' => $payload['ukk']],
+
             ['atribut' => 'Nilai Maksimum', 'nilai' => $stats['nilai_max']],
             ['atribut' => 'Nilai Minimum', 'nilai' => $stats['nilai_min']],
             ['atribut' => 'Standar Deviasi Nilai', 'nilai' => $stats['nilai_std']],

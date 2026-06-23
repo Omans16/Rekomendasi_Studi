@@ -964,7 +964,16 @@ html[data-theme="light"] .gear-ring-2 {
         width: 150px;
         height: 150px;
     }
+    .panel-left {
+        padding: 6px 24px 44px;
+    }
 
+    .logo-wrap{
+        gap: 8px;
+    }
+    .left-tagline {
+        margin-top: 20px;
+    }
     .logo-halo img {
         width: 124px;
         height: 124px;

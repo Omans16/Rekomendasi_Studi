@@ -14,6 +14,7 @@ class HasilPrediksi extends Model
     protected $fillable = [
         'user_id',
         'upload_batch_id',
+
         'nisn',
         'nama_siswa',
 
@@ -62,6 +63,7 @@ class HasilPrediksi extends Model
         'nilai_min' => 'decimal:2',
         'nilai_std' => 'decimal:4',
 
+        'prediksi_rf' => 'integer',
         'probabilitas_studi_lanjut' => 'decimal:4',
         'threshold_rf' => 'decimal:4',
         'knn_dijalankan' => 'boolean',
