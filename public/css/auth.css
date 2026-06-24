@@ -4,9 +4,6 @@
     padding: 0;
 }
 
-/* =========================
-   THEME VARIABLES
-========================= */
 :root,
 html[data-theme="dark"] {
     color-scheme: dark;

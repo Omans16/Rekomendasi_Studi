@@ -56,11 +56,7 @@ class AuthController extends Controller
     }
 
     /*
-    |--------------------------------------------------------------------------
     | Register Siswa Dinonaktifkan
-    |--------------------------------------------------------------------------
-    | Akun siswa tidak boleh dibuat bebas melalui halaman register.
-    | Akun siswa hanya dibuat otomatis saat Admin/Guru BK upload data siswa.
     */
     public function showRegister()
     {

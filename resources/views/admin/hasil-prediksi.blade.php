@@ -15,7 +15,7 @@
     <div class="page-header">
         <h2>Hasil Prediksi dan Rekomendasi Siswa</h2>
         <p>
-            Halaman ini digunakan Admin/Guru BK untuk memantau hasil prediksi potensi studi lanjut,
+            Halaman ini digunakan untuk memantau hasil prediksi potensi studi lanjut,
             melihat probabilitas model, alumni terdekat, dan rekomendasi universitas atau program studi siswa.
         </p>
     </div>
@@ -63,16 +63,24 @@
                 : 0;
 
             $statusTitle = $isKuliah
-                ? 'Siswa Teridentifikasi Memiliki Potensi Studi Lanjut'
-                : 'Siswa Belum Teridentifikasi untuk Studi Lanjut';
+                ? 'Kamu Teridentifikasi Memiliki Potensi Studi Lanjut'
+                : 'Kamu Belum Teridentifikasi untuk Studi Lanjut';
 
             $statusDesc = $isKuliah
-                ? 'Berdasarkan pola nilai dan data alumni, sistem menilai bahwa profil akademik siswa memiliki kecenderungan untuk melanjutkan ke perguruan tinggi.'
-                : 'Berdasarkan data yang dimasukkan, sistem belum menemukan pola yang cukup kuat untuk merekomendasikan studi lanjut. Hasil ini tetap dapat digunakan sebagai bahan pertimbangan awal oleh Admin atau Guru BK.';
+                ? 'Berdasarkan data alumni, sistem menilai bahwa profil akademikmu memiliki pola yang mendukung peluang untuk melanjutkan ke perguruan tinggi.'
+                : 'Berdasarkan data yang dimasukkan, sistem belum menemukan pola yang cukup kuat untuk merekomendasikan studi lanjut. Hasil ini bukan keputusan akhir, melainkan bahan pertimbangan awal.';
 
-            $similarityText = $avgSim > 0
-                ? 'Semakin tinggi nilai kemiripan, semakin mirip profil siswa dengan alumni yang pernah melanjutkan kuliah.'
-                : 'Kemiripan alumni belum tersedia karena rekomendasi tidak ditampilkan pada hasil ini.';
+            $nextStepText = $isKuliah
+                ? 'Gunakan rekomendasi di bawah ini sebagai bahan diskusi dengan guru BK dan orang tua. Pertimbangkan juga minat pribadi, biaya pendidikan, lokasi kampus, prospek jurusan, serta kesiapan untuk melanjutkan studi.'
+                : 'Hasil ini bukan berarti kamu tidak bisa melanjutkan kuliah. Namun, sistem belum menemukan indikasi yang cukup kuat berdasarkan data yang tersedia. Kamu tetap disarankan berdiskusi dengan guru BK untuk menentukan pilihan terbaik setelah lulus, seperti bekerja, mengikuti magang, mengambil pelatihan atau sertifikasi, berwirausaha, maupun mempertimbangkan studi lanjut melalui jalur lain yang sesuai dengan minat dan kondisimu.';
+
+            $similarityText = $isKuliah
+                ? (
+                    $avgSim > 0
+                        ? 'Semakin tinggi nilai kemiripan, semakin mirip profil akademikmu dengan alumni yang pernah melanjutkan kuliah.'
+                        : 'Rekomendasi berbasis kemiripan alumni belum tersedia karena sistem belum menemukan data alumni yang cukup relevan untuk dibandingkan.'
+                )
+                : 'Rekomendasi berbasis kemiripan alumni belum ditampilkan karena hasil prediksi belum memenuhi syarat untuk masuk ke tahap rekomendasi program studi.';
         @endphp
 
         <div class="result-header {{ $isKuliah ? 'result-kuliah' : 'result-tidak' }}">

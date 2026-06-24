@@ -1,12 +1,3 @@
-/* =========================================================
-   INPUT SISWA
-   StudyPath SMK
-   Theme: Global style.css
-========================================================= */
-
-/* =========================
-   BASE SCOPE
-========================= */
 .input-siswa-page,
 .input-siswa-page * {
     box-sizing: border-box;
@@ -41,9 +32,6 @@
     line-height: 1.25;
 }
 
-/* =========================
-   PAGE HEADER
-========================= */
 .input-siswa-page .page-header {
     position: relative;
     overflow: hidden;

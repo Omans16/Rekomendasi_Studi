@@ -31,9 +31,17 @@
         @php
             $isKuliah = (int) ($detail->prediksi_rf ?? 0) === 1;
 
-            $probRF = $detail->probabilitas_studi_lanjut !== null
-                ? round((float) $detail->probabilitas_studi_lanjut * 100, 1)
-                : 0;
+            $thresholdRF = $detail->threshold_rf !== null
+                ? (float) $detail->threshold_rf
+                : 0.32;
+
+            $statusLabel = $isKuliah
+                ? 'Memenuhi Batas Rekomendasi'
+                : 'Belum Memenuhi Batas Rekomendasi';
+
+            $statusDescHasil = $isKuliah
+                ? 'Hasil analisis sudah melewati batas keputusan sistem, sehingga rekomendasi kampus dan program studi dapat ditampilkan.'
+                : 'Hasil analisis belum melewati batas keputusan sistem, sehingga rekomendasi kampus dan program studi belum ditampilkan. Hasil ini bukan keputusan akhir, melainkan bahan pertimbangan awal.';
 
             $profilSiswa = collect($detail->profil_siswa ?? []);
             $profilMap = [];
@@ -67,16 +75,20 @@
                 : 'Kamu Belum Teridentifikasi untuk Studi Lanjut';
 
             $statusDesc = $isKuliah
-                ? 'Berdasarkan pola nilai dan data alumni, sistem menilai bahwa profil akademikmu memiliki kecenderungan untuk melanjutkan ke perguruan tinggi.'
-                : 'Berdasarkan data yang dimasukkan, sistem belum menemukan pola yang cukup kuat untuk merekomendasikan studi lanjut. Hasil ini bukan keputusan akhir, tetapi bahan pertimbangan awal.';
+                ? 'Berdasarkan data alumni, sistem menilai bahwa profil akademikmu memiliki pola yang mendukung peluang untuk melanjutkan ke perguruan tinggi.'
+                : 'Berdasarkan data yang dimasukkan, sistem belum menemukan pola yang cukup kuat untuk merekomendasikan studi lanjut. Hasil ini bukan keputusan akhir, melainkan bahan pertimbangan awal.';
 
             $nextStepText = $isKuliah
-                ? 'Gunakan rekomendasi di bawah ini sebagai bahan diskusi dengan guru BK, orang tua, dan pertimbangkan juga minat, biaya, lokasi kampus, serta peluang jurusan.'
-                : 'Kamu tetap bisa berdiskusi dengan guru BK, memperbaiki data nilai jika ada kesalahan, atau mencoba kembali setelah data akademik diperbarui.';
+                ? 'Gunakan rekomendasi di bawah ini sebagai bahan diskusi dengan guru BK dan orang tua. Pertimbangkan juga minat pribadi, biaya pendidikan, lokasi kampus, prospek jurusan, serta kesiapan untuk melanjutkan studi.'
+                : 'Hasil ini bukan berarti kamu tidak bisa melanjutkan kuliah. Namun, sistem belum menemukan indikasi yang cukup kuat berdasarkan data yang tersedia. Kamu tetap disarankan berdiskusi dengan guru BK untuk menentukan pilihan terbaik setelah lulus, seperti bekerja, mengikuti magang, mengambil pelatihan atau sertifikasi, berwirausaha, maupun mempertimbangkan studi lanjut melalui jalur lain yang sesuai dengan minat dan kondisimu.';
 
-            $similarityText = $avgSim > 0
-                ? 'Semakin tinggi nilai kemiripan, semakin mirip profilmu dengan alumni yang pernah melanjutkan kuliah.'
-                : 'Kemiripan alumni belum tersedia karena sistem tidak menampilkan rekomendasi pada hasil ini.';
+            $similarityText = $isKuliah
+                ? (
+                    $avgSim > 0
+                        ? 'Semakin tinggi nilai kemiripan, semakin mirip profil akademikmu dengan alumni yang pernah melanjutkan kuliah.'
+                        : 'Rekomendasi berbasis kemiripan alumni belum tersedia karena sistem belum menemukan data alumni yang cukup relevan untuk dibandingkan.'
+                )
+                : 'Rekomendasi berbasis kemiripan alumni belum ditampilkan karena hasil prediksi belum memenuhi syarat untuk masuk ke tahap rekomendasi program studi.';
         @endphp
 
         <div class="result-header {{ $isKuliah ? 'result-kuliah' : 'result-tidak' }}">
@@ -104,15 +116,11 @@
                     </span>
 
                     <span class="result-meta-item">
-                        <span class="result-meta-label">Peluang Studi Lanjut</span>
+                        <span class="result-meta-label">Status</span>
                         <span class="result-meta-val">
-                            {{ $probRF }}%
-
-                            @if(!empty($detail->kategori_probabilitas))
-                                <span class="stat-badge badge-blue">
-                                    {{ $detail->kategori_probabilitas }}
-                                </span>
-                            @endif
+                            <span class="stat-badge {{ $isKuliah ? 'badge-green' : 'badge-amber' }}">
+                                {{ $statusLabel }}
+                            </span>
                         </span>
                     </span>
 
@@ -155,18 +163,17 @@
                 <div class="card card-summary">
                     <div class="card-title">Ringkasan Hasil</div>
 
-                    <div class="score-bar-wrap">
-                        <div class="score-bar-label">
-                            <span>Peluang untuk Studi Lanjut</span>
-                            <span>{{ $probRF }}%</span>
+                    <div class="decision-summary-box {{ $isKuliah ? 'decision-pass' : 'decision-hold' }}">
+                        <div class="decision-summary-label">
+                            Status Hasil
                         </div>
 
-                        <div class="score-bar-bg">
-                            <div class="score-bar-fill fill-blue" data-score="{{ $probRF }}"></div>
+                        <div class="decision-summary-value">
+                            {{ $statusLabel }}
                         </div>
 
-                        <div class="score-note">
-                            Angka ini menunjukkan seberapa besar sistem melihat kecenderungan kamu untuk melanjutkan kuliah berdasarkan data akademik.
+                        <div class="decision-summary-desc">
+                            {{ $statusDescHasil }}
                         </div>
                     </div>
 
@@ -255,8 +262,12 @@
                     <div class="card-title">Rekomendasi Universitas & Jurusan Kuliah</div>
 
                     <div class="card-sub rekomendasi-sub">
-                        Rekomendasi ini disusun dari data alumni yang memiliki profil akademik mirip denganmu.
-                        Urutan pertama berarti pilihan tersebut paling sesuai berdasarkan pola data yang tersedia.
+                        @if($isKuliah)
+                            Rekomendasi ini disusun dari data alumni yang memiliki profil akademik mirip denganmu.
+                            Urutan pertama berarti pilihan tersebut paling sesuai berdasarkan pola data yang tersedia.
+                        @else
+                            Rekomendasi universitas dan program studi hanya ditampilkan jika hasil analisis sudah memenuhi batas rekomendasi sistem.
+                        @endif
                     </div>
 
                     @if($isKuliah && $kualitas)
@@ -308,24 +319,25 @@
                         <div class="empty-recommendation">
                             <div class="empty-recommendation-title">Rekomendasi Belum Ditampilkan</div>
                             <div class="empty-recommendation-desc">
-                                Sistem belum menampilkan rekomendasi kampus karena hasil saat ini belum teridentifikasi sebagai potensi studi lanjut.
-                                Kamu tetap bisa berkonsultasi dengan guru BK untuk mempertimbangkan pilihan kuliah sesuai minat dan kondisi pribadi.
+                                Sistem belum menampilkan rekomendasi kampus karena hasil saat ini belum memenuhi batas rekomendasi sistem.
+                                Kamu tetap bisa berkonsultasi dengan guru BK untuk mempertimbangkan pilihan setelah lulus,
+                                termasuk kuliah melalui jalur lain yang sesuai dengan minat dan kondisi pribadi.
                             </div>
                         </div>
                     @endif
                 </div>
             </div>
-
         </div>
+
         <div class="result-action-grid">
             <div class="action-row result-action-bottom">
                 <a href="{{ route('siswa.hasil.prediksi') }}"
-                class="btn btn-primary btn-sm action-link">
+                   class="btn btn-primary btn-sm action-link">
                     Riwayat
                 </a>
 
                 <a href="{{ route('siswa.input.siswa') }}"
-                class="btn btn-primary btn-sm action-link">
+                   class="btn btn-primary btn-sm action-link">
                     Prediksi Baru
                 </a>
             </div>
@@ -350,10 +362,10 @@
             <select name="status" class="form-select filter-select">
                 <option value="">Semua Status</option>
                 <option value="1" {{ request('status') === '1' ? 'selected' : '' }}>
-                    Teridentifikasi Studi Lanjut
+                    Memenuhi Batas Rekomendasi
                 </option>
                 <option value="0" {{ request('status') === '0' ? 'selected' : '' }}>
-                    Tidak Teridentifikasi Studi Lanjut
+                    Belum Memenuhi Batas Rekomendasi
                 </option>
             </select>
 
@@ -368,6 +380,8 @@
 
             @php
                 $allRowsData = $data->map(function($item) {
+                    $rowIsKuliah = (int) ($item->prediksi_rf ?? 0) === 1;
+
                     return [
                         'id'                  => $item->id,
                         'nama_siswa'          => $item->nama_siswa ?? 'Siswa',
@@ -375,10 +389,9 @@
                         'jurusan_smk_lengkap' => $item->jurusan_smk_lengkap ?? $item->jurusan_smk,
                         'status_prediksi'     => (int) ($item->prediksi_rf ?? 0),
                         'status_rf'           => $item->status_rf ?? '-',
-                        'probabilitas'        => $item->probabilitas_studi_lanjut !== null
-                                                    ? round((float) $item->probabilitas_studi_lanjut * 100, 1)
-                                                    : 0,
-                        'kategori'            => $item->kategori_probabilitas ?? '',
+                        'status_label'        => $rowIsKuliah
+                                                    ? 'Memenuhi Batas Rekomendasi'
+                                                    : 'Belum Memenuhi Batas Rekomendasi',
                         'tanggal'             => $item->created_at->format('d/m/Y H:i'),
                         'detail_url'          => route('siswa.hasil.prediksi.detail', $item->id),
                     ];
@@ -398,7 +411,6 @@
                                 <th>Nama Siswa</th>
                                 <th>Jurusan</th>
                                 <th>Status</th>
-                                <th>Probabilitas</th>
                                 <th>Tanggal</th>
                                 <th>Aksi</th>
                             </tr>

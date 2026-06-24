@@ -11,11 +11,7 @@ Route::get('/', function () {
     return view('landingpage');
 })->name('landingpage');
 
-/*
-|--------------------------------------------------------------------------
-| AUTH ROUTES
-|--------------------------------------------------------------------------
-*/
+/*AUTH ROUTES*/
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])
         ->name('login');
@@ -46,11 +42,7 @@ Route::get('/redirect-dashboard', function () {
     return redirect()->route('admin.dashboard');
 })->name('redirect.dashboard');
 
-/*
-|--------------------------------------------------------------------------
-| ADMIN / GURU BK ROUTES
-|--------------------------------------------------------------------------
-*/
+/*ADMIN / GURU BK ROUTES*/
 Route::prefix('admin')
     ->name('admin.')
     ->middleware(['auth', 'role:admin,guru_bk'])
@@ -76,6 +68,12 @@ Route::prefix('admin')
         Route::post('/upload-siswa/proses', [UploadSiswaController::class, 'store'])
             ->name('upload.siswa.proses');
 
+        Route::get('/akun', [AdminController::class, 'akun'])
+            ->name('akun');
+
+        Route::post('/akun/simpan', [AdminController::class, 'simpanAkun'])
+            ->name('akun.simpan');
+
         Route::post('/upload-alumni/proses', [AdminController::class, 'prosesUploadAlumni'])
             ->name('upload.alumni.proses');
 
@@ -83,17 +81,19 @@ Route::prefix('admin')
             ->name('info.model');
     });
 
-/*
-|--------------------------------------------------------------------------
-| SISWA ROUTES
-|--------------------------------------------------------------------------
-*/
+/*SISWA ROUTES*/
 Route::prefix('siswa')
     ->name('siswa.')
     ->middleware(['auth', 'role:siswa'])
     ->group(function () {
         Route::get('/dashboard', [SiswaController::class, 'dashboard'])
             ->name('dashboard');
+        
+        Route::post('/password/update', [SiswaController::class, 'updatePasswordAwal'])
+            ->name('password.update');
+
+        Route::post('/password/keep', [SiswaController::class, 'keepPasswordAwal'])
+            ->name('password.keep');
 
         Route::get('/input-siswa', [SiswaController::class, 'inputSiswa'])
             ->name('input.siswa');

@@ -100,13 +100,11 @@
     }
 
     function createBadge(text, className, title = '') {
-        const badge = createElement('span', {
+        return createElement('span', {
             className: className,
             text: text,
             title: title
         });
-
-        return badge;
     }
 
     function createTableCell(label, childOrText, className = '') {
@@ -126,32 +124,18 @@
 
     function createStatusCell(item) {
         const isKuliah = Number(item.status_prediksi) === 1;
-        const statusText = isKuliah
-            ? 'Teridentifikasi Studi Lanjut'
-            : 'Tidak Teridentifikasi Studi Lanjut';
+
+        const statusText = item.status_label
+            ? item.status_label
+            : (isKuliah
+                ? 'Memenuhi Batas Rekomendasi'
+                : 'Belum Memenuhi Batas Rekomendasi');
+
         const statusClass = isKuliah
             ? 'stat-badge badge-green'
             : 'stat-badge badge-amber';
 
         return createTableCell('Status', createBadge(statusText, statusClass));
-    }
-
-    function createProbabilityCell(item) {
-        const wrapper = document.createDocumentFragment();
-        const probabilityText = document.createTextNode(`${item.probabilitas}%`);
-
-        wrapper.appendChild(probabilityText);
-
-        if (item.kategori) {
-            const category = createElement('span', {
-                className: 'table-category',
-                text: ` (${item.kategori})`
-            });
-
-            wrapper.appendChild(category);
-        }
-
-        return createTableCell('Probabilitas', wrapper);
     }
 
     function createActionCell(item) {
@@ -179,7 +163,6 @@
         row.appendChild(createTableCell('Nama Siswa', item.nama_siswa || 'Siswa', 'table-name'));
         row.appendChild(createTableCell('Jurusan', jurusanBadge));
         row.appendChild(createStatusCell(item));
-        row.appendChild(createProbabilityCell(item));
         row.appendChild(createTableCell('Tanggal', item.tanggal || '-', 'table-date'));
         row.appendChild(createActionCell(item));
 

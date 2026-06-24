@@ -1,12 +1,3 @@
-/* =========================================================
-   INPUT SISWA ADMIN / GURU BK
-   StudyPath SMK
-   Theme: Global style.css
-========================================================= */
-
-/* =========================
-   BASE SCOPE
-========================= */
 .admin-input-page,
 .admin-input-page * {
     box-sizing: border-box;
@@ -586,7 +577,6 @@ body.dark .admin-input-page .form-select {
 
     .admin-input-page .two-col,
     .admin-input-page .card .two-col {
-        grid-template-columns: 1fr;
         gap: 12px;
     }
 

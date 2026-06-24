@@ -14,18 +14,8 @@ class DefaultUserSeeder extends Seeder
             ['nisn' => 'admin'],
             [
                 'name' => 'Administrator',
-                'password' => Hash::make('admin12345'),
+                'password' => Hash::make('semegahadminrekomendasi'),
                 'role' => 'admin',
-                'kelas' => null,
-            ]
-        );
-
-        User::updateOrCreate(
-            ['nisn' => 'gurubk'],
-            [
-                'name' => 'Guru BK',
-                'password' => Hash::make('gurubk12345'),
-                'role' => 'guru_bk',
                 'kelas' => null,
             ]
         );

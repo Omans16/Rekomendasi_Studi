@@ -3,10 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\HasilPrediksi;
+use App\Models\User;
 use App\Services\FlaskRecommendationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Carbon;
+use Illuminate\Validation\Rules\Password;
 
 class SiswaController extends Controller
 {
@@ -15,6 +19,29 @@ class SiswaController extends Controller
     public function __construct(FlaskRecommendationService $flaskService)
     {
         $this->flaskService = $flaskService;
+    }
+
+    private function shouldShowPasswordSuggestion(): bool
+    {
+        $user = Auth::user();
+
+        if (!$user || $user->role !== 'siswa') {
+            return false;
+        }
+
+        if (empty($user->nisn)) {
+            return false;
+        }
+
+        if (!empty($user->password_changed_at)) {
+            return false;
+        }
+
+        if (!empty($user->password_security_acknowledged_at)) {
+            return false;
+        }
+
+        return Hash::check($user->nisn, $user->password);
     }
 
     private function hasilPrediksiQuery()
@@ -77,12 +104,65 @@ class SiswaController extends Controller
             'prediksi_terakhir' => (clone $baseQuery)->latest()->limit(5)->get(),
         ];
 
+        $showPasswordSuggestion = $this->shouldShowPasswordSuggestion();
+
         return view('siswa.dashboard', compact(
             'flaskOnline',
             'flaskStats',
-            'dbStats'
+            'dbStats',
+            'showPasswordSuggestion'
         ));
     }
+
+    public function updatePasswordAwal(Request $request)
+    {
+        $user = User::find(Auth::id());
+
+        if (!$user || $user->role !== 'siswa') {
+            abort(403, 'Akses hanya untuk siswa.');
+        }
+
+        $validated = $request->validate([
+            'password' => ['required', 'confirmed', Password::min(8)],
+        ], [
+            'password.required' => 'Password baru wajib diisi.',
+            'password.confirmed' => 'Konfirmasi password baru tidak sesuai.',
+            'password.min' => 'Password baru minimal 8 karakter.',
+        ]);
+
+        if ($validated['password'] === $user->nisn) {
+            return back()
+                ->withErrors([
+                    'password' => 'Password baru tidak boleh sama dengan NISN.',
+                ])
+                ->withInput()
+                ->with('show_password_modal', true);
+        }
+
+        $now = Carbon::now();
+
+        $user->password = $validated['password'];
+        $user->password_changed_at = $now;
+        $user->password_security_acknowledged_at = $now;
+        $user->save();
+
+        return back()->with('success', 'Password berhasil diperbarui.');
+    }
+
+    public function keepPasswordAwal(Request $request)
+    {
+        $user = User::find(Auth::id());
+
+        if (!$user || $user->role !== 'siswa') {
+            abort(403, 'Akses hanya untuk siswa.');
+        }
+
+        $user->password_security_acknowledged_at = Carbon::now();
+        $user->save();
+
+        return back()->with('success', 'Kamu tetap menggunakan password saat ini. Kamu tetap bisa menggantinya nanti jika diperlukan.');
+    }
+
 
     public function inputSiswa()
     {

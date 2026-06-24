@@ -45,7 +45,7 @@
     <div class="page-header">
         <div class="page-header-row">
             <div>
-                <h2>Dashboard Admin / Guru BK</h2>
+                <h2>Dashboard</h2>
                 <p>
                     Pantau ringkasan data alumni, hasil prediksi terbaru, serta sebaran universitas,
                     program studi, dan jurusan SMK berdasarkan data tracer study.

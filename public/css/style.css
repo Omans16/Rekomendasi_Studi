@@ -15,10 +15,6 @@
     padding: 0;
 }
 
-/* =========================
-   THEME VARIABLES
-   Default: Light
-========================= */
 :root,
 html[data-theme="light"] {
     color-scheme: light;
@@ -130,9 +126,6 @@ html[data-theme="dark"] {
     --shadow-lg: 0 24px 70px rgba(0, 0, 0, 0.34);
 }
 
-/* =========================
-   BASE
-========================= */
 html,
 body {
     width: 100%;

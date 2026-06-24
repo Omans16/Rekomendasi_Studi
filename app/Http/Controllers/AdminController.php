@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\HasilPrediksi;
+use App\Models\User;
 use App\Services\FlaskRecommendationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -291,6 +292,110 @@ class AdminController extends Controller
             'alumniPerJurusan',
             'dashboard'
         ));
+    }
+
+    /*Manajemen Akun*/
+    public function akun(Request $request)
+    {
+        if (Auth::user()?->role !== 'admin') {
+            abort(403, 'Akses hanya untuk Administrator.');
+        }
+
+        $search = trim((string) $request->get('search', ''));
+        $role = $request->get('role');
+
+        $query = User::query()
+            ->whereIn('role', ['admin', 'guru_bk', 'siswa']);
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('nisn', 'like', '%' . $search . '%');
+            });
+        }
+
+        if (in_array($role, ['admin', 'guru_bk', 'siswa'], true)) {
+            $query->where('role', $role);
+        }
+
+        $users = $query
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        $stats = [
+            'total_akun' => User::count(),
+            'total_admin' => User::where('role', 'admin')->count(),
+            'total_guru_bk' => User::where('role', 'guru_bk')->count(),
+            'total_siswa' => User::where('role', 'siswa')->count(),
+        ];
+
+        return view('admin.akun', compact(
+            'users',
+            'stats',
+            'search',
+            'role'
+        ));
+    }
+
+    public function simpanAkun(Request $request)
+    {
+        if (Auth::user()?->role !== 'admin') {
+            abort(403, 'Akses hanya untuk Administrator.');
+        }
+
+        $request->merge([
+            'nisn' => preg_replace('/\s+/', '', trim((string) $request->input('nisn'))),
+            'name' => trim((string) $request->input('name')),
+        ]);
+
+        $validated = $request->validate([
+            'role' => ['required', 'string', 'in:guru_bk,siswa'],
+            'name' => ['required', 'string', 'max:255'],
+            'nisn' => ['required', 'string', 'max:30', 'unique:users,nisn'],
+            'kelas' => ['nullable', 'integer', 'min:10', 'max:13'],
+            'password' => ['nullable', 'required_if:role,guru_bk', 'string', 'min:6', 'confirmed'],
+        ], [
+            'role.required' => 'Jenis akun wajib dipilih.',
+            'role.in' => 'Jenis akun tidak valid.',
+
+            'name.required' => 'Nama wajib diisi.',
+            'name.max' => 'Nama maksimal 255 karakter.',
+
+            'nisn.required' => 'NISN / Username wajib diisi.',
+            'nisn.unique' => 'NISN / Username sudah terdaftar.',
+            'nisn.max' => 'NISN / Username maksimal 30 karakter.',
+
+            'kelas.integer' => 'Kelas harus berupa angka.',
+            'kelas.min' => 'Kelas minimal 10.',
+            'kelas.max' => 'Kelas maksimal 13.',
+
+            'password.required_if' => 'Password wajib diisi untuk akun Guru BK.',
+            'password.min' => 'Password minimal 6 karakter.',
+            'password.confirmed' => 'Konfirmasi password tidak sesuai.',
+        ]);
+
+        $role = $validated['role'];
+
+        $password = $validated['password'] ?? null;
+
+        if ($role === 'siswa' && empty($password)) {
+            $password = $validated['nisn'];
+        }
+
+        User::create([
+            'nisn' => $validated['nisn'],
+            'name' => $validated['name'],
+            'password' => $password,
+            'role' => $role,
+            'kelas' => $role === 'siswa' ? ($validated['kelas'] ?? 12) : null,
+        ]);
+
+        $roleLabel = $role === 'guru_bk' ? 'Guru BK' : 'Siswa';
+
+        return redirect()
+            ->route('admin.akun')
+            ->with('success', 'Akun ' . $roleLabel . ' berhasil dibuat.');
     }
 
     public function prosesUploadAlumni(Request $request)

@@ -17,11 +17,7 @@ use PhpOffice\PhpSpreadsheet\Reader\Csv;
 
 class UploadSiswaController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Halaman Upload Data Siswa
-    |--------------------------------------------------------------------------
-    */
+    /*Halaman Upload Data Siswa*/
     public function index(FlaskRecommendationService $flask)
     {
         $health = $flask->healthCheck();
@@ -43,11 +39,7 @@ class UploadSiswaController extends Controller
         ));
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Proses Upload Data Siswa
-    |--------------------------------------------------------------------------
-    */
+    /*Proses Upload Data Siswa*/
     public function store(Request $request, FlaskRecommendationService $flask)
     {
         set_time_limit(600);
@@ -143,17 +135,6 @@ class UploadSiswaController extends Controller
                 }
 
                 try {
-                    /*
-                    |--------------------------------------------------------------------------
-                    | Buat / Hubungkan Akun Siswa Berdasarkan NISN
-                    |--------------------------------------------------------------------------
-                    | Jika NISN belum ada di tabel users, sistem otomatis membuat akun:
-                    | - nisn     = NISN dari file upload
-                    | - name     = nama siswa dari file upload
-                    | - password = NISN dari file upload
-                    | - role     = siswa
-                    | - kelas    = 12
-                    */
                     $user = User::where('nisn', $payload['nisn'])->first();
 
                     if (!$user) {
@@ -185,45 +166,49 @@ class UploadSiswaController extends Controller
                     $stats = $this->calculateNilaiStats($payload);
                     $parsed = $this->parseFlaskResponse($response);
 
-                    $hasil = HasilPrediksi::create([
-                        'user_id' => $user->id,
-                        'upload_batch_id' => $batch->id,
+                    $hasil = HasilPrediksi::updateOrCreate(
+                        [
+                            'nisn' => $payload['nisn'],
+                            'sumber' => 'upload_siswa',
+                        ],
+                        [
+                            'user_id' => $user->id,
+                            'upload_batch_id' => $batch->id,
 
-                        'nisn' => $payload['nisn'],
-                        'nama_siswa' => $payload['nama_siswa'],
+                            'nama_siswa' => $payload['nama_siswa'],
 
-                        'jurusan_smk' => $payload['jurusan_smk'],
-                        'jurusan_smk_lengkap' => $payload['jurusan_smk'],
+                            'jurusan_smk' => $payload['jurusan_smk'],
+                            'jurusan_smk_lengkap' => $payload['jurusan_smk'],
 
-                        'rata_pai' => $payload['rata_pai'],
-                        'rata_ppkn' => $payload['rata_ppkn'],
-                        'rata_ind' => $payload['rata_ind'],
-                        'rata_mtk' => $payload['rata_mtk'],
-                        'rata_ing' => $payload['rata_ing'],
-                        'ukk' => $payload['ukk'],
+                            'rata_pai' => $payload['rata_pai'],
+                            'rata_ppkn' => $payload['rata_ppkn'],
+                            'rata_ind' => $payload['rata_ind'],
+                            'rata_mtk' => $payload['rata_mtk'],
+                            'rata_ing' => $payload['rata_ing'],
+                            'ukk' => $payload['ukk'],
 
-                        'nilai_max' => $parsed['input_model']['nilai_max'] ?? $stats['nilai_max'],
-                        'nilai_min' => $parsed['input_model']['nilai_min'] ?? $stats['nilai_min'],
-                        'nilai_std' => $parsed['input_model']['std_nilai'] ?? $stats['nilai_std'],
+                            'nilai_max' => $parsed['input_model']['nilai_max'] ?? $stats['nilai_max'],
+                            'nilai_min' => $parsed['input_model']['nilai_min'] ?? $stats['nilai_min'],
+                            'nilai_std' => $parsed['input_model']['std_nilai'] ?? $stats['nilai_std'],
 
-                        'prediksi_rf' => $parsed['prediksi_rf'],
-                        'status_rf' => $parsed['status_rf'],
-                        'probabilitas_studi_lanjut' => $parsed['probabilitas_studi_lanjut'],
-                        'kategori_probabilitas' => $parsed['kategori_probabilitas'],
-                        'threshold_rf' => $parsed['threshold_rf'],
-                        'knn_dijalankan' => $parsed['knn_dijalankan'],
+                            'prediksi_rf' => $parsed['prediksi_rf'],
+                            'status_rf' => $parsed['status_rf'],
+                            'probabilitas_studi_lanjut' => $parsed['probabilitas_studi_lanjut'],
+                            'kategori_probabilitas' => $parsed['kategori_probabilitas'],
+                            'threshold_rf' => $parsed['threshold_rf'],
+                            'knn_dijalankan' => $parsed['knn_dijalankan'],
 
-                        'profil_siswa' => $response['profil_siswa'] ?? $this->buildProfilFallback($payload, $stats),
-                        'alumni_terdekat' => $response['alumni_terdekat'] ?? [],
-                        'narasi_rekomendasi' => $response['narasi_rekomendasi'] ?? null,
-                        'kualitas_rekomendasi' => $response['kualitas_rekomendasi'] ?? null,
-                        'rekomendasi_final' => $response['rekomendasi_final'] ?? [],
-                        'pesan' => $response['pesan'] ?? null,
-                        'response_flask' => $response,
+                            'profil_siswa' => $response['profil_siswa'] ?? $this->buildProfilFallback($payload, $stats),
+                            'alumni_terdekat' => $response['alumni_terdekat'] ?? [],
+                            'narasi_rekomendasi' => $response['narasi_rekomendasi'] ?? null,
+                            'kualitas_rekomendasi' => $response['kualitas_rekomendasi'] ?? null,
+                            'rekomendasi_final' => $response['rekomendasi_final'] ?? [],
+                            'pesan' => $response['pesan'] ?? null,
+                            'response_flask' => $response,
 
-                        'sumber' => 'upload_siswa',
-                        'error_message' => null,
-                    ]);
+                            'error_message' => null,
+                        ]
+                    );
 
                     $summary['valid_rows']++;
                     $summary['prediksi_success_count']++;
@@ -292,11 +277,7 @@ class UploadSiswaController extends Controller
         }
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Baca File Excel / CSV
-    |--------------------------------------------------------------------------
-    */
+    /*Baca File Excel / CSV*/
     private function readSpreadsheetRows(string $path, string $extension): array
     {
         if (in_array($extension, ['csv', 'txt'], true)) {
@@ -382,11 +363,7 @@ class UploadSiswaController extends Controller
         return trim($header, '_');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Normalisasi Payload Sesuai Input Flask
-    |--------------------------------------------------------------------------
-    */
+    /*Normalisasi Payload Sesuai Input Flask*/
     private function normalizePayload(array $row): array
     {
         $alias = [
@@ -516,11 +493,7 @@ class UploadSiswaController extends Controller
         ];
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Parsing Response Flask
-    |--------------------------------------------------------------------------
-    */
+    /*Parsing Response Flask*/
     private function parseFlaskResponse(array $response): array
     {
         $hasilRf = is_array($response['prediksi_rf'] ?? null)

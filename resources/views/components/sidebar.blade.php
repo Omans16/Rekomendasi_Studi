@@ -44,6 +44,13 @@
             'active' => ['admin.upload.siswa'],
             'show' => $isAdminArea,
         ],
+        [
+        'label' => 'Manajemen Akun',
+        'icon' => 'fa-solid fa-users-gear',
+        'route' => 'admin.akun',
+        'active' => ['admin.akun'],
+        'show' => $role === 'admin',
+        ],
     ];
 @endphp
 

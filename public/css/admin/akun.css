@@ -1,0 +1,394 @@
+.account-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.account-stat-card {
+    padding: 18px;
+}
+
+.account-stat-card span {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.account-stat-card strong {
+    color: var(--text);
+    font-size: 24px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+/* =========================
+   ACCOUNT TABLE CARD========================= */
+
+.account-card {
+    padding: 20px;
+}
+
+.account-card-header {
+    align-items: center;
+}
+
+.account-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.account-filter .form-control {
+    width: 220px;
+}
+
+.account-filter .form-select {
+    width: 150px;
+}
+
+.account-table strong {
+    color: var(--text);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.account-empty {
+    padding: 24px !important;
+    color: var(--muted);
+    text-align: center;
+}
+
+/* =========================
+   PAGINATION
+========================= */
+.account-pagination {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.account-pagination-info {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.account-pagination-info strong {
+    color: var(--text);
+    font-weight: 900;
+}
+
+.account-pagination-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: wrap;
+}
+
+.account-page-btn,
+.account-page-number {
+    min-height: 34px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1;
+    text-decoration: none;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.account-page-btn:hover,
+.account-page-number:hover {
+    transform: translateY(-1px);
+    border-color: var(--primary-border);
+    color: var(--primary);
+}
+
+.account-page-number {
+    width: 34px;
+    padding: 0;
+}
+
+.account-page-number.active {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: var(--btn-text);
+}
+
+.account-page-btn.disabled,
+.account-page-number.disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.account-page-btn i {
+    font-size: 11px;
+}
+
+/* =========================
+   MODAL WRAPPER
+========================= */
+.account-modal[hidden] {
+    display: none;
+}
+
+.account-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.account-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.58);
+}
+
+.account-modal-panel {
+    position: relative;
+    z-index: 1;
+    width: min(620px, 100%);
+    max-height: calc(100vh - 36px);
+    padding: 22px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-xl);
+    background: var(--card);
+    box-shadow: var(--shadow-lg);
+}
+
+/* =========================
+   MODAL HEADER
+========================= */
+.account-modal-header {
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+.account-modal-header h2 {
+    margin-bottom: 6px;
+}
+
+.account-modal-header p {
+    color: var(--muted);
+}
+
+.account-modal-close {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+    border-radius: 12px;
+    background: var(--surface-2);
+    color: var(--text);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
+}
+
+.account-modal-close:hover {
+    color: var(--danger-text);
+    transform: translateY(-1px);
+}
+
+.account-modal-close:active {
+    transform: translateY(0);
+}
+
+/* =========================
+   MODAL ERROR
+========================= */
+.account-modal-alert {
+    margin-bottom: 18px;
+    padding: 13px 14px;
+    border: 1px solid var(--danger-border);
+    border-radius: 16px;
+    background: var(--danger-soft);
+    color: var(--danger-text);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.account-modal-alert-icon {
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--danger) 16%, transparent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.account-modal-alert strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.account-modal-alert ul {
+    margin-left: 16px;
+}
+
+.account-modal-alert li {
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* =========================
+   ROLE OPTION
+========================= */
+.account-role-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.account-role-card {
+    min-height: 96px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--field-bg);
+    color: var(--text);
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        transform 0.15s ease;
+}
+
+.account-role-card:hover {
+    transform: translateY(-1px);
+    border-color: var(--primary-border);
+}
+
+.account-role-card.active {
+    border-color: var(--primary);
+    background: var(--primary-soft);
+}
+
+.account-role-card i {
+    color: var(--primary);
+    font-size: 20px;
+}
+
+.account-role-card span {
+    font-size: 13px;
+    font-weight: 900;
+}
+
+.account-role-card small {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+/* =========================
+   MODAL ACTIONS
+========================= */
+.account-modal-actions {
+    margin-top: 18px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 900px) {
+    .account-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .account-card-header {
+        align-items: flex-start;
+    }
+
+    .account-filter {
+        width: 100%;
+    }
+
+    .account-filter .form-control,
+    .account-filter .form-select {
+        width: 100%;
+    }
+
+    .account-pagination {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 520px) {
+    .account-role-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .account-modal {
+        padding: 12px;
+        align-items: flex-start;
+    }
+
+    .account-modal-panel {
+        max-height: calc(100vh - 24px);
+        padding: 18px;
+    }
+
+    .account-modal-actions {
+        flex-direction: column-reverse;
+    }
+
+    .account-modal-actions .btn-primary,
+    .account-modal-actions .btn-outline {
+        width: 100%;
+    }
+
+    .account-page-btn {
+        width: 100%;
+    }
+
+    .account-pagination-actions {
+        width: 100%;
+        align-items: stretch;
+    }
+}

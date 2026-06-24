@@ -16,6 +16,8 @@ class User extends Authenticatable
         'password',
         'role',
         'kelas',
+        'password_changed_at',
+        'password_security_acknowledged_at',
     ];
 
     protected $hidden = [
@@ -28,6 +30,8 @@ class User extends Authenticatable
         return [
             'password' => 'hashed',
             'kelas' => 'integer',
+            'password_changed_at' => 'datetime',
+            'password_security_acknowledged_at' => 'datetime',
         ];
     }
 
