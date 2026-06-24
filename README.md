@@ -156,49 +156,6 @@ Memiliki akses ke dashboard siswa, input data akademik, riwayat hasil, dan detai
 
 ---
 
-## Route Utama
-
-Beberapa route utama dalam sistem:
-
-```text
-/                         Landing Page
-/login                    Halaman Login
-/admin/dashboard          Dashboard Admin / Guru BK
-/admin/input-siswa        Input Siswa oleh Admin / Guru BK
-/admin/upload-siswa       Upload Data Siswa
-/admin/akun               Manajemen Akun
-/admin/hasil-prediksi     Hasil Prediksi Admin
-/admin/info-model         Informasi Model
-
-/siswa/dashboard          Dashboard Siswa
-/siswa/input-siswa        Input Data Akademik Siswa
-/siswa/hasil-prediksi     Riwayat Hasil Siswa
-```
-
----
-
-## Reset Database
-
-Jika ingin mengulang pengujian dari awal:
-
-```bash
-php artisan migrate:fresh --seed
-```
-
-Jika terjadi masalah cache, jalankan:
-
-```bash
-php artisan optimize:clear
-```
-
-Jika session lama menyebabkan halaman login tidak muncul, hapus session Laravel:
-
-```powershell
-Remove-Item storage\framework\sessions\* -Force
-```
-
----
-
 ## Catatan Penggunaan
 
 * Data akademik digunakan sebagai input sistem rekomendasi.
