@@ -1,58 +1,231 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Rekomendasi Studi Lanjut Siswa SMK
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem Rekomendasi Studi Lanjut Siswa SMK adalah aplikasi berbasis web yang digunakan untuk membantu siswa kelas 12 dalam melihat potensi studi lanjut serta mendapatkan rekomendasi universitas dan program studi berdasarkan data akademik dan pola data alumni.
 
-## About Laravel
+Project ini dikembangkan menggunakan Laravel sebagai aplikasi utama dan terintegrasi dengan layanan Machine Learning untuk proses prediksi dan rekomendasi.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Deskripsi Singkat
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Sistem ini dirancang untuk mendukung Guru BK dan siswa dalam proses pertimbangan studi lanjut. Data akademik siswa diproses oleh sistem untuk menentukan apakah siswa memenuhi batas rekomendasi studi lanjut. Jika hasil memenuhi batas rekomendasi, sistem akan menampilkan rekomendasi universitas dan program studi berdasarkan kemiripan dengan data alumni.
 
-## Learning Laravel
+Sistem ini tidak menggantikan keputusan akhir siswa, orang tua, atau Guru BK. Hasil rekomendasi digunakan sebagai bahan pertimbangan awal dalam proses bimbingan karier dan studi lanjut.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Fitur Utama
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### Admin / Guru BK
 
-## Agentic Development
+* Login menggunakan akun admin atau Guru BK.
+* Dashboard monitoring data prediksi dan rekomendasi.
+* Input data siswa secara manual.
+* Upload data siswa secara massal menggunakan file Excel atau CSV.
+* Pembuatan akun siswa otomatis berdasarkan NISN saat upload data siswa.
+* Manajemen akun untuk menambah akun Guru BK dan siswa.
+* Melihat seluruh hasil prediksi siswa.
+* Melihat detail hasil rekomendasi.
+* Melihat informasi model dan evaluasi sistem.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Siswa
 
-```bash
-composer require laravel/boost --dev
+* Login menggunakan NISN.
+* Password awal menggunakan NISN.
+* Popup saran mengganti password saat pertama kali login.
+* Input data akademik untuk meminta rekomendasi.
+* Melihat dashboard siswa.
+* Melihat riwayat hasil rekomendasi.
+* Melihat detail hasil analisis dan rekomendasi.
+* Jika hasil belum memenuhi batas rekomendasi, sistem tidak menampilkan rekomendasi kampus dan memberikan arahan untuk berdiskusi dengan Guru BK.
 
-php artisan boost:install
+---
+
+## Metode Sistem
+
+Sistem rekomendasi menggunakan pendekatan hybrid:
+
+1. **Random Forest**
+
+   * Digunakan untuk mengidentifikasi potensi studi lanjut siswa.
+   * Output berupa status apakah siswa memenuhi batas rekomendasi atau belum.
+
+2. **KNN Similarity**
+
+   * Digunakan untuk mencari alumni dengan profil akademik yang mirip.
+   * Digunakan hanya jika hasil Random Forest memenuhi batas rekomendasi.
+   * Rekomendasi universitas dan program studi disusun berdasarkan kemiripan data siswa dengan data alumni.
+
+---
+
+## Alur Sistem
+
+```text
+Admin / Guru BK upload data siswa
+        ↓
+Sistem membaca NISN, nama, jurusan, dan nilai akademik
+        ↓
+Jika NISN belum memiliki akun, sistem membuat akun siswa otomatis
+        ↓
+Data dikirim ke layanan Machine Learning
+        ↓
+Random Forest menentukan status rekomendasi
+        ↓
+Jika memenuhi batas rekomendasi, KNN mencari alumni terdekat
+        ↓
+Sistem menyimpan hasil prediksi dan rekomendasi
+        ↓
+Siswa dapat login dan melihat hasilnya
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## Teknologi yang Digunakan
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+* Laravel
+* PHP
+* MySQL
+* Blade Template
+* CSS
+* JavaScript
+* PhpSpreadsheet
+* Flask API
+* Random Forest
+* KNN Similarity
 
-## Code of Conduct
+Contoh jurusan yang digunakan:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```text
+Agribisnis Perikanan
+Agriteknologi Pengolahan Hasil Pertanian
+Desain Pemodelan dan Informasi Bangunan
+Nautika Kapal Penangkap Ikan
+Teknik Elektronika
+Teknik Fabrikasi Logam dan Manufaktur
+Teknik Instalasi Tenaga Listrik
+Teknik Jaringan Komputer dan Telekomunikasi
+Teknik Konstruksi dan Perumahan
+Teknik Mesin
+Teknik Otomotif
+Teknika Kapal Penangkap Ikan
+```
 
-## Security Vulnerabilities
+Saat file siswa diupload:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+* Sistem membaca NISN siswa.
+* Jika NISN belum ada di tabel user, sistem membuat akun siswa otomatis.
+* Username siswa adalah NISN.
+* Password awal siswa adalah NISN.
+* Hasil prediksi akan dihubungkan ke akun siswa berdasarkan NISN.
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Alur Login Siswa
+
+Setelah data siswa diupload oleh Admin atau Guru BK:
+
+```text
+Username / NISN : NISN siswa
+Password        : NISN siswa
+```
+
+Saat pertama kali login, siswa akan mendapatkan saran untuk mengganti password.
+
+Siswa dapat memilih:
+
+* Mengganti password baru.
+* Tetap menggunakan password saat ini.
+
+---
+
+## Struktur Role
+
+Sistem memiliki beberapa role pengguna:
+
+### Admin
+
+Memiliki akses ke seluruh fitur pengelolaan sistem.
+
+### Guru BK
+
+Memiliki akses untuk input data, upload data siswa, melihat hasil prediksi, dan melihat informasi model.
+
+### Siswa
+
+Memiliki akses ke dashboard siswa, input data akademik, riwayat hasil, dan detail rekomendasi.
+
+---
+
+## Route Utama
+
+Beberapa route utama dalam sistem:
+
+```text
+/                         Landing Page
+/login                    Halaman Login
+/admin/dashboard          Dashboard Admin / Guru BK
+/admin/input-siswa        Input Siswa oleh Admin / Guru BK
+/admin/upload-siswa       Upload Data Siswa
+/admin/akun               Manajemen Akun
+/admin/hasil-prediksi     Hasil Prediksi Admin
+/admin/info-model         Informasi Model
+
+/siswa/dashboard          Dashboard Siswa
+/siswa/input-siswa        Input Data Akademik Siswa
+/siswa/hasil-prediksi     Riwayat Hasil Siswa
+```
+
+---
+
+## Reset Database
+
+Jika ingin mengulang pengujian dari awal:
+
+```bash
+php artisan migrate:fresh --seed
+```
+
+Jika terjadi masalah cache, jalankan:
+
+```bash
+php artisan optimize:clear
+```
+
+Jika session lama menyebabkan halaman login tidak muncul, hapus session Laravel:
+
+```powershell
+Remove-Item storage\framework\sessions\* -Force
+```
+
+---
+
+## Catatan Penggunaan
+
+* Data akademik digunakan sebagai input sistem rekomendasi.
+* Hasil sistem bukan keputusan akhir.
+* Siswa tetap disarankan berdiskusi dengan Guru BK dan orang tua.
+* Rekomendasi hanya muncul jika hasil memenuhi batas rekomendasi sistem.
+* Jika belum memenuhi batas rekomendasi, siswa tetap dapat mempertimbangkan jalur lain seperti bekerja, magang, pelatihan, sertifikasi, wirausaha, atau studi lanjut melalui jalur yang sesuai.
+
+---
+
+## Developer
+
+Dibuat oleh:
+
+**Muhamad Nur Rohman**
+TRPL Politeknik Negeri Banyuwangi
+
+GitHub:
+
+```text
+https://github.com/Omans16/Rekomendasi_Studi
+```
+
+---
+
+## Lisensi
+
+Project ini dibuat untuk kebutuhan pengembangan sistem rekomendasi studi lanjut siswa SMK.
+
+Silakan sesuaikan bagian lisensi sesuai kebutuhan repository.
