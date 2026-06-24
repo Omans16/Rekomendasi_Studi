@@ -180,9 +180,3 @@ https://github.com/Omans16/Rekomendasi_Studi
 ```
 
 ---
-
-## Lisensi
-
-Project ini dibuat untuk kebutuhan pengembangan sistem rekomendasi studi lanjut siswa SMK.
-
-Silakan sesuaikan bagian lisensi sesuai kebutuhan repository.
