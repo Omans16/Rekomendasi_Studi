@@ -168,7 +168,16 @@
                 </div>
 
                 <div class="footer-copy">
-                    © {{ date('Y') }} Sistem Rekomendasi · SMKN 1 Glagah · Banyuwangi
+                    © {{ date('Y') }} Sistem Rekomendasi · Dibuat Oleh 
+                    <a 
+                        href="https://github.com/Omans16/Rekomendasi_Studi" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        class="footer-author-link"
+                    >
+                        Muhamad Nur Rohman
+                    </a> 
+                    TRPL Poliwangi
                 </div>
             </div>
         </div>

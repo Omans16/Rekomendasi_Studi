@@ -962,7 +962,7 @@ html[data-theme="light"] .gear-ring-2 {
         height: 150px;
     }
     .panel-left {
-        padding: 6px 24px 44px;
+        padding: 44px;
     }
 
     .logo-wrap{
@@ -976,12 +976,12 @@ html[data-theme="light"] .gear-ring-2 {
         height: 124px;
     }
 
-    .school-name .smk {
+    .school-name .smk, .form-title {
         font-size: 1.25rem;
     }
 
-    .left-tagline h2 {
-        font-size: 1.35rem;
+    .left-tagline h2{
+        font-size: 18px;
     }
 
     .stats-row {

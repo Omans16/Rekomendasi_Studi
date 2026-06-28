@@ -427,6 +427,29 @@ html[data-theme="light"] .theme-toggle .icon-sun {
     text-align: right;
 }
 
+.footer-author-link {
+    color: #000000;
+    font-weight: 800;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.footer-author-link:hover {
+    color: #000000;
+    text-decoration: underline;
+}
+
+/* Dark mode */
+html[data-theme="dark"] .footer-author-link,
+body.dark .footer-author-link {
+    color: #ffffff;
+}
+
+html[data-theme="dark"] .footer-author-link:hover,
+body.dark .footer-author-link:hover {
+    color: #ffffff;
+}
+
 /* =========================
    RESPONSIVE 1024px
 ========================= */
@@ -537,6 +560,7 @@ html[data-theme="light"] .theme-toggle .icon-sun {
 
     .mobile-menu.open {
         display: grid;
+        grid-auto-flow: column;
         gap: 10px;
     }
 
@@ -544,7 +568,8 @@ html[data-theme="light"] .theme-toggle .icon-sun {
     .mobile-menu .btn-nav-outline,
     .mobile-menu .btn-nav-fill {
         width: 100%;
-        min-height: 44px;
+        border-radius: 500px;
+        min-height: 30px;
     }
 
     .mobile-menu .theme-toggle {
@@ -606,9 +631,10 @@ html[data-theme="light"] .theme-toggle .icon-sun {
         padding: 10px;
     }
 
-    .nav-logo {
-        width: 42px;
-        height: 42px;
+    .nav-logo,
+    .nav-hamburger {
+        width: 35px;
+        height: 35px;
     }
 
     .nav-brand {
@@ -616,16 +642,11 @@ html[data-theme="light"] .theme-toggle .icon-sun {
     }
 
     .nav-brand-main {
-        font-size: 0.88rem;
+        font-size: 12px;
     }
 
     .nav-brand-sub {
-        font-size: 0.68rem;
-    }
-
-    .nav-hamburger {
-        width: 40px;
-        height: 40px;
+        font-size: 10px;
     }
 
     .mobile-menu {
