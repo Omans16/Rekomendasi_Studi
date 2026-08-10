@@ -1,12 +1,3 @@
-/* =========================================================
-   STYLE.CSS
-   StudyPath SMK - Global Dashboard Layout
-   Navbar + Sidebar Responsive
-========================================================= */
-
-/* =========================
-   RESET
-========================= */
 *,
 *::before,
 *::after {
@@ -962,10 +953,10 @@ body.sidebar-collapsed .app-layout .sidebar-menu li a i {
 }
 
 /* =========================================================
-   RESPONSIVE <= 1000PX
-   Sidebar otomatis tertutup menjadi drawer kiri
+   RESPONSIVE <= 1024PX
+   Sidebar drawer seperti landing page + blur overlay
 ========================================================= */
-@media (max-width: 1000px) {
+@media (max-width: 1024px) {
     :root {
         --app-content-padding: 20px;
     }
@@ -983,15 +974,29 @@ body.sidebar-collapsed .app-layout .sidebar-menu li a i {
         position: fixed;
         inset: 0 0 auto 0;
         min-height: var(--app-navbar-height);
+        z-index: 120;
+        background: color-mix(in srgb, var(--surface) 88%, transparent);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
     }
 
     .app-layout .sidebar,
     body.sidebar-collapsed .app-layout .sidebar {
-        top: var(--app-navbar-height);
-        width: 280px;
-        height: calc(100dvh - var(--app-navbar-height));
-        transform: translateX(-105%);
-        box-shadow: 18px 0 45px rgba(0, 0, 0, 0.25);
+        position: fixed;
+        top: calc(var(--app-navbar-height) + 14px);
+        left: 16px;
+        width: min(360px, calc(100vw - 32px));
+        height: auto;
+        max-height: calc(100dvh - var(--app-navbar-height) - 28px);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        background: color-mix(in srgb, var(--surface) 88%, transparent);
+        backdrop-filter: blur(22px);
+        -webkit-backdrop-filter: blur(22px);
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.32);
+        transform: translateX(calc(-100% - 24px));
+        overflow-y: auto;
+        z-index: 140;
     }
 
     body.sidebar-open .app-layout .sidebar {
@@ -1017,12 +1022,14 @@ body.sidebar-collapsed .app-layout .sidebar-menu li a i {
         content: "";
         position: fixed;
         inset: var(--app-navbar-height) 0 0 0;
-        z-index: 70;
+        z-index: 130;
         background: rgba(0, 0, 0, 0.42);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
     }
 
     body.sidebar-open .app-layout .sidebar {
-        z-index: 95;
+        z-index: 140;
     }
 }
 
@@ -1047,7 +1054,7 @@ body.sidebar-collapsed .app-layout .sidebar-menu li a i {
 
 /* =========================================================
    RESPONSIVE <= 600PX
-   Sidebar pindah ke atas sebagai dropdown menu
+   Sidebar tetap card, bukan full width
 ========================================================= */
 @media (max-width: 600px) {
     :root {
@@ -1072,26 +1079,24 @@ body.sidebar-collapsed .app-layout .sidebar-menu li a i {
 
     .app-layout .sidebar,
     body.sidebar-collapsed .app-layout .sidebar {
-        top: var(--app-navbar-height);
-        left: 0;
-        right: 0;
-        width: 100%;
+        top: calc(var(--app-navbar-height) + 12px);
+        left: 12px;
+        right: auto;
+        width: min(340px, calc(100vw - 24px));
         height: auto;
-        max-height: calc(100dvh - var(--app-navbar-height));
-        border-right: 0;
-        border-bottom: 1px solid var(--border);
-        border-radius: 0 0 18px 18px;
-        transform: translateY(-115%);
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+        max-height: calc(100dvh - var(--app-navbar-height) - 154px);
+        border: 1px solid var(--border);
+        border-radius: 22px;
+        transform: translateX(calc(-100% - 20px));
     }
 
     body.sidebar-open .app-layout .sidebar {
-        transform: translateY(0);
+        transform: translateX(0);
     }
 
     .app-layout .sidebar-brand {
         min-height: auto;
-        padding: 12px 14px;
+        padding: 14px;
     }
 
     .app-layout .brand-icon {
@@ -1108,7 +1113,7 @@ body.sidebar-collapsed .app-layout .sidebar-menu li a i {
     .app-layout .sidebar-menu {
         padding: 10px;
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr;
         gap: 8px;
     }
 
@@ -1116,11 +1121,14 @@ body.sidebar-collapsed .app-layout .sidebar-menu li a i {
         min-height: 44px;
         padding: 0 12px;
         border: 1px solid var(--border);
-        background: color-mix(in srgb, var(--surface) 86%, transparent);
+        background: color-mix(in srgb, var(--surface) 82%, transparent);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
     }
 
     .app-layout .sidebar-menu li.active a {
         border-color: var(--primary-border);
+        background: var(--primary-soft);
     }
 
     .app-layout .menu-text {
@@ -1170,6 +1178,13 @@ body.sidebar-collapsed .app-layout .sidebar-menu li a i {
 
     .app-layout .user-chip {
         padding: 4px;
+    }
+
+    .app-layout .sidebar,
+    body.sidebar-collapsed .app-layout .sidebar {
+        left: 10px;
+        width: calc(100vw - 20px);
+        border-radius: 20px;
     }
 
     .app-layout .sidebar-menu {

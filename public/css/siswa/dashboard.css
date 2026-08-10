@@ -362,7 +362,7 @@
     max-width: 100%;
     min-height: 24px;
     padding: 4px 9px;
-    border-radius: 999px;
+    border-radius: 5px;
     display: inline-flex;
     align-items: center;
     justify-content: center;

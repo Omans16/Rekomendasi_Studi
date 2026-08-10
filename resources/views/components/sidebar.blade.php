@@ -57,7 +57,7 @@
 <aside class="sidebar" id="app-sidebar" aria-label="Sidebar navigasi">
     <div class="sidebar-brand">
         <div class="brand-icon">
-            <img src="{{ asset('images/logos.png') }}" alt="Logo SMKN 1 Glagah">
+            <img src="{{ asset('images/Logos.png') }}" alt="Logo SMKN 1 Glagah">
         </div>
 
         <div class="brand-text">

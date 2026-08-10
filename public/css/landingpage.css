@@ -379,7 +379,9 @@ html[data-theme="light"] .theme-toggle .icon-sun {
    FOOTER
 ========================= */
 .footer {
-    padding: 20px 0 34px;
+    flex-shrink: 0;
+    margin-top: auto;
+    padding: 24px 0 34px;
 }
 
 .footer-inner {
@@ -390,7 +392,6 @@ html[data-theme="light"] .theme-toggle .icon-sun {
     display: grid;
     grid-template-columns: 1fr 1.4fr 1fr;
     gap: 18px;
-    align-items: center;
 }
 
 .footer-brand {
